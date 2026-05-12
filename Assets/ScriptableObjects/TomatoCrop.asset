@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1619404a21eee8e40a1f5582b2543528, type: 3}
+  m_Name: TomatoCrop
+  m_EditorClassIdentifier: Assembly-CSharp::CropData
+  cropName: Tomato
+  growthDays: 4
+  growthSprites:
+  - {fileID: 8369948372191450990, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: -3402868906910896487, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: 240733362411572873, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: 8578180459406042070, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  harvestItemName: Tomato
+  harvestAmount: 1

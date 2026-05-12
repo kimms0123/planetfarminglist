@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: TomatoSeedItem
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uC528\uC557"
+  itemSprite: {fileID: 0}
+  itemType: 0
+  toolType: 0
+  cropData: {fileID: 11400000, guid: 3d7fa482ca3a96f4983b3e9669cab066, type: 2}
