@@ -49,6 +49,14 @@ public class FarmTile : MonoBehaviour
     public bool Plant(CropData crop)
     {
         if (state != TileState.Tilled && state != TileState.Watered) return false;
+
+        // 계절 체크
+        if (crop.season != Season.All && crop.season != TimeManager.Instance.currentSeason)
+        {
+            Debug.Log($"이 계절에는 {crop.cropName}을 심을 수 없어요!");
+            return false;
+        }
+
         cropData = crop;
         state = state == TileState.Watered ? TileState.SeedWatered : TileState.Seeded;
         UpdateSprite();
@@ -93,10 +101,10 @@ public class FarmTile : MonoBehaviour
     public bool Harvest()
     {
         if (state != TileState.Grown) return false;
-        Debug.Log($"{cropData.harvestItemName} 수확! x{cropData.harvestAmount}");
+        Debug.Log($"{cropData.cropName} 수확!");
         cropData = null;
         currentGrowthDay = 0;
-        state = TileState.Tilled; // 수확 후 경작지로
+        state = TileState.Tilled;
         UpdateSprite();
         return true;
     }

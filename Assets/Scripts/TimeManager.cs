@@ -1,28 +1,27 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.Events;
 
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance;
 
-    [Header("½Ã°£ ¼³Á¤")]
-    public int startHour = 6;        // ½ÃÀÛ ½Ã°£ (¿ÀÀü 6½Ã)
-    public int endHour = 26;         // °­Á¦ ¼ö¸é ½Ã°£ (»õº® 2½Ã)
-    public float secondsPerMinute = 0.1f; // ½ÇÁ¦ ¸î ÃÊ°¡ °ÔÀÓ ³» 1ºĞÀÎÁö
+    [Header("ì‹œê°„ ì„¤ì •")]
+    public int startHour = 6;
+    public int endHour = 26;
+    public float secondsPerMinute = 0.1f;
 
-    [Header("ÇöÀç ½Ã°£")]
+    [Header("í˜„ì¬ ì‹œê°„")]
     public int day = 1;
     public int hour = 6;
     public int minute = 0;
 
-    [Header("°èÀı")]
-    public string[] seasons = { "º½", "¿©¸§", "°¡À»", "°Ü¿ï" };
-    public int currentSeason = 0;
-    public int dayPerSeason = 28;
+    [Header("ê³„ì ˆ")]
+    // ê¸°íšì„œ: ë´„ 1~14ì¼, ì—¬ë¦„ 15~21ì¼, ê°€ì„ 22~35ì¼, ê²¨ìš¸ ì¶”ê°€
+    public Season currentSeason = Season.Spring;
 
-    // ÀÌº¥Æ®
-    public UnityEvent OnDayPass;      // ÇÏ·ç Áö³¯ ¶§
-    public UnityEvent OnHourPass;     // 1½Ã°£ Áö³¯ ¶§
+    [Header("ì´ë²¤íŠ¸")]
+    public UnityEvent OnDayPass;
+    public UnityEvent OnHourPass;
 
     private float timer = 0f;
     private bool isSleeping = false;
@@ -36,6 +35,7 @@ public class TimeManager : MonoBehaviour
     {
         hour = startHour;
         minute = 0;
+        UpdateSeason();
     }
 
     void Update()
@@ -43,7 +43,6 @@ public class TimeManager : MonoBehaviour
         if (isSleeping) return;
 
         timer += Time.deltaTime;
-
         if (timer >= secondsPerMinute)
         {
             timer = 0f;
@@ -54,14 +53,12 @@ public class TimeManager : MonoBehaviour
     void AdvanceMinute()
     {
         minute++;
-
         if (minute >= 60)
         {
             minute = 0;
             hour++;
             OnHourPass?.Invoke();
 
-            // °­Á¦ ¼ö¸é
             if (hour >= endHour)
                 Sleep();
         }
@@ -72,12 +69,11 @@ public class TimeManager : MonoBehaviour
         isSleeping = true;
         day++;
 
-        // °èÀı º¯°æ
-        if (day > dayPerSeason)
-        {
+        // 35ì¼ ì§€ë‚˜ë©´ ë‹¤ì‹œ 1ì¼ë¡œ
+        if (day > 35)
             day = 1;
-            currentSeason = (currentSeason + 1) % 4;
-        }
+
+        UpdateSeason();
 
         hour = startHour;
         minute = 0;
@@ -86,19 +82,42 @@ public class TimeManager : MonoBehaviour
         OnDayPass?.Invoke();
         isSleeping = false;
 
-        Debug.Log($"{seasons[currentSeason]} {day}ÀÏÂ÷ ¾ÆÄ§!");
+        Debug.Log($"{GetSeasonString()} {day}ì¼ì°¨ ì•„ì¹¨!");
+    }
+
+    void UpdateSeason()
+    {
+        // ê¸°íšì„œ ê¸°ì¤€: ë´„ 1~14, ì—¬ë¦„ 15~21, ê°€ì„ 22~35
+        if (day >= 1 && day <= 14)
+            currentSeason = Season.Spring;
+        else if (day >= 15 && day <= 21)
+            currentSeason = Season.Summer;
+        else if (day >= 22 && day <= 35)
+            currentSeason = Season.Fall;
+    }
+
+    public string GetSeasonString()
+    {
+        switch (currentSeason)
+        {
+            case Season.Spring: return "ğŸŒ¸ ë´„";
+            case Season.Summer: return "â˜€ï¸ ì—¬ë¦„";
+            case Season.Fall: return "ğŸ‚ ê°€ì„";
+            case Season.Winter: return "â„ï¸ ê²¨ìš¸";
+            default: return "";
+        }
     }
 
     public string GetTimeString()
     {
         int displayHour = hour % 24;
-        string ampm = hour < 12 ? "¿ÀÀü" : "¿ÀÈÄ";
+        string ampm = hour < 12 ? "ì˜¤ì „" : "ì˜¤í›„";
         if (hour >= 12) displayHour = hour == 12 ? 12 : hour - 12;
         return $"{ampm} {displayHour}:{minute:00}";
     }
 
     public string GetDateString()
     {
-        return $"{seasons[currentSeason]} {day}ÀÏÂ÷";
+        return $"{GetSeasonString()} {day}ì¼ì°¨";
     }
 }

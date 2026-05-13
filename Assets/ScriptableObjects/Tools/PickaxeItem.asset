@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
-  m_Name: HoeItem
+  m_Name: PickaxeItem
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uAD2D\uC774"
+  itemName: "\uACE1\uAD2D\uC774"
   itemSprite: {fileID: 0}
   itemType: 0
-  toolType: 1
+  toolType: 4
+  harvestGridSize: 1
   cropData: {fileID: 0}
+  sellPrice: 0
+  quality: 0
+  staminaCost: 10

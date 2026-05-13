@@ -1,26 +1,75 @@
 using UnityEngine;
 
+public enum Season
+{
+    Spring, // 봄
+    Summer, // 여름
+    Fall,   // 가을
+    Winter, // 겨울
+    All     // 전 계절
+}
+
+public enum CropQuality
+{
+    Trash,   // 쓰레기 (0.3)
+    Normal,  // 일반 (1.0)
+    Good,    // 좋은 (1.3)
+    Great,   // 상급 (1.5)
+    Best     // 최상급 (2.0)
+}
+
 [CreateAssetMenu(fileName = "CropData", menuName = "Farm/CropData")]
 public class CropData : ScriptableObject
 {
-    [Header("작물 정보")]
+    [Header("기본 정보")]
     public string cropName;
-    public int growthDays;        // 성장에 필요한 날 수
-    public Sprite[] growthSprites; // 성장 단계별 스프라이트
+    public Season season;
+    public int growthDays;
+    public Sprite[] growthSprites; // 3단계
 
     [Header("수확")]
-    public string harvestItemName;
-    public int harvestAmount;
+    public int baseHarvestAmount;
+    public float cropCoefficient;  // 작물 계수
+    public int baseSellPrice;      // 기준 판매가
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("품질 계수")]
+    public static readonly float[] qualityMultiplier =
     {
-        
+        0.3f,  // 쓰레기
+        1.0f,  // 일반
+        1.3f,  // 좋은
+        1.5f,  // 상급
+        2.0f   // 최상급
+    };
+
+    [Header("수확량 배율")]
+    public static readonly float[] harvestMultiplier =
+    {
+        0.5f,  // 쓰레기
+        1.0f,  // 일반
+        1.1f,  // 좋은
+        1.2f,  // 상급
+        1.5f   // 최상급
+    };
+
+    // Perfect 비율 → 품질 등급 계산
+    public static CropQuality GetQuality(float perfectRatio)
+    {
+        if (perfectRatio >= 0.9f) return CropQuality.Best;
+        if (perfectRatio >= 0.7f) return CropQuality.Great;
+        if (perfectRatio >= 0.4f) return CropQuality.Normal;
+        return CropQuality.Trash;
     }
 
-    // Update is called once per frame
-    void Update()
+    // 최종 판매가 계산
+    public int GetSellPrice(CropQuality quality)
     {
-        
+        return Mathf.RoundToInt(baseSellPrice * qualityMultiplier[(int)quality]);
+    }
+
+    // 최종 수확량 계산
+    public int GetHarvestAmount(CropQuality quality)
+    {
+        return Mathf.RoundToInt(baseHarvestAmount * harvestMultiplier[(int)quality]);
     }
 }

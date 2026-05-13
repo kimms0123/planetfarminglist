@@ -6406,13 +6406,7 @@ MonoBehaviour:
   day: 1
   hour: 6
   minute: 0
-  seasons:
-  - "\uBD04"
-  - "\uC5EC\uB984"
-  - "\uAC00\uC744"
-  - "\uACA8\uC6B8"
   currentSeason: 0
-  dayPerSeason: 35
   OnDayPass:
     m_PersistentCalls:
       m_Calls: []
@@ -6692,10 +6686,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   items:
-  - {fileID: 11400000, guid: 63b89b5546a60e7489f58c7b2d59e247, type: 2}
-  - {fileID: 11400000, guid: 66d4350429056fe4ca2e039380a91186, type: 2}
-  - {fileID: 11400000, guid: 0ada524e4bd2ad24c9647ca082dc6a72, type: 2}
-  - {fileID: 11400000, guid: 9392740b0b05fe5429e783e524bfba47, type: 2}
+  - {fileID: 11400000, guid: 4d683d313a71b964ba0c934807317801, type: 2}
+  - {fileID: 11400000, guid: bf05d3a7908587d4099d35cb2cb8372b, type: 2}
+  - {fileID: 11400000, guid: 24b4376d720a6ca4796cb599403d6eee, type: 2}
+  - {fileID: 11400000, guid: cae53201c2fd47a498e65d41c3d2c19d, type: 2}
+  - {fileID: 11400000, guid: c9843a4145074a54a9b67414dbbfb352, type: 2}
+  - {fileID: 11400000, guid: 7e243c3f4422a984096c0b3b30e36f06, type: 2}
+  - {fileID: 11400000, guid: 2a4f9c52c77dfc74b9d7024ee9faba82, type: 2}
+  - {fileID: 11400000, guid: 409930478b389454ca7b3d76ea579bad, type: 2}
+  - {fileID: 11400000, guid: eb695e38b0388d04f9668cb60b95d115, type: 2}
   selectedIndex: 0
 --- !u!4 &1548063436
 Transform:

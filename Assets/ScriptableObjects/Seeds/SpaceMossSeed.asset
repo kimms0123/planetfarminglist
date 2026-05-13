@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
-  m_Name: TomatoSeedItem
+  m_Name: SpaceMossSeed
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uC528\uC557"
+  itemName: "\uC6B0\uC8FC\uC774\uB07C \uC528\uC557"
   itemSprite: {fileID: 0}
-  itemType: 0
+  itemType: 1
   toolType: 0
-  cropData: {fileID: 11400000, guid: 3d7fa482ca3a96f4983b3e9669cab066, type: 2}
+  harvestGridSize: 1
+  cropData: {fileID: 11400000, guid: 03b4c35703f9db84db048664fc3079f1, type: 2}
+  sellPrice: 0
+  quality: 0
+  staminaCost: 10

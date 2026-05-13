@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
-  m_Name: WateringCanItem
+  m_Name: SpaceCrystalSeed
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uBB3C\uBFCC\uB9AC\uAC1C"
+  itemName: "\uD06C\uB9AC\uC2A4\uD0C8 \uC528\uC557"
   itemSprite: {fileID: 0}
-  itemType: 0
-  toolType: 2
-  cropData: {fileID: 0}
+  itemType: 1
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 11400000, guid: 03b4c35703f9db84db048664fc3079f1, type: 2}
+  sellPrice: 0
+  quality: 0
+  staminaCost: 10

@@ -81,8 +81,7 @@ public class FarmingSystem : MonoBehaviour
                 }
                 break;
 
-            case ToolType.Scythe:
-                // 다 자란 작물만 수확
+            case ToolType.Harvester:
                 if (farmTile == null)
                 {
                     Debug.Log("수확할 작물이 없어요!");
