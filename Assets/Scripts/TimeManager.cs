@@ -100,10 +100,10 @@ public class TimeManager : MonoBehaviour
     {
         switch (currentSeason)
         {
-            case Season.Spring: return "🌸 봄";
-            case Season.Summer: return "☀️ 여름";
-            case Season.Fall: return "🍂 가을";
-            case Season.Winter: return "❄️ 겨울";
+            case Season.Spring: return "봄";
+            case Season.Summer: return "여름";
+            case Season.Fall: return "가을";
+            case Season.Winter: return "겨울";
             default: return "";
         }
     }

@@ -27,6 +27,11 @@ public class Inventory : MonoBehaviour
             if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectItem(1);
             if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectItem(2);
             if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectItem(3);
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectItem(4);
+            if (Keyboard.current.digit6Key.wasPressedThisFrame) SelectItem(5);
+            if (Keyboard.current.digit7Key.wasPressedThisFrame) SelectItem(6);
+            if (Keyboard.current.digit8Key.wasPressedThisFrame) SelectItem(7);
+            if (Keyboard.current.digit9Key.wasPressedThisFrame) SelectItem(8);
         }
     }
 
