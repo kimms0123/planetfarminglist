@@ -15,7 +15,12 @@ MonoBehaviour:
   cropName: "\uC0C1\uCD94"
   season: 0
   growthDays: 3
-  growthSprites: []
+  growthSprites:
+  - {fileID: -6706443759888266369, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: 3367870417585019489, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: 7953443401717196921, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  - {fileID: 1734387795819554390, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  harvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   baseHarvestAmount: 8
   cropCoefficient: 1
   baseSellPrice: 50

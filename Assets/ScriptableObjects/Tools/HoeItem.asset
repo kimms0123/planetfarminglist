@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HoeItem
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uAD2D\uC774"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: -7058361884236101441, guid: 8773485a29f160447adc9fc26573b427, type: 3}
   itemType: 0
   toolType: 1
   harvestGridSize: 1

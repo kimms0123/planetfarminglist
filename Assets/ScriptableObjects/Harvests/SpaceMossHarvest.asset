@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: SpaceMossHarvest
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uC6B0\uC8FC\uC774\uB07C"
+  itemSprite: {fileID: 8843743897560898563, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  itemType: 2
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 0}
+  sellPrice: 0
+  quality: 0
+  staminaCost: 10

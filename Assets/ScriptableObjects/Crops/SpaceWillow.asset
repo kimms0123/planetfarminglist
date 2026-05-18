@@ -16,6 +16,7 @@ MonoBehaviour:
   season: 0
   growthDays: 10
   growthSprites: []
+  harvestItem: {fileID: 11400000, guid: 3aea7b01eae3dc545b142a570cf26982, type: 2}
   baseHarvestAmount: 1
   cropCoefficient: 1.5
   baseSellPrice: 150

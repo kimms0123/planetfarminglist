@@ -21,6 +21,9 @@ public class FarmTile : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        // FarmTileManager에 등록
+        if (FarmTileManager.Instance != null)
+            FarmTileManager.Instance.RegisterTile(this);
     }
 
     // 괭이 → 경작지로
@@ -101,7 +104,36 @@ public class FarmTile : MonoBehaviour
     public bool Harvest()
     {
         if (state != TileState.Grown) return false;
-        Debug.Log($"{cropData.cropName} 수확!");
+
+        // 인벤토리에 수확물 추가
+        if (cropData.harvestItem != null)
+        {
+            int amount = cropData.baseHarvestAmount;
+            Inventory.Instance.AddItem(cropData.harvestItem, amount);
+            Debug.Log($"{cropData.cropName} 수확! x{amount}");
+        }
+        else
+        {
+            Debug.Log($"{cropData.cropName} 수확! (수확물 아이템 미설정)");
+        }
+
+        cropData = null;
+        currentGrowthDay = 0;
+        state = TileState.Tilled;
+        UpdateSprite();
+        return true;
+    }
+    public bool HarvestWithQuality(CropQuality quality)
+    {
+        if (state != TileState.Grown) return false;
+
+        if (cropData.harvestItem != null)
+        {
+            int amount = cropData.GetHarvestAmount(quality);
+            Inventory.Instance.AddItem(cropData.harvestItem, amount);
+            Debug.Log($"{cropData.cropName} 수확! 등급:{quality} x{amount}");
+        }
+
         cropData = null;
         currentGrowthDay = 0;
         state = TileState.Tilled;
@@ -115,5 +147,10 @@ public class FarmTile : MonoBehaviour
         if (cropData == null || cropData.growthSprites == null) return;
         int stage = Mathf.Clamp(currentGrowthDay, 0, cropData.growthSprites.Length - 1);
         spriteRenderer.sprite = cropData.growthSprites[stage];
+    }
+    void OnDestroy()
+    {
+        if (FarmTileManager.Instance != null)
+            FarmTileManager.Instance.UnregisterTile(this);
     }
 }

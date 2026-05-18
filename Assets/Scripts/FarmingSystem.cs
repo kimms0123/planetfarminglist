@@ -25,7 +25,6 @@ public class FarmingSystem : MonoBehaviour
             ItemData selectedItem = Inventory.Instance.SelectedItem;
             if (selectedItem == null) return;
 
-            // 해당 위치 FarmTile 확인
             FarmTile farmTile = GetFarmTileAt(worldPos);
 
             switch (selectedItem.itemType)
@@ -48,6 +47,17 @@ public class FarmingSystem : MonoBehaviour
             FarmTile tile = hit.GetComponent<FarmTile>();
             if (tile != null) return tile;
         }
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        Collider2D[] results = new Collider2D[10];
+        Physics2D.OverlapPoint(worldPos, filter, results);
+        foreach (var hit in results)
+        {
+            if (hit == null) continue;
+            FarmTile tile = hit.GetComponent<FarmTile>();
+            if (tile != null) return tile;
+        }
         return null;
     }
 
@@ -56,7 +66,6 @@ public class FarmingSystem : MonoBehaviour
         switch (item.toolType)
         {
             case ToolType.Hoe:
-                // 일반 땅에만 가능
                 if (!TileManager.Instance.IsGround(cellPos))
                 {
                     Debug.Log("땅이 아니에요!");
@@ -67,21 +76,21 @@ public class FarmingSystem : MonoBehaviour
                     Debug.Log("이미 갈아엎은 땅이에요!");
                     return;
                 }
-                // 타일 변경
                 TileManager.Instance.SetTilled(cellPos);
-                // FarmTile 오브젝트 생성
                 Vector3 centerPos = TileManager.Instance.CellCenter(cellPos);
                 GameObject tileObj = new GameObject("FarmTile");
                 tileObj.transform.position = centerPos;
+                SpriteRenderer sr = tileObj.AddComponent<SpriteRenderer>();
+                sr.sortingOrder = 5;
                 BoxCollider2D col = tileObj.AddComponent<BoxCollider2D>();
                 col.size = new Vector2(1f, 1f);
+                col.isTrigger = true;
                 FarmTile newTile = tileObj.AddComponent<FarmTile>();
                 newTile.Till();
                 Debug.Log("땅을 팠어요!");
                 break;
 
             case ToolType.WateringCan:
-                // 갈아엎은 땅에만 가능
                 if (!TileManager.Instance.IsTilled(cellPos))
                 {
                     Debug.Log("갈아엎은 땅에만 물을 줄 수 있어요!");
@@ -95,21 +104,18 @@ public class FarmingSystem : MonoBehaviour
                 break;
 
             case ToolType.Harvester:
-                // 다 자란 작물만 수확
                 if (farmTile == null)
                 {
                     Debug.Log("수확할 작물이 없어요!");
                     return;
                 }
-                if (farmTile.Harvest())
-                {
-                    TileManager.Instance.RefreshTile(cellPos, farmTile.state);
-                    Debug.Log("수확했어요!");
-                }
-                else
+                if (farmTile.state != FarmTile.TileState.Grown)
                 {
                     Debug.Log("아직 다 자라지 않았어요!");
+                    return;
                 }
+                // 리듬게임 시작!
+                RhythmGameManager.Instance.StartRhythmGame(farmTile, cellPos);
                 break;
 
             case ToolType.Pickaxe:
@@ -146,8 +152,14 @@ public class FarmingSystem : MonoBehaviour
             Debug.Log("이미 작물이 있어요!");
             return;
         }
+        if (Inventory.Instance.GetItemCount(seedItem) <= 0)
+        {
+            Debug.Log($"{seedItem.itemName}이 부족해요!");
+            return;
+        }
         if (farmTile.Plant(seedItem.cropData))
         {
+            Inventory.Instance.RemoveItem(seedItem, 1);
             TileManager.Instance.RefreshTile(cellPos, farmTile.state);
             Debug.Log($"{seedItem.cropData.cropName} 씨앗을 심었어요!");
         }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WateringCanItem
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uBB3C\uBFCC\uB9AC\uAC1C"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 4598562358733520778, guid: 8773485a29f160447adc9fc26573b427, type: 3}
   itemType: 0
   toolType: 2
   harvestGridSize: 1

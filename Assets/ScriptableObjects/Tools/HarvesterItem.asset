@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: HarvesterItem
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC218\uD655\uAE30"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 834829428391225009, guid: 8773485a29f160447adc9fc26573b427, type: 3}
   itemType: 0
-  toolType: 4
+  toolType: 3
   harvestGridSize: 1
   cropData: {fileID: 0}
   sellPrice: 0

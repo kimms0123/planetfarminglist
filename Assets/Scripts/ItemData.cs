@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public enum ItemType
 {
     Tool,    // 도구
@@ -39,4 +40,5 @@ public class ItemData : ScriptableObject
 
     [Header("스태미너")]
     public int staminaCost = 10; // 도구 사용 시 스태미너 소모
+    
 }

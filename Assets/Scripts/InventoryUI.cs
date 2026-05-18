@@ -4,12 +4,12 @@ using UnityEngine.UI;
 public class InventoryUI : MonoBehaviour
 {
     [Header("슬롯")]
-    public Image[] slots;           // 슬롯 배경
-    public Image[] itemIcons;       // 아이템 아이콘
+    public Image[] slots;
+    public Image[] itemIcons;
 
     [Header("선택 색상")]
     public Color normalColor = new Color(0.5f, 0.5f, 0.5f, 0.8f);
-    public Color selectedColor = new Color(1f, 0.8f, 0f, 0.8f);  // 노란색
+    public Color selectedColor = new Color(1f, 0.8f, 0f, 0.8f);
 
     void Start()
     {
@@ -27,17 +27,15 @@ public class InventoryUI : MonoBehaviour
 
         for (int i = 0; i < slots.Length; i++)
         {
-            // 선택된 슬롯 강조
             slots[i].color = (i == Inventory.Instance.selectedIndex)
-                ? selectedColor
-                : normalColor;
+                ? selectedColor : normalColor;
 
-            // 아이템 아이콘 표시
-            if (i < Inventory.Instance.items.Count &&
-                Inventory.Instance.items[i] != null &&
-                Inventory.Instance.items[i].itemSprite != null)
+            if (i < Inventory.Instance.slots.Count &&
+                Inventory.Instance.slots[i] != null &&
+                Inventory.Instance.slots[i].item != null &&
+                Inventory.Instance.slots[i].item.itemSprite != null)
             {
-                itemIcons[i].sprite = Inventory.Instance.items[i].itemSprite;
+                itemIcons[i].sprite = Inventory.Instance.slots[i].item.itemSprite;
                 itemIcons[i].color = Color.white;
             }
             else

@@ -2,16 +2,30 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class InventorySlot
+{
+    public ItemData item;
+    public int amount;
+
+    public InventorySlot(ItemData item, int amount)
+    {
+        this.item = item;
+        this.amount = amount;
+    }
+}
+
 public class Inventory : MonoBehaviour
 {
     public static Inventory Instance;
 
     [Header("인벤토리 슬롯")]
-    public List<ItemData> items = new List<ItemData>();
+    public List<InventorySlot> slots = new List<InventorySlot>();
     public int selectedIndex = 0;
 
     public ItemData SelectedItem =>
-        items.Count > 0 ? items[selectedIndex] : null;
+        slots.Count > 0 && selectedIndex < slots.Count
+        ? slots[selectedIndex].item : null;
 
     void Awake()
     {
@@ -20,7 +34,6 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        // 숫자키로 아이템 선택
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectItem(0);
@@ -32,20 +45,61 @@ public class Inventory : MonoBehaviour
             if (Keyboard.current.digit7Key.wasPressedThisFrame) SelectItem(6);
             if (Keyboard.current.digit8Key.wasPressedThisFrame) SelectItem(7);
             if (Keyboard.current.digit9Key.wasPressedThisFrame) SelectItem(8);
+            if (Keyboard.current.digit0Key.wasPressedThisFrame) SelectItem(9);
         }
     }
 
     public void SelectItem(int index)
     {
-        if (index < items.Count)
+        if (index < slots.Count)
         {
             selectedIndex = index;
-            Debug.Log($"선택된 아이템: {items[selectedIndex].itemName}");
+            Debug.Log($"선택된 아이템: {slots[selectedIndex].item.itemName} x{slots[selectedIndex].amount}");
         }
     }
 
-    public void AddItem(ItemData item)
+    public void AddItem(ItemData item, int amount = 1)
     {
-        items.Add(item);
+        foreach (var slot in slots)
+        {
+            if (slot.item == item)
+            {
+                slot.amount += amount;
+                Debug.Log($"{item.itemName} x{amount} 획득! (보유: {slot.amount})");
+                return;
+            }
+        }
+        slots.Add(new InventorySlot(item, amount));
+        Debug.Log($"{item.itemName} x{amount} 획득!");
+    }
+
+    public bool RemoveItem(ItemData item, int amount = 1)
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.item == item)
+            {
+                if (slot.amount < amount)
+                {
+                    Debug.Log($"{item.itemName}이 부족해요!");
+                    return false;
+                }
+                slot.amount -= amount;
+                if (slot.amount <= 0)
+                    slots.Remove(slot);
+                Debug.Log($"{item.itemName} x{amount} 소모!");
+                return true;
+            }
+        }
+        Debug.Log($"{item.itemName}이 없어요!");
+        return false;
+    }
+
+    public int GetItemCount(ItemData item)
+    {
+        foreach (var slot in slots)
+            if (slot.item == item)
+                return slot.amount;
+        return 0;
     }
 }

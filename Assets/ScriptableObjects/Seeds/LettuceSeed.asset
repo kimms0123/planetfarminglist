@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LettuceSeed
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC0C1\uCD94\uC528\uC557"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: -6706443759888266369, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
   itemType: 1
   toolType: 0
   harvestGridSize: 1
