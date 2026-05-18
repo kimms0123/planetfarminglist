@@ -136,7 +136,8 @@ public class FarmTile : MonoBehaviour
 
         cropData = null;
         currentGrowthDay = 0;
-        state = TileState.Tilled;
+        state = TileState.Tilled; // ← 수확 후 Tilled로
+        spriteRenderer.sprite = null; // ← 스프라이트 초기화
         UpdateSprite();
         return true;
     }

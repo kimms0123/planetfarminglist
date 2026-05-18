@@ -217,7 +217,6 @@ public class RhythmGameManager : MonoBehaviour
         {
             currentFarmTile.HarvestWithQuality(quality);
             TileManager.Instance.RefreshTile(currentCellPos, currentFarmTile.state);
-            Destroy(currentFarmTile.gameObject);
         }
 
         StartCoroutine(ShowResultAndClose(result));
