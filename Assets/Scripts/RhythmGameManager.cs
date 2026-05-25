@@ -65,16 +65,16 @@ public class RhythmGameManager : MonoBehaviour
         notes.Clear();
         noteUIs.Clear();
 
-        // 노트 랜덤 생성
+        // ★ 플레이어 이동 잠금
+        PlayerController.IsInputLocked = true;
+
         for (int i = 0; i < noteCount; i++)
             notes.Add((NoteDirection)UnityEngine.Random.Range(0, 4));
 
-        // UI 활성화
         rhythmGamePanel.SetActive(true);
         if (resultPanel != null) resultPanel.SetActive(false);
         if (judgmentText != null) judgmentText.text = "";
 
-        // 노트 UI 생성
         GenerateNoteUIs();
 
         Debug.Log("리듬게임 시작!");
@@ -229,13 +229,21 @@ public class RhythmGameManager : MonoBehaviour
         {
             switch (result)
             {
-                case HarvestRhythmResult.Best: resultText.text = "🌟 최상급 수확!"; break;
-                case HarvestRhythmResult.Normal: resultText.text = "✅ 일반 수확"; break;
-                case HarvestRhythmResult.Trash: resultText.text = "💀 하위 수확"; break;
+                case HarvestRhythmResult.Best: resultText.text = "최상급 수확!"; break;
+                case HarvestRhythmResult.Normal: resultText.text = "일반 수확"; break;
+                case HarvestRhythmResult.Trash: resultText.text = "하위 수확"; break;
             }
         }
 
         yield return new WaitForSeconds(resultDelay);
+
         rhythmGamePanel.SetActive(false);
+
+        // ★ 인벤토리 창이 열려있지 않을 때만 잠금 해제
+        if (InventoryWindowUI.Instance == null || !InventoryWindowUI.Instance.IsOpen)
+            PlayerController.IsInputLocked = false;
+
+        // ★ 인벤토리 확인 디버그
+        Debug.Log($"인벤토리 슬롯 수: {InventoryManager.Instance.GetAllSlots().Count}");
     }
 }

@@ -15,6 +15,8 @@ public class FarmingSystem : MonoBehaviour
 
     void Update()
     {
+        if (PlayerController.IsInputLocked) return; // ★ 리듬게임/인벤토리 중 입력 차단
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
@@ -22,7 +24,7 @@ public class FarmingSystem : MonoBehaviour
             worldPos.z = 0;
 
             Vector3Int cellPos = TileManager.Instance.WorldToCell(worldPos);
-            ItemData selectedItem = Inventory.Instance.SelectedItem;
+            ItemData selectedItem = InventoryManager.Instance.SelectedItem; // ★
             if (selectedItem == null) return;
 
             FarmTile farmTile = GetFarmTileAt(worldPos);
@@ -66,9 +68,9 @@ public class FarmingSystem : MonoBehaviour
         switch (item.toolType)
         {
             case ToolType.Hoe:
-                if (!TileManager.Instance.IsGround(cellPos))
+                if (!TileManager.Instance.IsFarmable(cellPos))
                 {
-                    Debug.Log("땅이 아니에요!");
+                    Debug.Log("농사 가능한 흙 땅에서만 괭이질할 수 있어요!");
                     return;
                 }
                 if (TileManager.Instance.IsTilled(cellPos))
@@ -78,15 +80,20 @@ public class FarmingSystem : MonoBehaviour
                 }
                 TileManager.Instance.SetTilled(cellPos);
                 Vector3 centerPos = TileManager.Instance.CellCenter(cellPos);
+
                 GameObject tileObj = new GameObject("FarmTile");
                 tileObj.transform.position = centerPos;
+
                 SpriteRenderer sr = tileObj.AddComponent<SpriteRenderer>();
                 sr.sortingOrder = 5;
+
                 BoxCollider2D col = tileObj.AddComponent<BoxCollider2D>();
                 col.size = new Vector2(1f, 1f);
                 col.isTrigger = true;
+
                 FarmTile newTile = tileObj.AddComponent<FarmTile>();
                 newTile.Till();
+
                 Debug.Log("땅을 팠어요!");
                 break;
 
@@ -114,7 +121,6 @@ public class FarmingSystem : MonoBehaviour
                     Debug.Log("아직 다 자라지 않았어요!");
                     return;
                 }
-                // 리듬게임 시작!
                 RhythmGameManager.Instance.StartRhythmGame(farmTile, cellPos);
                 break;
 
@@ -152,14 +158,14 @@ public class FarmingSystem : MonoBehaviour
             Debug.Log("이미 작물이 있어요!");
             return;
         }
-        if (Inventory.Instance.GetItemCount(seedItem) <= 0)
+        if (InventoryManager.Instance.GetItemCount(seedItem) <= 0) // ★
         {
             Debug.Log($"{seedItem.itemName}이 부족해요!");
             return;
         }
         if (farmTile.Plant(seedItem.cropData))
         {
-            Inventory.Instance.RemoveItem(seedItem, 1);
+            InventoryManager.Instance.RemoveItem(seedItem, 1); // ★
             TileManager.Instance.RefreshTile(cellPos, farmTile.state);
             Debug.Log($"{seedItem.cropData.cropName} 씨앗을 심었어요!");
         }

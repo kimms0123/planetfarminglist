@@ -109,7 +109,7 @@ public class FarmTile : MonoBehaviour
         if (cropData.harvestItem != null)
         {
             int amount = cropData.baseHarvestAmount;
-            Inventory.Instance.AddItem(cropData.harvestItem, amount);
+            InventoryManager.Instance.AddItem(cropData.harvestItem, amount);
             Debug.Log($"{cropData.cropName} 수확! x{amount}");
         }
         else
@@ -127,17 +127,23 @@ public class FarmTile : MonoBehaviour
     {
         if (state != TileState.Grown) return false;
 
-        if (cropData.harvestItem != null)
+        if (cropData?.harvestItem != null)
         {
             int amount = cropData.GetHarvestAmount(quality);
-            Inventory.Instance.AddItem(cropData.harvestItem, amount);
-            Debug.Log($"{cropData.cropName} 수확! 등급:{quality} x{amount}");
+            Vector3 pos = transform.position;
+
+            // ★ 인벤 초과분은 월드에 드롭
+            int leftover = InventoryManager.Instance.AddItemAndReturnLeftover(cropData.harvestItem, amount);
+            if (leftover > 0)
+                ItemDropManager.Instance?.DropItemFromHarvest(cropData.harvestItem, leftover, pos);
+
+            Debug.Log($"{cropData.cropName} 수확! 등급:{quality} x{amount - leftover} 인벤, x{leftover} 드롭");
         }
 
         cropData = null;
         currentGrowthDay = 0;
-        state = TileState.Tilled; // ← 수확 후 Tilled로
-        spriteRenderer.sprite = null; // ← 스프라이트 초기화
+        state = TileState.Tilled;
+        spriteRenderer.sprite = null;
         UpdateSprite();
         return true;
     }

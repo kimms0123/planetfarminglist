@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: SpaceMossHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC6B0\uC8FC\uC774\uB07C"
-  itemSprite: {fileID: 8843743897560898563, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  itemSprite: {fileID: 2876659318468611192, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
   itemType: 2
+  canStack: 1
+  maxStack: 99
   toolType: 0
   harvestGridSize: 1
   cropData: {fileID: 0}

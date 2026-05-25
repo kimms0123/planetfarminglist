@@ -27,6 +27,10 @@ public class ItemData : ScriptableObject
     public Sprite itemSprite;
     public ItemType itemType;
 
+    [Header("스택 설정")]
+    public bool canStack = true;  // 중첩 가능 여부
+    public int maxStack = 99;     // 최대 중첩 수량
+
     [Header("도구 설정")]
     public ToolType toolType;
     public int harvestGridSize = 1; // 수확기: 초반 1 → 업그레이드로 확장

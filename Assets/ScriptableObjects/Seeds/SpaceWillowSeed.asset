@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: SpaceWillowSeed
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uBC84\uB4DC\uB098\uBB34 \uC528\uC557"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: -8015666862296677002, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
   itemType: 1
+  canStack: 1
+  maxStack: 99
   toolType: 0
   harvestGridSize: 1
   cropData: {fileID: 11400000, guid: 703347e665d8f7844812e68c80011490, type: 2}

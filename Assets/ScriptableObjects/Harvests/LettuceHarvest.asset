@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: LettuceHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC0C1\uCD94"
-  itemSprite: {fileID: 2303892717736303439, guid: d6de1caa01d86eb4fa83b1f385fdd5e7, type: 3}
+  itemSprite: {fileID: 1982936134088355638, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
   itemType: 2
+  canStack: 1
+  maxStack: 99
   toolType: 0
   harvestGridSize: 1
   cropData: {fileID: 0}
