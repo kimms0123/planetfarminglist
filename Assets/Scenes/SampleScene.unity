@@ -48246,11 +48246,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   slotCount: 10
   startingItems:
-  - {fileID: 11400000, guid: 4d683d313a71b964ba0c934807317801, type: 2}
-  - {fileID: 11400000, guid: bf05d3a7908587d4099d35cb2cb8372b, type: 2}
-  - {fileID: 11400000, guid: 24b4376d720a6ca4796cb599403d6eee, type: 2}
-  - {fileID: 11400000, guid: cae53201c2fd47a498e65d41c3d2c19d, type: 2}
-  - {fileID: 11400000, guid: c9843a4145074a54a9b67414dbbfb352, type: 2}
+  - item: {fileID: 11400000, guid: 4d683d313a71b964ba0c934807317801, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: bf05d3a7908587d4099d35cb2cb8372b, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 24b4376d720a6ca4796cb599403d6eee, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: c9843a4145074a54a9b67414dbbfb352, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: 7e243c3f4422a984096c0b3b30e36f06, type: 2}
+    quantity: 4
 --- !u!4 &1548063436
 Transform:
   m_ObjectHideFlags: 0

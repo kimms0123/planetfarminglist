@@ -17,6 +17,13 @@ public class InventorySlot
     }
 }
 
+[System.Serializable]
+public class StartingItem
+{
+    public ItemData item;
+    public int quantity = 1;
+}
+
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
@@ -25,7 +32,7 @@ public class InventoryManager : MonoBehaviour
     public int slotCount = 10;
 
     [Header("시작 아이템")]
-    public List<ItemData> startingItems = new List<ItemData>();
+    public List<StartingItem> startingItems = new List<StartingItem>();
 
     private List<InventorySlot> slots = new List<InventorySlot>();
 
@@ -45,8 +52,8 @@ public class InventoryManager : MonoBehaviour
             slots.Add(new InventorySlot());
 
         // 시작 아이템 추가
-        foreach (var item in startingItems)
-            AddItem(item, 1);
+        foreach (var startingItem in startingItems)
+            AddItem(startingItem.item, startingItem.quantity);
     }
 
     // ─────────────────────────────────────────
@@ -68,16 +75,13 @@ public class InventoryManager : MonoBehaviour
         return AddItemAndReturnLeftover(item, amount) == 0;
     }
 
-    /// <summary>
-    /// 아이템 추가 후 못 넣은 수량 반환 (0이면 전부 들어감)
-    /// </summary>
     public int AddItemAndReturnLeftover(ItemData item, int amount)
     {
         if (item == null || amount <= 0) return 0;
 
         int remaining = amount;
 
-        // 1. 같은 아이템 슬롯에 먼저 채우기 (스택 가능한 경우)
+        // 1. 같은 아이템 슬롯에 먼저 채우기
         if (item.canStack)
         {
             foreach (var slot in slots)
@@ -162,7 +166,6 @@ public class InventoryManager : MonoBehaviour
         var slotA = slots[indexA];
         var slotB = slots[indexB];
 
-        // 같은 아이템이고 스택 가능하면 합치기
         if (!slotA.IsEmpty() && !slotB.IsEmpty()
             && slotA.itemData == slotB.itemData
             && slotA.itemData.canStack)
@@ -175,7 +178,6 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-            // 그냥 교체
             var tempData = slotA.itemData;
             var tempQty = slotA.quantity;
             slotA.itemData = slotB.itemData;
