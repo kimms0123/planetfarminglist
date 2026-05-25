@@ -75,4 +75,23 @@ public class CropData : ScriptableObject
     {
         return Mathf.RoundToInt(baseHarvestAmount * harvestMultiplier[(int)quality]);
     }
+    [Header("등급별 수확 아이템")]
+    public ItemData bestHarvestItem;
+    public ItemData normalHarvestItem;
+    public ItemData trashHarvestItem;
+    public int baseYield = 1;
+
+    // 리듬게임 결과에 맞는 아이템 반환
+    public ItemData GetHarvestItemByResult(HarvestRhythmResult result)
+    {
+        switch (result)
+        {
+            case HarvestRhythmResult.Best:
+                return bestHarvestItem ?? normalHarvestItem;
+            case HarvestRhythmResult.Trash:
+                return trashHarvestItem ?? normalHarvestItem;
+            default:
+                return normalHarvestItem;
+        }
+    }
 }

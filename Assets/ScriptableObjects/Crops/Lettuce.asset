@@ -23,3 +23,7 @@ MonoBehaviour:
   baseHarvestAmount: 8
   cropCoefficient: 1
   baseSellPrice: 50
+  bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  normalHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  trashHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  baseYield: 1

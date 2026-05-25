@@ -83,20 +83,29 @@ public class FarmTile : MonoBehaviour
     }
 
     // 하루 지나기
-    public void OnDayPass()
+    public void OnDayPass(Vector3Int cellPos)
     {
         if (state == TileState.SeedWatered)
         {
             currentGrowthDay++;
+
             if (cropData != null && currentGrowthDay >= cropData.growthDays)
+            {
                 state = TileState.Grown;
+            }
             else
-                state = TileState.Seeded; // 물 마름
+            {
+                state = TileState.Seeded;
+
+                // ★ 해충 이벤트 발생 시도
+                PestGrowthEventManager.Instance?.TryRollPestEvent(
+                    cellPos, currentGrowthDay, cropData.growthDays);
+            }
             UpdateSprite();
         }
         else if (state == TileState.Watered)
         {
-            state = TileState.Tilled; // 물 마름
+            state = TileState.Tilled;
         }
     }
 
@@ -123,27 +132,58 @@ public class FarmTile : MonoBehaviour
         UpdateSprite();
         return true;
     }
-    public bool HarvestWithQuality(CropQuality quality)
+    public bool HarvestWithQuality(CropQuality quality, Vector3Int cellPos)
     {
         if (state != TileState.Grown) return false;
 
-        if (cropData?.harvestItem != null)
+        if (cropData != null)
         {
-            int amount = cropData.GetHarvestAmount(quality);
-            Vector3 pos = transform.position;
+            // 1. 리듬게임 결과를 HarvestRhythmResult로 변환
+            HarvestRhythmResult rhythmResult =
+                quality == CropQuality.Best ? HarvestRhythmResult.Best :
+                quality == CropQuality.Normal ? HarvestRhythmResult.Normal :
+                                                HarvestRhythmResult.Trash;
 
-            // ★ 인벤 초과분은 월드에 드롭
-            int leftover = InventoryManager.Instance.AddItemAndReturnLeftover(cropData.harvestItem, amount);
-            if (leftover > 0)
-                ItemDropManager.Instance?.DropItemFromHarvest(cropData.harvestItem, leftover, pos);
+            // 2. 해충 이벤트 결과 반영
+            HarvestRhythmResult finalResult = rhythmResult;
+            int finalYield = cropData.baseYield > 0 ? cropData.baseYield : 1;
 
-            Debug.Log($"{cropData.cropName} 수확! 등급:{quality} x{amount - leftover} 인벤, x{leftover} 드롭");
+            if (PestGrowthEventManager.Instance != null)
+            {
+                finalResult = PestGrowthEventManager.Instance
+                    .ApplyPestQualityBonus(cellPos, rhythmResult);
+
+                int penalty = PestGrowthEventManager.Instance.GetYieldPenalty(cellPos);
+                finalYield = Mathf.Max(1, finalYield - penalty);
+
+                if (penalty > 0)
+                    Debug.Log($"수확량 패널티 적용! -{penalty}");
+            }
+
+            // 3. 등급별 아이템 선택
+            ItemData rewardItem = cropData.GetHarvestItemByResult(finalResult);
+
+            // 4. 인벤토리에 추가
+            if (rewardItem != null)
+            {
+                int leftover = InventoryManager.Instance
+                    .AddItemAndReturnLeftover(rewardItem, finalYield);
+
+                if (leftover > 0)
+                    ItemDropManager.Instance?.DropItemFromHarvest(
+                        rewardItem, leftover, transform.position);
+
+                Debug.Log($"{cropData.cropName} 수확! 등급:{finalResult} x{finalYield}");
+            }
+
+            // 5. 해충 데이터 삭제
+            PestGrowthEventManager.Instance?.ClearEventData(cellPos);
         }
 
         cropData = null;
         currentGrowthDay = 0;
         state = TileState.Tilled;
-        spriteRenderer.sprite = null;
+        if (spriteRenderer != null) spriteRenderer.sprite = null;
         UpdateSprite();
         return true;
     }

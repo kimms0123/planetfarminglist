@@ -30,13 +30,11 @@ public class FarmTileManager : MonoBehaviour
     {
         foreach (FarmTile tile in activeTiles)
         {
-            if (tile != null)
-                tile.OnDayPass();
+            if (tile == null) continue;
+            Vector3Int cellPos = TileManager.Instance.WorldToCell(tile.transform.position);
+            tile.OnDayPass(cellPos); // ★ cellPos 전달
         }
-
-        // TileManager 타일 갱신
         RefreshAllTiles();
-
         Debug.Log($"하루 지남! 활성 타일: {activeTiles.Count}개");
     }
 

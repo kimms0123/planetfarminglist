@@ -8,6 +8,14 @@ using System;
 
 public enum HarvestRhythmResult { Best, Normal, Trash }
 
+public enum PestEventResult
+{
+    None,
+    Success,
+    Neutral,
+    Fail
+}
+
 public class RhythmGameManager : MonoBehaviour
 {
     public static RhythmGameManager Instance;
@@ -215,7 +223,7 @@ public class RhythmGameManager : MonoBehaviour
 
         if (currentFarmTile != null)
         {
-            currentFarmTile.HarvestWithQuality(quality);
+            currentFarmTile.HarvestWithQuality(quality, currentCellPos);
             TileManager.Instance.RefreshTile(currentCellPos, currentFarmTile.state);
         }
 
