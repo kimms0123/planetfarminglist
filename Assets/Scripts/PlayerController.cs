@@ -1,9 +1,9 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("¿Ãµø º≥¡§")]
+    [Header("Ïù¥Îèô ÏÑ§Ï†ï")]
     public float moveSpeed = 5f;
 
     private Rigidbody2D rb;
@@ -71,7 +71,12 @@ public class PlayerController : MonoBehaviour
 
     void OnToggleInventory()
     {
-        Debug.Log("OnToggleInventory »£√‚µ !");
+        Debug.Log("OnToggleInventory Ìò∏Ï∂úÎê®!");
         InventoryWindowUI.Instance?.ToggleInventory();
+    }
+
+    void OnInteract()
+    {
+        Debug.Log("OnInteract Ìò∏Ï∂úÎê®!");
     }
 }

@@ -1,48 +1,51 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 
 public enum ItemType
 {
-    Tool,    // µµ±¸
-    Seed,    // ¾¾¾Ñ
-    Crop,    // ÀÛ¹° (¼öÈ®¹°)
-    Mineral, // ±¤¹°
+    Tool,    // ë„êµ¬
+    Seed,    // ì”¨ì•—
+    Crop,    // ì‘ë¬¼ (ìˆ˜í™•ë¬¼)
+    Mineral, // ê´‘ë¬¼
     None
 }
 
 public enum ToolType
 {
     None,
-    Hoe,          // ±ªÀÌ (¶¥ ÆÄ±â)
-    WateringCan,  // ¹°»Ñ¸®°³
-    Harvester,    // ÀÛ¹° ¼öÈ®±â (ÈíÀÔ±â)
-    Pickaxe       // °î±ªÀÌ (°æÀÛÁö ÃÊ±âÈ­)
+    Hoe,          // ê´­ì´ (ë•… íŒŒê¸°)
+    WateringCan,  // ë¬¼ë¿Œë¦¬ê°œ
+    Harvester,    // ì‘ë¬¼ ìˆ˜í™•ê¸° (í¡ì…ê¸°)
+    Pickaxe       // ê³¡ê´­ì´ (ê²½ì‘ì§€ ì´ˆê¸°í™”)
 }
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "Farm/ItemData")]
 public class ItemData : ScriptableObject
 {
-    [Header("±âº» Á¤º¸")]
+    [Header("ê¸°ë³¸ ì •ë³´")]
     public string itemName;
     public Sprite itemSprite;
     public ItemType itemType;
 
-    [Header("½ºÅÃ ¼³Á¤")]
-    public bool canStack = true;  // ÁßÃ¸ °¡´É ¿©ºÎ
-    public int maxStack = 99;     // ÃÖ´ë ÁßÃ¸ ¼ö·®
+    [Header("ìŠ¤íƒ ì„¤ì •")]
+    public bool canStack = true;  // ì¤‘ì²© ê°€ëŠ¥ ì—¬ë¶€
+    public int maxStack = 99;     // ìµœëŒ€ ì¤‘ì²© ìˆ˜ëŸ‰
 
-    [Header("µµ±¸ ¼³Á¤")]
+    [Header("ë„êµ¬ ì„¤ì •")]
     public ToolType toolType;
-    public int harvestGridSize = 1; // ¼öÈ®±â: ÃÊ¹İ 1 ¡æ ¾÷±×·¹ÀÌµå·Î È®Àå
+    public int harvestGridSize = 1; // ìˆ˜í™•ê¸°: ì´ˆë°˜ 1 â†’ ì—…ê·¸ë ˆì´ë“œë¡œ í™•ì¥
 
-    [Header("¾¾¾Ñ ¼³Á¤")]
+    [Header("ì”¨ì•— ì„¤ì •")]
     public CropData cropData;
 
-    [Header("ÀÛ¹°/±¤¹° ¼³Á¤")]
-    public int sellPrice;
+    [Header("ì‘ë¬¼/ê´‘ë¬¼ ì„¤ì •")]
     public CropQuality quality;
 
-    [Header("½ºÅÂ¹Ì³Ê")]
-    public int staminaCost = 10; // µµ±¸ »ç¿ë ½Ã ½ºÅÂ¹Ì³Ê ¼Ò¸ğ
-    
+    [Header("ìŠ¤íƒœë¯¸ë„ˆ")]
+    public int staminaCost = 10; // ë„êµ¬ ì‚¬ìš© ì‹œ ìŠ¤íƒœë¯¸ë„ˆ ì†Œëª¨
+
+    [Header("íŒë§¤ ì„¤ì •")]
+    public bool canSell = false;
+    public int sellPrice = 0;
+
 }

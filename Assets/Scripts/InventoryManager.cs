@@ -223,6 +223,38 @@ public class InventoryManager : MonoBehaviour
             if (slot.itemData == item) count += slot.quantity;
         return count;
     }
+    // ─────────────────────────────────────────
+    // 판매 관련
+    // ─────────────────────────────────────────
+    public bool CanSellSlot(int index)
+    {
+        var slot = GetSlot(index);
+        if (slot == null || slot.IsEmpty()) return false;
+        if (!slot.itemData.canSell) return false;
+        if (slot.itemData.sellPrice <= 0) return false;
+        return true;
+    }
+
+    public int SellOneFromSlot(int index)
+    {
+        if (!CanSellSlot(index)) return 0;
+        var slot = GetSlot(index);
+        int price = slot.itemData.sellPrice;
+        slot.quantity--;
+        if (slot.quantity <= 0) slot.Clear();
+        OnInventoryChanged?.Invoke();
+        return price;
+    }
+
+    public int SellAllFromSlot(int index)
+    {
+        if (!CanSellSlot(index)) return 0;
+        var slot = GetSlot(index);
+        int totalPrice = slot.itemData.sellPrice * slot.quantity;
+        slot.Clear();
+        OnInventoryChanged?.Invoke();
+        return totalPrice;
+    }
 
     public void SelectSlot(int index)
     {
