@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: SkyShootSeed
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uD558\uB298\uC21C\uC528\uC557"
+  itemSprite: {fileID: -5025142158789131988, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  itemType: 1
+  canStack: 1
+  maxStack: 99
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 11400000, guid: 1f7b70a930c5ba74695e7faf9e94abb3, type: 2}
+  quality: 0
+  staminaCost: 10
+  canSell: 1
+  sellPrice: 0
