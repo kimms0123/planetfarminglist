@@ -20,6 +20,7 @@ MonoBehaviour:
   toolType: 0
   harvestGridSize: 1
   cropData: {fileID: 0}
-  sellPrice: 0
   quality: 0
   staminaCost: 10
+  canSell: 1
+  sellPrice: 200
