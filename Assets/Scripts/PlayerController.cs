@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector2 lastMoveDir = Vector2.down;
 
-    // ★ 리듬게임 중 이동 막기
     public static bool IsInputLocked = false;
 
     void Awake()
@@ -24,7 +23,6 @@ public class PlayerController : MonoBehaviour
 
     void OnMove(InputValue value)
     {
-        // ★ 입력 잠금 중이면 이동 입력 무시
         if (IsInputLocked)
         {
             moveInput = Vector2.zero;
@@ -32,14 +30,9 @@ public class PlayerController : MonoBehaviour
         }
         moveInput = value.Get<Vector2>();
     }
-    void OnOpenInventory()
-    {
-        InventoryWindowUI.Instance?.ToggleInventory();
-    }
 
     void FixedUpdate()
     {
-        // ★ 잠금 중이면 강제로 속도 0
         if (IsInputLocked)
         {
             rb.linearVelocity = Vector2.zero;
@@ -74,5 +67,11 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("MoveY", lastMoveDir.y);
             animator.SetBool("IsMoving", false);
         }
+    }
+
+    void OnToggleInventory()
+    {
+        Debug.Log("OnToggleInventory 호출됨!");
+        InventoryWindowUI.Instance?.ToggleInventory();
     }
 }

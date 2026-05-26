@@ -15,7 +15,12 @@ public class FarmingSystem : MonoBehaviour
 
     void Update()
     {
-        if (PlayerController.IsInputLocked) return; // ★ 리듬게임/인벤토리 중 입력 차단
+        // 인벤토리 열려있으면 농사 입력 차단
+        if (InventoryWindowUI.Instance != null && InventoryWindowUI.Instance.IsOpen) return;
+
+        if (PlayerController.IsInputLocked) return;
+
+        if (PlayerController.IsInputLocked) return; // 리듬게임/인벤토리 중 입력 차단
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -24,7 +29,7 @@ public class FarmingSystem : MonoBehaviour
             worldPos.z = 0;
 
             Vector3Int cellPos = TileManager.Instance.WorldToCell(worldPos);
-            ItemData selectedItem = InventoryManager.Instance.SelectedItem; // ★
+            ItemData selectedItem = InventoryManager.Instance.SelectedItem;
             if (selectedItem == null) return;
 
             FarmTile farmTile = GetFarmTileAt(worldPos);
@@ -158,14 +163,14 @@ public class FarmingSystem : MonoBehaviour
             Debug.Log("이미 작물이 있어요!");
             return;
         }
-        if (InventoryManager.Instance.GetItemCount(seedItem) <= 0) // ★
+        if (InventoryManager.Instance.GetItemCount(seedItem) <= 0)
         {
             Debug.Log($"{seedItem.itemName}이 부족해요!");
             return;
         }
         if (farmTile.Plant(seedItem.cropData))
         {
-            InventoryManager.Instance.RemoveItem(seedItem, 1); // ★
+            InventoryManager.Instance.RemoveItem(seedItem, 1);
             TileManager.Instance.RefreshTile(cellPos, farmTile.state);
             Debug.Log($"{seedItem.cropData.cropName} 씨앗을 심었어요!");
         }

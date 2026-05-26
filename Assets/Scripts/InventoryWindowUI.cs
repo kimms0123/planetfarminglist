@@ -17,7 +17,7 @@ public class InventoryWindowUI : MonoBehaviour
 
     private bool isOpen = false;
     public bool IsOpen => isOpen;
-    private int pendingSlotIndex = -1; // 우클릭 이동 대기 슬롯
+    private int pendingSlotIndex = -1;
 
     void Awake()
     {
@@ -40,17 +40,15 @@ public class InventoryWindowUI : MonoBehaviour
     {
         for (int i = 0; i < slotUIs.Length; i++)
             slotUIs[i].Setup(i, true);
-
         inventoryWindowPanel.SetActive(false);
         RefreshUI();
     }
 
     void Update()
     {
-        // ★ Input System 방식으로 변경
-        if (Keyboard.current.tabKey.wasPressedThisFrame)
-            ToggleInventory();
+        if (Keyboard.current == null) return;
 
+        // ESC 닫기
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (pendingSlotIndex >= 0)
@@ -62,6 +60,7 @@ public class InventoryWindowUI : MonoBehaviour
 
     public void ToggleInventory()
     {
+        Debug.Log($"ToggleInventory 호출! isOpen:{isOpen}");
         if (isOpen) CloseInventory();
         else OpenInventory();
     }
@@ -70,8 +69,6 @@ public class InventoryWindowUI : MonoBehaviour
     {
         isOpen = true;
         inventoryWindowPanel.SetActive(true);
-        // ★ 인벤토리 열어도 이동은 가능하게 (잠금 제거)
-        // PlayerController.IsInputLocked = true;
         RefreshUI();
     }
 
@@ -79,24 +76,18 @@ public class InventoryWindowUI : MonoBehaviour
     {
         isOpen = false;
         inventoryWindowPanel.SetActive(false);
-        // PlayerController.IsInputLocked = false;
         ClearPending();
     }
 
-    // ─────────────────────────────────────────
-    // 우클릭 슬롯 이동
-    // ─────────────────────────────────────────
     public void OnSlotRightClick(int index)
     {
         if (pendingSlotIndex < 0)
         {
-            // 첫 번째 클릭 — 선택
             pendingSlotIndex = index;
             Debug.Log($"슬롯 {index} 선택됨");
         }
         else
         {
-            // 두 번째 클릭 — 이동/교체
             if (pendingSlotIndex != index)
                 InventoryManager.Instance?.SwapSlots(pendingSlotIndex, index);
             ClearPending();
@@ -120,13 +111,10 @@ public class InventoryWindowUI : MonoBehaviour
             bool isPending = (i == pendingSlotIndex);
             slotUIs[i].Refresh(slot, isSelected, isPending);
 
-            // 설명 텍스트
             if (isPending && slot != null && !slot.IsEmpty() && itemDescriptionText != null)
                 itemDescriptionText.text = slot.itemData.itemName;
         }
-
         if (pendingSlotIndex < 0 && itemDescriptionText != null)
             itemDescriptionText.text = "";
     }
-
 }

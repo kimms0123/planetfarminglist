@@ -15,8 +15,7 @@ public class HotbarUI : MonoBehaviour
 
     void OnEnable()
     {
-        if (InventoryManager.Instance != null)
-            InventoryManager.Instance.OnInventoryChanged += RefreshUI;
+        // 비워두기
     }
 
     void OnDisable()
@@ -27,8 +26,13 @@ public class HotbarUI : MonoBehaviour
 
     void Start()
     {
+        // ★ Start에서 이벤트 구독
+        if (InventoryManager.Instance != null)
+            InventoryManager.Instance.OnInventoryChanged += RefreshUI;
+
         for (int i = 0; i < slotUIs.Length; i++)
             slotUIs[i].Setup(i, false);
+
         RefreshUI();
     }
 

@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
-public class InventorySlotUI : MonoBehaviour
+public class InventorySlotUI : MonoBehaviour,
+    IPointerClickHandler,
+    IBeginDragHandler,
+    IDragHandler,
+    IEndDragHandler,
+    IDropHandler
 {
     [Header("UI 요소")]
     public Image itemIcon;
@@ -16,11 +22,16 @@ public class InventorySlotUI : MonoBehaviour
     private Image background;
     private int slotIndex;
 
+    // 드래그용 static 변수
+    private static GameObject dragIcon;
+    private static InventorySlotUI dragSource;
+    private Canvas canvas;
+
     void Awake()
     {
         background = GetComponent<Image>();
+        canvas = GetComponentInParent<Canvas>();
 
-        // ★ 자동 연결 — Inspector에서 연결 안 해도 자동으로 찾기
         if (itemIcon == null)
         {
             Transform iconTransform = transform.Find("ItemIcon");
@@ -43,7 +54,6 @@ public class InventorySlotUI : MonoBehaviour
 
     public void Refresh(InventorySlot slot, bool isSelected, bool isPending)
     {
-        // 배경 색상
         if (background != null)
         {
             if (isPending) background.color = pendingMoveColor;
@@ -51,7 +61,6 @@ public class InventorySlotUI : MonoBehaviour
             else background.color = normalColor;
         }
 
-        // 아이콘 — null 체크 추가
         if (itemIcon == null) return;
 
         if (slot != null && !slot.IsEmpty() && slot.itemData?.itemSprite != null)
@@ -70,8 +79,91 @@ public class InventorySlotUI : MonoBehaviour
         }
     }
 
-    public void OnRightClick()
+    // ─────────────────────────────────────────
+    // 드래그 시작
+    // ─────────────────────────────────────────
+    public void OnBeginDrag(PointerEventData eventData)
     {
-        InventoryWindowUI.Instance?.OnSlotRightClick(slotIndex);
+        var slot = InventoryManager.Instance?.GetSlot(slotIndex);
+        if (slot == null || slot.IsEmpty()) return;
+
+        dragSource = this;
+
+        // 드래그 아이콘 생성
+        dragIcon = new GameObject("DragIcon");
+        dragIcon.transform.SetParent(canvas.transform, false);
+        dragIcon.transform.SetAsLastSibling();
+
+        Image icon = dragIcon.AddComponent<Image>();
+        icon.sprite = slot.itemData?.itemSprite;
+        icon.raycastTarget = false; // ★ 레이캐스트 막으면 안 됨
+
+        RectTransform rt = dragIcon.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(60, 60);
+
+        // 원래 아이콘 반투명
+        if (itemIcon != null)
+            itemIcon.color = new Color(1, 1, 1, 0.3f);
+
+        Debug.Log($"드래그 시작! 슬롯:{slotIndex}");
+    }
+
+    // ─────────────────────────────────────────
+    // 드래그 중 — 아이콘 마우스 따라다니기
+    // ─────────────────────────────────────────
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (dragIcon == null) return;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvas.transform as RectTransform,
+            eventData.position,
+            canvas.worldCamera,
+            out Vector2 localPoint);
+
+        dragIcon.GetComponent<RectTransform>().localPosition = localPoint;
+    }
+
+    // ─────────────────────────────────────────
+    // 드래그 끝 — 빈 곳에 드롭하면 취소
+    // ─────────────────────────────────────────
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (dragIcon != null)
+        {
+            Destroy(dragIcon);
+            dragIcon = null;
+        }
+
+        // 원래 아이콘 복구
+        if (itemIcon != null)
+        {
+            var slot = InventoryManager.Instance?.GetSlot(slotIndex);
+            itemIcon.color = (slot != null && !slot.IsEmpty()) ? Color.white : Color.clear;
+        }
+
+        dragSource = null;
+        Debug.Log("드래그 종료");
+    }
+
+    // ─────────────────────────────────────────
+    // 드롭 받기 — 슬롯 교체
+    // ─────────────────────────────────────────
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (dragSource == null) return;
+        if (dragSource == this) return;
+
+        InventoryManager.Instance?.SwapSlots(dragSource.slotIndex, slotIndex);
+        Debug.Log($"드롭! {dragSource.slotIndex} → {slotIndex}");
+    }
+
+    // ─────────────────────────────────────────
+    // 우클릭 — 기존 유지
+    // ─────────────────────────────────────────
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+            InventoryWindowUI.Instance?.OnSlotRightClick(slotIndex);
     }
 }

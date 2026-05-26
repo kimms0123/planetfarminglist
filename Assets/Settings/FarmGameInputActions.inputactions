@@ -16,9 +16,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "OpenInventory",
+                    "name": "ToggleInventory",
                     "type": "Button",
-                    "id": "0fb291c6-71e4-40aa-a213-5502edd29cdc",
+                    "id": "2a27d6bd-234d-484e-afe1-7fba27ce4816",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -83,12 +83,12 @@
                 },
                 {
                     "name": "",
-                    "id": "af074624-c56f-4dea-be75-aa1877d68253",
-                    "path": "<Keyboard>/tab",
+                    "id": "c8401ab3-bf29-4a4b-a8c6-5fc75e440a6e",
+                    "path": "<Keyboard>/i",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "OpenInventory",
+                    "action": "ToggleInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

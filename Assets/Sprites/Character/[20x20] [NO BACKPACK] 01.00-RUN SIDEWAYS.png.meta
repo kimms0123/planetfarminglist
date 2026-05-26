@@ -1,0 +1,403 @@
+fileFormatVersion: 2
+guid: ea45e4c0d056cab4bb6ecd56d070fdfe
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4227388542863539626
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_0'
+  - first:
+      213: 4791627343190617278
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_1'
+  - first:
+      213: 3204707974198604535
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_2'
+  - first:
+      213: -4258736800016859816
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_3'
+  - first:
+      213: -3803814834598813810
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_4'
+  - first:
+      213: -2454324690266055786
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_5'
+  - first:
+      213: 1947816172996315044
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_6'
+  - first:
+      213: 1205015647606824165
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_7'
+  - first:
+      213: 5286545616469166515
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_8'
+  - first:
+      213: -5867278498733684125
+    second: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_9'
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_0'
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 0
+        width: 12
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aadffe86b73baaa30800000000000000
+      internalID: 4227388542863539626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_1'
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 0
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebcece67ea74f7240800000000000000
+      internalID: 4791627343190617278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_2'
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 0
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f238fa5ce8697c20800000000000000
+      internalID: 3204707974198604535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_3'
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85d7c13b17de5e4c0800000000000000
+      internalID: -4258736800016859816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_4'
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 0
+        width: 14
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8f5068bf82263bc0800000000000000
+      internalID: -3803814834598813810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_5'
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 0
+        width: 15
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69b9831a2bc70fdd0800000000000000
+      internalID: -2454324690266055786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_6'
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 0
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a7c4374d78080b10800000000000000
+      internalID: 1947816172996315044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_7'
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 0
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ec5468d85319b010800000000000000
+      internalID: 1205015647606824165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_8'
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 0
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b90b869a359d5940800000000000000
+      internalID: 5286545616469166515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_9'
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 0
+        width: 13
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36a01b4aa4d339ea0800000000000000
+      internalID: -5867278498733684125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_0': 4227388542863539626
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_1': 4791627343190617278
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_2': 3204707974198604535
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_3': -4258736800016859816
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_4': -3803814834598813810
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_5': -2454324690266055786
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_6': 1947816172996315044
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_7': 1205015647606824165
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_8': 5286545616469166515
+      '[20x20] [NO BACKPACK] 01.00-RUN SIDEWAYS_9': -5867278498733684125
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
