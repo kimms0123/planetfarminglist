@@ -63,13 +63,13 @@ public class FCMSalesAnalyzer : MonoBehaviour
     /// <param name="holdTimeSeconds">아이템 획득 후 경과 시간 (초), 모르면 0</param>
     public void RecordTrade(int itemPrice, int quantitySold, int totalQuantityInSlot, float holdTimeSeconds = 0f)
     {
-        // 3차원 행동 벡터 계산 (0~1 정규화)
+        // 3차원 행동 벡터 계산 (0~1 정규화) >> 평균 가격
         float avgPrice = Mathf.Clamp01((float)itemPrice / maxItemPrice);
 
-        // sell_speed: 보유 시간이 짧을수록 1에 가까움 (즉시 판매 = 1)
+        // sell_speed: 보유 시간이 짧을수록 1에 가까움 (즉시 판매 = 1) >> 즉시 판매 비율
         float sellSpeed = Mathf.Clamp01(1f - (holdTimeSeconds / maxHoldTime));
 
-        // bulk_ratio: 슬롯 전체 대비 판매 비율
+        // bulk_ratio: 슬롯 전체 대비 판매 비율 >> 대량 판매 비율
         float bulkRatio = totalQuantityInSlot > 0
             ? Mathf.Clamp01((float)quantitySold / totalQuantityInSlot)
             : 0f;
