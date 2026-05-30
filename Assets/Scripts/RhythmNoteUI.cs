@@ -5,8 +5,18 @@ using UnityEngine.UI;
 public class RhythmNoteUI : MonoBehaviour
 {
     [Header("UI")]
-    public TextMeshProUGUI arrowText;
+    public TextMeshProUGUI arrowText;  // 호환성 위해 유지 (안 써도 됨)
     public Image background;
+
+    [Header("★ 화살표 Image (텍스트 대신)")]
+    [Tooltip("화살표를 표시할 Image (TextMeshPro 대신)")]
+    public Image arrowImage;
+
+    [Header("화살표 Sprite")]
+    public Sprite leftArrow;   // ← (A)
+    public Sprite downArrow;   // ↓ (S)
+    public Sprite upArrow;     // ↑ (W)
+    public Sprite rightArrow;  // → (D)
 
     [Header("색상")]
     public Color upcomingColor = new Color(0.8f, 0.8f, 0.8f, 1f);
@@ -17,7 +27,20 @@ public class RhythmNoteUI : MonoBehaviour
 
     public void Setup(NoteDirection dir)
     {
-        if (arrowText != null)
+        // 화살표 Sprite 방식 (우선)
+        if (arrowImage != null)
+        {
+            switch (dir)
+            {
+                case NoteDirection.Left: arrowImage.sprite = leftArrow; break;
+                case NoteDirection.Down: arrowImage.sprite = downArrow; break;
+                case NoteDirection.Up: arrowImage.sprite = upArrow; break;
+                case NoteDirection.Right: arrowImage.sprite = rightArrow; break;
+            }
+        }
+
+        // 텍스트 방식 (백업, arrowImage 없을 때)
+        if (arrowText != null && arrowImage == null)
         {
             switch (dir)
             {
@@ -27,12 +50,13 @@ public class RhythmNoteUI : MonoBehaviour
                 case NoteDirection.Right: arrowText.text = "→"; break;
             }
         }
+
         SetState("upcoming");
     }
 
     public void SetState(string state)
     {
-        Debug.Log($"SetState 호출: {state}"); // ← 추가
+        Debug.Log($"SetState 호출: {state}");
         Color col = upcomingColor;
         Vector3 scale = Vector3.one;
 

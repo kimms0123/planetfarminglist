@@ -25,6 +25,17 @@ public class PestTimingMiniGame : MonoBehaviour
     public TextMeshProUGUI instructionText;
     public TextMeshProUGUI resultText;
 
+    [Header("해충 애니메이션")]
+    [Tooltip("미니게임 패널 안의 해충들")]
+    public BugAnimator[] bugAnimators;
+
+    [Tooltip("성공/보통 시 작물 표시할 sprite (선택)")]
+    public Image cropDisplayImage;
+
+    [Header("★ 스프레이 애니메이션")]
+    [Tooltip("살충제 스프레이")]
+    public SprayAnimator sprayAnimator;
+
     public bool IsPlaying { get; private set; } = false;
 
     private float elapsedTime = 0f;
@@ -38,8 +49,8 @@ public class PestTimingMiniGame : MonoBehaviour
     }
 
     [Header("속도 랜덤 범위")]
-    public float minDuration = 0.8f;  // 가장 빠름
-    public float maxDuration = 2.0f;  // 가장 느림
+    public float minDuration = 0.8f;
+    public float maxDuration = 2.0f;
 
     public void StartMiniGame(Vector3Int cellPos)
     {
@@ -50,17 +61,20 @@ public class PestTimingMiniGame : MonoBehaviour
         inputReceived = false;
         elapsedTime = 0f;
 
-        // ★ 속도 랜덤 설정
         roundDuration = Random.Range(minDuration, maxDuration);
         Debug.Log($"이번 라운드 속도: {roundDuration:F2}초");
 
-        // 플레이어 이동 잠금
         PlayerController.IsInputLocked = true;
 
-        // 타겟 구간 랜덤 설정
         targetCenter = Random.Range(targetCenterMin, targetCenterMax);
 
-        // UI 활성화
+        // 모든 해충 활성화 + 이동 애니메이션 시작
+        ActivateBugs();
+
+        // 스프레이 idle 상태로 (1번 sprite)
+        if (sprayAnimator != null)
+            sprayAnimator.SetIdleSprite();
+
         pestMiniGamePanel.SetActive(true);
         if (resultText != null) resultText.text = "";
 
@@ -71,13 +85,22 @@ public class PestTimingMiniGame : MonoBehaviour
         StartCoroutine(MiniGameLoop());
     }
 
+    void ActivateBugs()
+    {
+        if (bugAnimators == null) return;
+
+        foreach (var bug in bugAnimators)
+        {
+            if (bug == null) continue;
+            bug.gameObject.SetActive(true);
+        }
+    }
+
     void UpdateTargetZoneUI()
     {
         if (targetZone == null || timingBar == null) return;
 
         float barWidth = timingBar.rect.width;
-
-        // 성공 구간 표시
         float zoneWidth = successWindow * 2f * barWidth;
         float zonePosX = (targetCenter - 0.5f) * barWidth;
 
@@ -92,10 +115,8 @@ public class PestTimingMiniGame : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / roundDuration;
 
-            // 마커 이동
             UpdateMarker(t);
 
-            // Space 입력 체크
             if (!inputReceived && Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 inputReceived = true;
@@ -104,11 +125,10 @@ public class PestTimingMiniGame : MonoBehaviour
                 yield break;
             }
 
-            // 시간 초과
             if (elapsedTime >= roundDuration)
             {
                 Debug.Log("시간 초과 → Fail");
-                ProcessResult(-1f); // 시간 초과
+                ProcessResult(-1f);
                 yield break;
             }
 
@@ -130,8 +150,8 @@ public class PestTimingMiniGame : MonoBehaviour
 
         if (markerPos < 0)
         {
-            // 시간 초과
             result = PestEventResult.Fail;
+            if (resultText != null) resultText.text = "시간 초과...";
         }
         else
         {
@@ -140,37 +160,76 @@ public class PestTimingMiniGame : MonoBehaviour
             if (diff <= successWindow)
             {
                 result = PestEventResult.Success;
-                if (resultText != null) resultText.text = "성공!";
+                if (resultText != null)
+                {
+                    resultText.text = "성공! 칙!";
+                    resultText.color = Color.green;
+                }
                 Debug.Log("Success!");
             }
             else if (diff <= neutralWindow)
             {
                 result = PestEventResult.Neutral;
-                if (resultText != null) resultText.text = "보통";
+                if (resultText != null)
+                {
+                    resultText.text = "보통";
+                    resultText.color = Color.yellow;
+                }
                 Debug.Log("Neutral!");
             }
             else
             {
                 result = PestEventResult.Fail;
-                if (resultText != null) resultText.text = "실패...";
+                if (resultText != null)
+                {
+                    resultText.text = "실패...";
+                    resultText.color = Color.red;
+                }
                 Debug.Log("Fail!");
             }
         }
 
-        StartCoroutine(ShowResultAndClose(result));
+        // 결과에 따라 해충 + 스프레이 애니메이션 처리
+        StartCoroutine(PlayResultAnimation(result));
     }
 
-    IEnumerator ShowResultAndClose(PestEventResult result)
+    IEnumerator PlayResultAnimation(PestEventResult result)
     {
+        if (result == PestEventResult.Success || result == PestEventResult.Neutral)
+        {
+            // 성공/보통 → 스프레이 뿌리기 + 해충 죽음
+            if (sprayAnimator != null)
+                sprayAnimator.PlaySprayAnimation();
+
+            KillAllBugs();
+        }
+        // 실패 → 스프레이는 1번 그대로, 해충도 그대로 움직임
+
         yield return new WaitForSeconds(resultDelay);
 
+        ClosePanel(result);
+    }
+
+    void KillAllBugs()
+    {
+        if (bugAnimators == null) return;
+
+        foreach (var bug in bugAnimators)
+        {
+            if (bug == null) continue;
+            bug.PlayDieAnimation();
+        }
+
+        Debug.Log("모든 해충 처치!");
+    }
+
+    void ClosePanel(PestEventResult result)
+    {
         pestMiniGamePanel.SetActive(false);
         IsPlaying = false;
 
-        // 플레이어 이동 잠금 해제
         PlayerController.IsInputLocked = false;
 
-        // 결과 전달
         PestGrowthEventManager.Instance?.OnMiniGameResult(currentCellPos, result);
     }
 }

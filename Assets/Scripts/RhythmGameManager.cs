@@ -10,10 +10,7 @@ public enum HarvestRhythmResult { Best, Normal, Trash }
 
 public enum PestEventResult
 {
-    None,
-    Success,
-    Neutral,
-    Fail
+    None, Success, Neutral, Fail
 }
 
 public class RhythmGameManager : MonoBehaviour
@@ -22,12 +19,19 @@ public class RhythmGameManager : MonoBehaviour
 
     [Header("Inspector 조절값")]
     public int noteCount = 10;
-    public float totalTime = 8f;     // 전체 제한 시간
+    public float totalTime = 8f;
     public float resultDelay = 1.5f;
 
     [Header("등급 기준 (남은 시간 비율)")]
-    public float bestThreshold = 0.5f;    // 50% 이상 남으면 Best
-    public float normalThreshold = 0.2f;  // 20% 이상 남으면 Normal
+    public float bestThreshold = 0.5f;
+    public float normalThreshold = 0.2f;
+
+    [Header("수확 애니메이션 속도")]
+    [Tooltip("각 sprite 프레임 표시 시간 (초)")]
+    public float harvestFrameDuration = 0.08f;
+
+    [Tooltip("결과 시퀀스 프레임 표시 시간 (초) - 조금 더 천천히")]
+    public float resultFrameDuration = 0.15f;
 
     [Header("UI")]
     public GameObject rhythmGamePanel;
@@ -40,16 +44,17 @@ public class RhythmGameManager : MonoBehaviour
     [Header("노트 프리팹")]
     public GameObject notePrefab;
 
-    // 내부 데이터
     private List<NoteDirection> notes = new List<NoteDirection>();
     private List<RhythmNoteUI> noteUIs = new List<RhythmNoteUI>();
     private int currentNoteIndex = 0;
     private float gameTimer = 0f;
     private bool isPlaying = false;
 
-    // 수확 연결
     private FarmTile currentFarmTile;
     private Vector3Int currentCellPos;
+
+    private Coroutine currentHarvestAnimation;
+    private bool gameFinished = false;
 
     void Awake()
     {
@@ -67,13 +72,13 @@ public class RhythmGameManager : MonoBehaviour
     void StartGame()
     {
         isPlaying = true;
+        gameFinished = false;
         gameTimer = 0f;
         currentNoteIndex = 0;
 
         notes.Clear();
         noteUIs.Clear();
 
-        // ★ 플레이어 이동 잠금
         PlayerController.IsInputLocked = true;
 
         for (int i = 0; i < noteCount; i++)
@@ -84,6 +89,8 @@ public class RhythmGameManager : MonoBehaviour
         if (judgmentText != null) judgmentText.text = "";
 
         GenerateNoteUIs();
+
+        SetIdleSprite();
 
         Debug.Log("리듬게임 시작!");
         StartCoroutine(GameLoop());
@@ -106,7 +113,6 @@ public class RhythmGameManager : MonoBehaviour
             noteUIs.Add(noteUI);
         }
 
-        // 첫 번째 노트 강조
         if (noteUIs.Count > 0)
             noteUIs[0].SetState("current");
     }
@@ -117,22 +123,19 @@ public class RhythmGameManager : MonoBehaviour
         {
             gameTimer += Time.deltaTime;
 
-            // 프로그레스 바 갱신 (시간 줄어듦)
             if (progressBarFill != null)
                 progressBarFill.fillAmount = 1f - (gameTimer / totalTime);
 
-            // 시간 초과
             if (gameTimer >= totalTime)
             {
                 Debug.Log("시간 초과!");
-                EndGame(true);
+                HandleTimeout();
                 yield break;
             }
 
-            // 모든 노트 완료
             if (currentNoteIndex >= notes.Count)
             {
-                EndGame(false);
+                // 마지막 노트 처리는 ProcessInput에서 진행됨
                 yield break;
             }
 
@@ -158,22 +161,167 @@ public class RhythmGameManager : MonoBehaviour
 
         if (dir == currentNote)
         {
-            // 정답!
             noteUIs[currentNoteIndex].SetState("perfect");
             ShowJudgment("✅", Color.green);
             currentNoteIndex++;
 
-            // 다음 노트 강조
             if (currentNoteIndex < noteUIs.Count)
                 noteUIs[currentNoteIndex].SetState("current");
+
+            bool isLastNote = (currentNoteIndex >= notes.Count);
+
+            if (isLastNote)
+            {
+                // 마지막 노트 - 게임 일시 정지하고 마지막 애니메이션
+                isPlaying = false;
+                PlayFinalHarvestAnimation();
+            }
+            else
+            {
+                PlayNormalHarvestAnimation();
+            }
 
             Debug.Log($"정답! {currentNoteIndex}/{noteCount}");
         }
         else
         {
-            // 오답
             ShowJudgment("❌", Color.red);
             Debug.Log($"오답! 눌린키:{dir} 정답:{currentNote}");
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // 일반 노트 애니메이션: 수확1→2→3→4→1
+    // ─────────────────────────────────────────────
+    void PlayNormalHarvestAnimation()
+    {
+        if (currentFarmTile == null) return;
+
+        if (currentHarvestAnimation != null)
+            StopCoroutine(currentHarvestAnimation);
+
+        currentHarvestAnimation = StartCoroutine(NormalHarvestCoroutine());
+    }
+
+    IEnumerator NormalHarvestCoroutine()
+    {
+        if (currentFarmTile == null || currentFarmTile.cropData == null) yield break;
+
+        CropData crop = currentFarmTile.cropData;
+
+        // 수확 단계 1 → 2 → 3
+        if (crop.harvestStageSprites != null)
+        {
+            for (int i = 0; i < crop.harvestStageSprites.Length; i++)
+            {
+                currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[i]);
+                yield return new WaitForSeconds(harvestFrameDuration);
+            }
+        }
+
+        // 수확4 (살짝 뽑혔다가)
+        if (crop.harvestFailSprite != null)
+        {
+            currentFarmTile.SetHarvestSprite(crop.harvestFailSprite);
+            yield return new WaitForSeconds(harvestFrameDuration);
+        }
+
+        // 다시 수확1 (원위치)
+        SetIdleSprite();
+
+        currentHarvestAnimation = null;
+    }
+
+    // ─────────────────────────────────────────────
+    // 마지막 노트 애니메이션 - 결과 모션 진행
+    // ─────────────────────────────────────────────
+    void PlayFinalHarvestAnimation()
+    {
+        if (currentFarmTile == null)
+        {
+            FinishGame(JudgeResult());
+            return;
+        }
+
+        if (currentHarvestAnimation != null)
+            StopCoroutine(currentHarvestAnimation);
+
+        HarvestRhythmResult result = JudgeResult();
+        currentHarvestAnimation = StartCoroutine(FinalHarvestCoroutine(result));
+    }
+
+    IEnumerator FinalHarvestCoroutine(HarvestRhythmResult result)
+    {
+        if (currentFarmTile == null || currentFarmTile.cropData == null)
+        {
+            FinishGame(result);
+            yield break;
+        }
+
+        CropData crop = currentFarmTile.cropData;
+
+        // 1. 수확 단계 1 → 2 → 3 빠르게 재생
+        if (crop.harvestStageSprites != null)
+        {
+            for (int i = 0; i < crop.harvestStageSprites.Length; i++)
+            {
+                currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[i]);
+                yield return new WaitForSeconds(harvestFrameDuration);
+            }
+        }
+
+        // 2. 결과에 따라 다르게 처리
+        if (result == HarvestRhythmResult.Trash)
+        {
+            // 실패 - 수확1로 (못 뽑음)
+            SetIdleSprite();
+        }
+        else
+        {
+            // ★ 성공 - 결과 시퀀스 재생!
+            // 결과1 → 결과2 → 결과3 점점 뽁! 하고 뽑힘
+            if (crop.harvestResultSprites != null && crop.harvestResultSprites.Length > 0)
+            {
+                int endIndex = crop.GetResultEndIndex(result);
+
+                // 결과 sprite를 0번부터 endIndex까지 차례로 재생
+                for (int i = 0; i <= endIndex && i < crop.harvestResultSprites.Length; i++)
+                {
+                    currentFarmTile.SetHarvestSprite(crop.harvestResultSprites[i]);
+                    yield return new WaitForSeconds(resultFrameDuration);
+                }
+                // 마지막 sprite는 그대로 유지
+            }
+        }
+
+        currentHarvestAnimation = null;
+
+        // 결과 sprite를 보여준 채로 게임 종료 처리
+        FinishGame(result);
+    }
+
+    // ─────────────────────────────────────────────
+    // 결과 판정
+    // ─────────────────────────────────────────────
+    HarvestRhythmResult JudgeResult()
+    {
+        float remainRatio = 1f - (gameTimer / totalTime);
+        if (remainRatio >= bestThreshold)
+            return HarvestRhythmResult.Best;
+        else if (remainRatio >= normalThreshold)
+            return HarvestRhythmResult.Normal;
+        else
+            return HarvestRhythmResult.Trash;
+    }
+
+    void SetIdleSprite()
+    {
+        if (currentFarmTile == null || currentFarmTile.cropData == null) return;
+
+        CropData crop = currentFarmTile.cropData;
+        if (crop.harvestStageSprites != null && crop.harvestStageSprites.Length > 0)
+        {
+            currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[0]);
         }
     }
 
@@ -192,31 +340,28 @@ public class RhythmGameManager : MonoBehaviour
         if (judgmentText != null) judgmentText.text = "";
     }
 
-    void EndGame(bool isTimeout)
+    void HandleTimeout()
     {
+        if (currentHarvestAnimation != null)
+        {
+            StopCoroutine(currentHarvestAnimation);
+            currentHarvestAnimation = null;
+        }
+
+        // 시간 초과 - 수확1로
+        SetIdleSprite();
+
+        FinishGame(HarvestRhythmResult.Trash);
+    }
+
+    void FinishGame(HarvestRhythmResult result)
+    {
+        if (gameFinished) return;
+        gameFinished = true;
         isPlaying = false;
-        StopAllCoroutines();
-
-        HarvestRhythmResult result;
-
-        if (isTimeout)
-        {
-            result = HarvestRhythmResult.Trash;
-        }
-        else
-        {
-            float remainRatio = 1f - (gameTimer / totalTime);
-            if (remainRatio >= bestThreshold)
-                result = HarvestRhythmResult.Best;
-            else if (remainRatio >= normalThreshold)
-                result = HarvestRhythmResult.Normal;
-            else
-                result = HarvestRhythmResult.Trash;
-        }
 
         Debug.Log($"리듬게임 종료! 남은시간비율:{1f - gameTimer / totalTime:F2} → {result}");
 
-        // 수확 처리
         CropQuality quality = result == HarvestRhythmResult.Best ? CropQuality.Best
             : result == HarvestRhythmResult.Normal ? CropQuality.Normal
             : CropQuality.Trash;
@@ -247,11 +392,9 @@ public class RhythmGameManager : MonoBehaviour
 
         rhythmGamePanel.SetActive(false);
 
-        // ★ 인벤토리 창이 열려있지 않을 때만 잠금 해제
         if (InventoryWindowUI.Instance == null || !InventoryWindowUI.Instance.IsOpen)
             PlayerController.IsInputLocked = false;
 
-        // ★ 인벤토리 확인 디버그
         Debug.Log($"인벤토리 슬롯 수: {InventoryManager.Instance.GetAllSlots().Count}");
     }
 }

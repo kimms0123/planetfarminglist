@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class FarmTile : MonoBehaviour
 {
@@ -16,17 +17,26 @@ public class FarmTile : MonoBehaviour
     public CropData cropData;
     public int currentGrowthDay = 0;
 
+    [Header("결과 표시 시간 (초)")]
+    public float resultDisplayDuration = 1.5f;
+
+    [Header("리듬게임 중 Sorting Order")]
+    [Tooltip("수확 애니메이션 중에 작물이 플레이어 위에 보이도록")]
+    public int harvestSortingOrder = 100;
+
     private SpriteRenderer spriteRenderer;
+    private int originalSortingOrder = 0;
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        // FarmTileManager에 등록
+        if (spriteRenderer != null)
+            originalSortingOrder = spriteRenderer.sortingOrder;
+
         if (FarmTileManager.Instance != null)
             FarmTileManager.Instance.RegisterTile(this);
     }
 
-    // 괭이 → 경작지로
     public bool Till()
     {
         if (state != TileState.Normal) return false;
@@ -34,13 +44,11 @@ public class FarmTile : MonoBehaviour
         return true;
     }
 
-    // 곡괭이 → 경작지 초기화
     public bool Reset()
     {
         if (state == TileState.Normal) return false;
         if (state == TileState.Seeded || state == TileState.SeedWatered)
         {
-            // 작물 파괴
             cropData = null;
             currentGrowthDay = 0;
         }
@@ -48,12 +56,10 @@ public class FarmTile : MonoBehaviour
         return true;
     }
 
-    // 씨앗 → 심기
     public bool Plant(CropData crop)
     {
         if (state != TileState.Tilled && state != TileState.Watered) return false;
 
-        // 계절 체크
         if (crop.season != Season.All && crop.season != TimeManager.Instance.currentSeason)
         {
             Debug.Log($"이 계절에는 {crop.cropName}을 심을 수 없어요!");
@@ -66,7 +72,6 @@ public class FarmTile : MonoBehaviour
         return true;
     }
 
-    // 물뿌리개 → 물 주기
     public bool Water()
     {
         if (state == TileState.Tilled)
@@ -79,10 +84,9 @@ public class FarmTile : MonoBehaviour
             state = TileState.SeedWatered;
             return true;
         }
-        return false; // 이미 물 줬거나 경작지 아님
+        return false;
     }
 
-    // 하루 지나기
     public void OnDayPass(Vector3Int cellPos)
     {
         if (state == TileState.SeedWatered)
@@ -96,8 +100,6 @@ public class FarmTile : MonoBehaviour
             else
             {
                 state = TileState.Seeded;
-
-                // ★ 해충 이벤트 발생 시도
                 PestGrowthEventManager.Instance?.TryRollPestEvent(
                     cellPos, currentGrowthDay, cropData.growthDays);
             }
@@ -109,21 +111,15 @@ public class FarmTile : MonoBehaviour
         }
     }
 
-    // 수확
     public bool Harvest()
     {
         if (state != TileState.Grown) return false;
 
-        // 인벤토리에 수확물 추가
         if (cropData.harvestItem != null)
         {
             int amount = cropData.baseHarvestAmount;
             InventoryManager.Instance.AddItem(cropData.harvestItem, amount);
             Debug.Log($"{cropData.cropName} 수확! x{amount}");
-        }
-        else
-        {
-            Debug.Log($"{cropData.cropName} 수확! (수확물 아이템 미설정)");
         }
 
         cropData = null;
@@ -132,20 +128,34 @@ public class FarmTile : MonoBehaviour
         UpdateSprite();
         return true;
     }
+
+    // ─────────────────────────────────────────────
+    // ★ 리듬게임 애니메이션용 sprite 변경
+    // sortingOrder도 같이 올려서 플레이어 위에 표시
+    // ─────────────────────────────────────────────
+    public void SetHarvestSprite(Sprite sprite)
+    {
+        if (spriteRenderer != null && sprite != null)
+        {
+            spriteRenderer.sprite = sprite;
+            spriteRenderer.sortingOrder = harvestSortingOrder;  // 플레이어 위로
+        }
+    }
+
     public bool HarvestWithQuality(CropQuality quality, Vector3Int cellPos)
     {
         if (state != TileState.Grown) return false;
 
+        HarvestRhythmResult finalResult = HarvestRhythmResult.Normal;
+
         if (cropData != null)
         {
-            // 1. 리듬게임 결과를 HarvestRhythmResult로 변환
             HarvestRhythmResult rhythmResult =
                 quality == CropQuality.Best ? HarvestRhythmResult.Best :
                 quality == CropQuality.Normal ? HarvestRhythmResult.Normal :
                                                 HarvestRhythmResult.Trash;
 
-            // 2. 해충 이벤트 결과 반영
-            HarvestRhythmResult finalResult = rhythmResult;
+            finalResult = rhythmResult;
             int finalYield = cropData.baseYield > 0 ? cropData.baseYield : 1;
 
             if (PestGrowthEventManager.Instance != null)
@@ -160,10 +170,8 @@ public class FarmTile : MonoBehaviour
                     Debug.Log($"수확량 패널티 적용! -{penalty}");
             }
 
-            // 3. 등급별 아이템 선택
             ItemData rewardItem = cropData.GetHarvestItemByResult(finalResult);
 
-            // 4. 인벤토리에 추가
             if (rewardItem != null)
             {
                 int leftover = InventoryManager.Instance
@@ -176,16 +184,28 @@ public class FarmTile : MonoBehaviour
                 Debug.Log($"{cropData.cropName} 수확! 등급:{finalResult} x{finalYield}");
             }
 
-            // 5. 해충 데이터 삭제
             PestGrowthEventManager.Instance?.ClearEventData(cellPos);
         }
+
+        StartCoroutine(ClearAfterDelay());
+
+        return true;
+    }
+
+    IEnumerator ClearAfterDelay()
+    {
+        yield return new WaitForSeconds(resultDisplayDuration);
 
         cropData = null;
         currentGrowthDay = 0;
         state = TileState.Tilled;
-        if (spriteRenderer != null) spriteRenderer.sprite = null;
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = null;
+            spriteRenderer.sortingOrder = originalSortingOrder;  // ★ 원래대로
+        }
         UpdateSprite();
-        return true;
     }
 
     void UpdateSprite()
@@ -195,6 +215,7 @@ public class FarmTile : MonoBehaviour
         int stage = Mathf.Clamp(currentGrowthDay, 0, cropData.growthSprites.Length - 1);
         spriteRenderer.sprite = cropData.growthSprites[stage];
     }
+
     void OnDestroy()
     {
         if (FarmTileManager.Instance != null)

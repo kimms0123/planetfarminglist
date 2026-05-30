@@ -23,6 +23,17 @@ MonoBehaviour:
   baseHarvestAmount: 8
   cropCoefficient: 1
   baseSellPrice: 50
+  harvestStageSprites:
+  - {fileID: 5860990113138848882, guid: 0ec70dc233e7f924a9564ff3685c5005, type: 3}
+  - {fileID: -1670037006583994856, guid: 0da9a79fa0ae9884f9c7957c54fb5ba7, type: 3}
+  - {fileID: 8407996148613916382, guid: eca528be6e3daae4eb42955fbf7b206c, type: 3}
+  harvestFailSprite: {fileID: -6795935964624172852, guid: 195487ad602366a459f3989cca495fb2, type: 3}
+  harvestResultSprites:
+  - {fileID: -931822536145135026, guid: f3331cf535399bf498afb2d1f61d77fb, type: 3}
+  - {fileID: 6938634125938838898, guid: 1b649e09dbdc5a24e8a31de3aa48319f, type: 3}
+  - {fileID: -6628197844582758429, guid: 5d05be906d96225409170db4ada1edaa, type: 3}
+  normalResultEndIndex: 1
+  bestResultEndIndex: 2
   bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   normalHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   trashHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}

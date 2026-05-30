@@ -15,9 +15,9 @@ public class InventorySlotUI : MonoBehaviour,
     public TextMeshProUGUI quantityText;
 
     [Header("색상")]
-    public Color normalColor = new Color(0.5f, 0.5f, 0.5f, 0.8f);
-    public Color selectedColor = new Color(1f, 0.8f, 0f, 0.8f);
-    public Color pendingMoveColor = new Color(0f, 0.8f, 1f, 0.8f);
+    public Color normalColor = new Color(1f, 1f, 1f, 1f);
+    public Color selectedColor = new Color(1f, 1f, 0.7f, 1f);
+    public Color pendingMoveColor = new Color(0.7f, 0.9f, 1f, 1f);
 
     private Image background;
     private int slotIndex;
