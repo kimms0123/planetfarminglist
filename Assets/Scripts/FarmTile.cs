@@ -10,7 +10,8 @@ public class FarmTile : MonoBehaviour
         Watered,
         Seeded,
         SeedWatered,
-        Grown
+        Grown,
+        Withered    // ★ 추가: 계절이 바뀌어 시든 작물 (치울 때까지 남음)
     }
 
     public TileState state = TileState.Normal;
@@ -23,6 +24,10 @@ public class FarmTile : MonoBehaviour
     [Header("리듬게임 중 Sorting Order")]
     [Tooltip("수확 애니메이션 중에 작물이 플레이어 위에 보이도록")]
     public int harvestSortingOrder = 100;
+
+    [Header("시듦 표시")]
+    [Tooltip("시들었을 때 보여줄 스프라이트. 비우면 현재 스프라이트를 회색으로 어둡게 처리")]
+    public Sprite witheredSprite;
 
     private SpriteRenderer spriteRenderer;
     private int originalSortingOrder = 0;
@@ -47,10 +52,19 @@ public class FarmTile : MonoBehaviour
     public bool Reset()
     {
         if (state == TileState.Normal) return false;
-        if (state == TileState.Seeded || state == TileState.SeedWatered)
+
+        // 씨/물준씨/시든작물을 치우면 작물 정보 제거
+        if (state == TileState.Seeded || state == TileState.SeedWatered || state == TileState.Withered)
         {
             cropData = null;
             currentGrowthDay = 0;
+
+            // 시든 스프라이트/색 원상복구
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sprite = null;
+                spriteRenderer.color = Color.white;
+            }
         }
         state = TileState.Normal;
         return true;
@@ -111,6 +125,36 @@ public class FarmTile : MonoBehaviour
         }
     }
 
+    // ─────────────────────────────────────────────
+    // ★ 계절이 바뀔 때 호출: 심어진 작물이 있으면 시들게 함
+    //   (시든 작물은 자리에 그대로 남고, Reset()으로 치워야 사라짐)
+    // ─────────────────────────────────────────────
+    public void WitherIfPlanted()
+    {
+        // 작물이 심긴 상태(씨/물준씨/다자람)만 시듦. 빈 흙/물 준 흙은 그대로.
+        if (state == TileState.Seeded || state == TileState.SeedWatered || state == TileState.Grown)
+        {
+            state = TileState.Withered;
+            ShowWithered();
+        }
+    }
+
+    void ShowWithered()
+    {
+        if (spriteRenderer == null) return;
+
+        if (witheredSprite != null)
+        {
+            spriteRenderer.sprite = witheredSprite;
+            spriteRenderer.color = Color.white;
+        }
+        else
+        {
+            // 시든 스프라이트가 없으면 현재 스프라이트를 갈색/회색으로 어둡게
+            spriteRenderer.color = new Color(0.45f, 0.38f, 0.30f);
+        }
+    }
+
     public bool Harvest()
     {
         if (state != TileState.Grown) return false;
@@ -129,10 +173,6 @@ public class FarmTile : MonoBehaviour
         return true;
     }
 
-    // ─────────────────────────────────────────────
-    // ★ 리듬게임 애니메이션용 sprite 변경
-    // sortingOrder도 같이 올려서 플레이어 위에 표시
-    // ─────────────────────────────────────────────
     public void SetHarvestSprite(Sprite sprite)
     {
         if (spriteRenderer != null && sprite != null)
