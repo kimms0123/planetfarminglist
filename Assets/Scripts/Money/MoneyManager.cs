@@ -16,7 +16,15 @@ public class MoneyManager : MonoBehaviour
 
     void Awake()
     {
+        // 씬 전환에도 유지 + 중복 방지
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         currentMoney = startingMoney;
     }
 

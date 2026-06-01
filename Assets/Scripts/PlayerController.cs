@@ -14,8 +14,20 @@ public class PlayerController : MonoBehaviour
 
     public static bool IsInputLocked = false;
 
+    // 씬 전환에도 플레이어를 유지하기 위한 싱글톤
+    public static PlayerController Instance;
+
     void Awake()
     {
+        // 중복 방지: 이미 플레이어가 있으면 새로 로드된 씬의 플레이어는 제거
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();

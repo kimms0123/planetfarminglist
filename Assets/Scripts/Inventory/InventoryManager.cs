@@ -45,7 +45,14 @@ public class InventoryManager : MonoBehaviour
 
     void Awake()
     {
+        // 씬 전환에도 유지 + 중복 방지
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         // 슬롯 초기화
         for (int i = 0; i < slotCount; i++)
