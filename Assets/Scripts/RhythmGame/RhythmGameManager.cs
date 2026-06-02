@@ -44,6 +44,10 @@ public class RhythmGameManager : MonoBehaviour
     [Header("노트 프리팹")]
     public GameObject notePrefab;
 
+    [Header("★ 수확 모션 표시 (화면 가운데 큰 Image)")]
+    [Tooltip("리듬게임 패널 가운데에 둔 Image. 여기에 수확/결과 스프라이트를 크게 보여줌")]
+    public Image harvestDisplayImage;
+
     private List<NoteDirection> notes = new List<NoteDirection>();
     private List<RhythmNoteUI> noteUIs = new List<RhythmNoteUI>();
     private int currentNoteIndex = 0;
@@ -86,6 +90,7 @@ public class RhythmGameManager : MonoBehaviour
 
         rhythmGamePanel.SetActive(true);
         if (resultPanel != null) resultPanel.SetActive(false);
+        if (harvestDisplayImage != null) harvestDisplayImage.enabled = true;
         if (judgmentText != null) judgmentText.text = "";
 
         GenerateNoteUIs();
@@ -214,7 +219,7 @@ public class RhythmGameManager : MonoBehaviour
         {
             for (int i = 0; i < crop.harvestStageSprites.Length; i++)
             {
-                currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[i]);
+                ShowMotion(crop.harvestStageSprites[i]);
                 yield return new WaitForSeconds(harvestFrameDuration);
             }
         }
@@ -222,7 +227,7 @@ public class RhythmGameManager : MonoBehaviour
         // 수확4 (살짝 뽑혔다가)
         if (crop.harvestFailSprite != null)
         {
-            currentFarmTile.SetHarvestSprite(crop.harvestFailSprite);
+            ShowMotion(crop.harvestFailSprite);
             yield return new WaitForSeconds(harvestFrameDuration);
         }
 
@@ -265,7 +270,7 @@ public class RhythmGameManager : MonoBehaviour
         {
             for (int i = 0; i < crop.harvestStageSprites.Length; i++)
             {
-                currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[i]);
+                ShowMotion(crop.harvestStageSprites[i]);
                 yield return new WaitForSeconds(harvestFrameDuration);
             }
         }
@@ -287,7 +292,7 @@ public class RhythmGameManager : MonoBehaviour
                 // 결과 sprite를 0번부터 endIndex까지 차례로 재생
                 for (int i = 0; i <= endIndex && i < crop.harvestResultSprites.Length; i++)
                 {
-                    currentFarmTile.SetHarvestSprite(crop.harvestResultSprites[i]);
+                    ShowMotion(crop.harvestResultSprites[i]);
                     yield return new WaitForSeconds(resultFrameDuration);
                 }
                 // 마지막 sprite는 그대로 유지
@@ -321,7 +326,25 @@ public class RhythmGameManager : MonoBehaviour
         CropData crop = currentFarmTile.cropData;
         if (crop.harvestStageSprites != null && crop.harvestStageSprites.Length > 0)
         {
-            currentFarmTile.SetHarvestSprite(crop.harvestStageSprites[0]);
+            ShowMotion(crop.harvestStageSprites[0]);
+        }
+    }
+
+    // ★ 수확 모션을 화면 가운데 Image에 표시 (없으면 밭 스프라이트로 폴백)
+    void ShowMotion(Sprite sprite)
+    {
+        if (sprite == null) return;
+
+        if (harvestDisplayImage != null)
+        {
+            harvestDisplayImage.enabled = true;
+            harvestDisplayImage.sprite = sprite;
+            harvestDisplayImage.preserveAspect = true;
+        }
+        else if (currentFarmTile != null)
+        {
+            // 가운데 Image를 안 넣었으면 기존처럼 밭에 표시 (폴백)
+            currentFarmTile.SetHarvestSprite(sprite);
         }
     }
 

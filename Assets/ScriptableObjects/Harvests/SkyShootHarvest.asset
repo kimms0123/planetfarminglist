@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkyShootHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uD558\uB298\uC21C"
-  itemSprite: {fileID: -718972555043657846, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  itemSprite: {fileID: -2263241556000192361, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
   itemType: 2
   canStack: 1
   maxStack: 99

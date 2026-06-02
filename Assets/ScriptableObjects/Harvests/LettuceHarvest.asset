@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
   m_Name: LettuceHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uC0C1\uCD94"
-  itemSprite: {fileID: 1982936134088355638, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  itemName: "\uD30C"
+  itemSprite: {fileID: -8181782792498817370, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
   itemType: 2
   canStack: 1
   maxStack: 99
