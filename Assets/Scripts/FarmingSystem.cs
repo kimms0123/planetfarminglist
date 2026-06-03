@@ -10,7 +10,17 @@ public class FarmingSystem : MonoBehaviour
 
     void Awake()
     {
-        mainCamera = Camera.main;
+        // 카메라는 씬 전환으로 파괴/교체될 수 있으므로 여기서 캐싱하지 않고
+        // 사용 직전에 GetCamera()로 항상 유효한 카메라를 가져온다.
+    }
+
+    // 항상 유효한 카메라를 반환 (파괴됐거나 없으면 다시 찾음)
+    Camera GetCamera()
+    {
+        // mainCamera가 파괴됐는지까지 확인 (Unity는 파괴된 객체에 == null 이 true)
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+        return mainCamera;
     }
 
     void Update()
@@ -18,14 +28,19 @@ public class FarmingSystem : MonoBehaviour
         // 인벤토리 열려있으면 농사 입력 차단
         if (InventoryWindowUI.Instance != null && InventoryWindowUI.Instance.IsOpen) return;
 
-        if (PlayerController.IsInputLocked) return;
-
         if (PlayerController.IsInputLocked) return; // 리듬게임/인벤토리 중 입력 차단
+
+        // ★ 안전장치: 농사 시스템에 필요한 게 없으면(예: 집 씬) 아무것도 안 함
+        if (TileManager.Instance == null) return;
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
+            // 클릭 시점에 유효한 카메라를 가져옴 (씬 전환으로 파괴됐을 수 있음)
+            Camera cam = GetCamera();
+            if (cam == null) return;
+
             Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
+            Vector3 worldPos = cam.ScreenToWorldPoint(mouseScreenPos);
             worldPos.z = 0;
 
             Vector3Int cellPos = TileManager.Instance.WorldToCell(worldPos);
@@ -68,6 +83,7 @@ public class FarmingSystem : MonoBehaviour
         return null;
     }
 
+
     void UseTool(ItemData item, FarmTile farmTile, Vector3Int cellPos, Vector3 worldPos)
     {
         switch (item.toolType)
@@ -83,10 +99,9 @@ public class FarmingSystem : MonoBehaviour
                     Debug.Log("이미 갈아엎은 땅이에요!");
                     return;
                 }
-                // 괭이질 동작 
-                PlayerController.Instance?.PlayAction("DoHoe", 0.5f);
 
-                TileManager.Instance.SetTilled(cellPos);
+                // 괭이질 동작 재생 (0.5초간 IsBusy로 Idle/Walk 막음)
+                PlayerController.Instance?.PlayAction("DoHoe", 0.5f);
 
                 TileManager.Instance.SetTilled(cellPos);
                 Vector3 centerPos = TileManager.Instance.CellCenter(cellPos);

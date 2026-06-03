@@ -44,9 +44,13 @@ public class RhythmGameManager : MonoBehaviour
     [Header("노트 프리팹")]
     public GameObject notePrefab;
 
-    [Header("★ 수확 모션 표시 (화면 가운데 큰 Image)")]
-    [Tooltip("리듬게임 패널 가운데에 둔 Image. 여기에 수확/결과 스프라이트를 크게 보여줌")]
+    [Header("★ 노트 입력 중 모션 (화면 가운데 큰 Image)")]
+    [Tooltip("노트 누르는 동안 작물이 살짝 올라오는 모션 표시")]
     public Image harvestDisplayImage;
+
+    [Header("★ 결과창 모션 Image (ResultPanel 안)")]
+    [Tooltip("결과 화면에서 뽑힘/박힘 모션을 보여줄 Image")]
+    public Image resultDisplayImage;
 
     private List<NoteDirection> notes = new List<NoteDirection>();
     private List<RhythmNoteUI> noteUIs = new List<RhythmNoteUI>();
@@ -177,9 +181,9 @@ public class RhythmGameManager : MonoBehaviour
 
             if (isLastNote)
             {
-                // 마지막 노트 - 게임 일시 정지하고 마지막 애니메이션
+                // 마지막 노트까지 다 누름 → 결과 화면으로 (모션은 결과창에서)
                 isPlaying = false;
-                PlayFinalHarvestAnimation();
+                FinishGame(JudgeResult());
             }
             else
             {
@@ -235,74 +239,6 @@ public class RhythmGameManager : MonoBehaviour
         SetIdleSprite();
 
         currentHarvestAnimation = null;
-    }
-
-    // ─────────────────────────────────────────────
-    // 마지막 노트 애니메이션 - 결과 모션 진행
-    // ─────────────────────────────────────────────
-    void PlayFinalHarvestAnimation()
-    {
-        if (currentFarmTile == null)
-        {
-            FinishGame(JudgeResult());
-            return;
-        }
-
-        if (currentHarvestAnimation != null)
-            StopCoroutine(currentHarvestAnimation);
-
-        HarvestRhythmResult result = JudgeResult();
-        currentHarvestAnimation = StartCoroutine(FinalHarvestCoroutine(result));
-    }
-
-    IEnumerator FinalHarvestCoroutine(HarvestRhythmResult result)
-    {
-        if (currentFarmTile == null || currentFarmTile.cropData == null)
-        {
-            FinishGame(result);
-            yield break;
-        }
-
-        CropData crop = currentFarmTile.cropData;
-
-        // 1. 수확 단계 1 → 2 → 3 빠르게 재생
-        if (crop.harvestStageSprites != null)
-        {
-            for (int i = 0; i < crop.harvestStageSprites.Length; i++)
-            {
-                ShowMotion(crop.harvestStageSprites[i]);
-                yield return new WaitForSeconds(harvestFrameDuration);
-            }
-        }
-
-        // 2. 결과에 따라 다르게 처리
-        if (result == HarvestRhythmResult.Trash)
-        {
-            // 실패 - 수확1로 (못 뽑음)
-            SetIdleSprite();
-        }
-        else
-        {
-            // ★ 성공 - 결과 시퀀스 재생!
-            // 결과1 → 결과2 → 결과3 점점 뽁! 하고 뽑힘
-            if (crop.harvestResultSprites != null && crop.harvestResultSprites.Length > 0)
-            {
-                int endIndex = crop.GetResultEndIndex(result);
-
-                // 결과 sprite를 0번부터 endIndex까지 차례로 재생
-                for (int i = 0; i <= endIndex && i < crop.harvestResultSprites.Length; i++)
-                {
-                    ShowMotion(crop.harvestResultSprites[i]);
-                    yield return new WaitForSeconds(resultFrameDuration);
-                }
-                // 마지막 sprite는 그대로 유지
-            }
-        }
-
-        currentHarvestAnimation = null;
-
-        // 결과 sprite를 보여준 채로 게임 종료 처리
-        FinishGame(result);
     }
 
     // ─────────────────────────────────────────────
@@ -389,25 +325,36 @@ public class RhythmGameManager : MonoBehaviour
             : result == HarvestRhythmResult.Normal ? CropQuality.Normal
             : CropQuality.Trash;
 
+        // 결과창 모션용 cropData 먼저 확보 (수확하면 타일이 비워질 수 있으므로)
+        CropData cropForMotion = currentFarmTile != null ? currentFarmTile.cropData : null;
+
         if (currentFarmTile != null)
         {
             currentFarmTile.HarvestWithQuality(quality, currentCellPos);
             TileManager.Instance.RefreshTile(currentCellPos, currentFarmTile.state);
         }
 
-        StartCoroutine(ShowResultAndClose(result));
+        StartCoroutine(ShowResultAndClose(result, cropForMotion));
     }
 
-    IEnumerator ShowResultAndClose(HarvestRhythmResult result)
+    IEnumerator ShowResultAndClose(HarvestRhythmResult result, CropData crop)
     {
         if (resultPanel != null) resultPanel.SetActive(true);
+
+        // 노트 입력 중 모션 Image는 숨기고, 결과창 모션 Image로 전환
+        if (harvestDisplayImage != null) harvestDisplayImage.enabled = false;
+
+        // ★ 결과 화면에서 뽑힘/박힘 모션 재생
+        yield return StartCoroutine(PlayResultMotion(result, crop));
+
+        // 글씨는 보조로 (원치 않으면 resultText 연결 안 하면 됨)
         if (resultText != null)
         {
             switch (result)
             {
                 case HarvestRhythmResult.Best: resultText.text = "최상급 수확!"; break;
                 case HarvestRhythmResult.Normal: resultText.text = "일반 수확"; break;
-                case HarvestRhythmResult.Trash: resultText.text = "하위 수확"; break;
+                case HarvestRhythmResult.Trash: resultText.text = "실패..."; break;
             }
         }
 
@@ -417,7 +364,46 @@ public class RhythmGameManager : MonoBehaviour
 
         if (InventoryWindowUI.Instance == null || !InventoryWindowUI.Instance.IsOpen)
             PlayerController.IsInputLocked = false;
+    }
 
-        Debug.Log($"인벤토리 슬롯 수: {InventoryManager.Instance.GetAllSlots().Count}");
+    // 결과창 모션: 성공이면 뽁 뽑힘, 실패면 박힌 채 멈춤
+    IEnumerator PlayResultMotion(HarvestRhythmResult result, CropData crop)
+    {
+        if (resultDisplayImage == null || crop == null) yield break;
+
+        resultDisplayImage.enabled = true;
+        resultDisplayImage.preserveAspect = true;
+
+        // 공통: 수확 단계 1→2→3 빠르게 (살짝 뽑으려는 동작)
+        if (crop.harvestStageSprites != null)
+        {
+            for (int i = 0; i < crop.harvestStageSprites.Length; i++)
+            {
+                resultDisplayImage.sprite = crop.harvestStageSprites[i];
+                yield return new WaitForSeconds(harvestFrameDuration);
+            }
+        }
+
+        if (result == HarvestRhythmResult.Trash)
+        {
+            // 실패: 박힌 채 멈춤 (실패 스프라이트가 있으면 그걸로, 없으면 수확1로)
+            if (crop.harvestFailSprite != null)
+                resultDisplayImage.sprite = crop.harvestFailSprite;
+            else if (crop.harvestStageSprites != null && crop.harvestStageSprites.Length > 0)
+                resultDisplayImage.sprite = crop.harvestStageSprites[0];
+        }
+        else
+        {
+            // 성공: 결과 시퀀스 = 뽁! 하고 뽑힘
+            if (crop.harvestResultSprites != null && crop.harvestResultSprites.Length > 0)
+            {
+                int endIndex = crop.GetResultEndIndex(result);
+                for (int i = 0; i <= endIndex && i < crop.harvestResultSprites.Length; i++)
+                {
+                    resultDisplayImage.sprite = crop.harvestResultSprites[i];
+                    yield return new WaitForSeconds(resultFrameDuration);
+                }
+            }
+        }
     }
 }

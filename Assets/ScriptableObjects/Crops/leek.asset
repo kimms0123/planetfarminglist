@@ -31,10 +31,10 @@ MonoBehaviour:
   - {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
   harvestFailSprite: {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
   harvestResultSprites:
-  - {fileID: -609567544459335200, guid: facd4a95bfbfb524488af2fe5871528f, type: 3}
-  - {fileID: -7816806726782639335, guid: 7a941729d4055d84e9c40d0ced094129, type: 3}
-  - {fileID: -6737379200423256916, guid: 6e44c54952edcfd48b932a1fabd3bb55, type: 3}
-  - {fileID: -1905537607456604732, guid: 94ce720ead36f9f4280f76a7812779c4, type: 3}
+  - {fileID: 21300000, guid: facd4a95bfbfb524488af2fe5871528f, type: 3}
+  - {fileID: 21300000, guid: 7a941729d4055d84e9c40d0ced094129, type: 3}
+  - {fileID: 21300000, guid: 6e44c54952edcfd48b932a1fabd3bb55, type: 3}
+  - {fileID: 21300000, guid: 94ce720ead36f9f4280f76a7812779c4, type: 3}
   normalResultEndIndex: 3
   bestResultEndIndex: 3
   bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}

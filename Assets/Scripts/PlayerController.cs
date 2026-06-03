@@ -67,15 +67,19 @@ public class PlayerController : MonoBehaviour
 
         if (moveInput != Vector2.zero)
         {
-            lastMoveDir = moveInput;
-            animator.SetFloat("MoveX", moveInput.x);
-            animator.SetFloat("MoveY", moveInput.y);
+            // 대각선일 때 가로/세로 중 더 큰 쪽 하나만 애니메이션에 반영 (모션 충돌 방지)
+            Vector2 animDir = GetDominantDir(moveInput);
+
+            lastMoveDir = animDir;
+            animator.SetFloat("MoveX", animDir.x);
+            animator.SetFloat("MoveY", animDir.y);
             animator.SetBool("IsMoving", true);
 
+            // 좌우 뒤집기는 실제 입력의 x 부호로 (이동 자체는 대각선 그대로 됨)
             if (moveInput.x < 0)
-                spriteRenderer.flipX = false;   // 왼쪽 = 원본 그대로 (새 아트가 왼쪽 향함)
+                spriteRenderer.flipX = false;   // 왼쪽
             else if (moveInput.x > 0)
-                spriteRenderer.flipX = true;    // 오른쪽 = 뒤집기
+                spriteRenderer.flipX = true;    // 오른쪽
         }
         else
         {
@@ -108,25 +112,40 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsHolding", holding);
     }
 
+    // 대각선 입력에서 가로/세로 중 더 큰 축만 남긴 방향 반환 (한 방향 모션만 나오게)
+    Vector2 GetDominantDir(Vector2 input)
+    {
+        if (Mathf.Abs(input.x) >= Mathf.Abs(input.y))
+            return new Vector2(Mathf.Sign(input.x), 0f);   // 가로 우선
+        else
+            return new Vector2(0f, Mathf.Sign(input.y));   // 세로 우선
+    }
+
     // ─────────────────────────────────────────────
     // 도구 동작(괭이질/물주기 등) 재생.
     //  - trigger: Animator의 Trigger 이름 (예: "DoHoe", "DoWater")
     //  - duration: 동작 애니메이션 길이(초). 이 시간 동안 IsBusy=true 로 Idle/Walk 전이를 막음
     // 사용: PlayerController.Instance.PlayAction("DoHoe", 0.5f);
     // ─────────────────────────────────────────────
+    private Coroutine busyRoutine;
+
     public void PlayAction(string trigger, float duration)
     {
         if (animator == null) return;
+
+        // 이전 동작 코루틴이 돌고 있으면 멈춤 (IsBusy 갇힘 방지)
+        if (busyRoutine != null) StopCoroutine(busyRoutine);
+
         animator.SetBool("IsBusy", true);
         animator.SetTrigger(trigger);
-        StopCoroutine(nameof(EndBusyAfter));
-        StartCoroutine(EndBusyAfter(duration));
+        busyRoutine = StartCoroutine(EndBusyAfter(duration));
     }
 
     IEnumerator EndBusyAfter(float duration)
     {
         yield return new WaitForSeconds(duration);
         if (animator != null) animator.SetBool("IsBusy", false);
+        busyRoutine = null;
     }
 
     void OnInteract()
