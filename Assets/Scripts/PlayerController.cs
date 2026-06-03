@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -55,6 +56,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // 들고 있는지(도구 제외 아이템 선택) 매 프레임 갱신
+        UpdateHoldingState();
+
         if (IsInputLocked)
         {
             animator.SetBool("IsMoving", false);
@@ -85,6 +89,44 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("OnToggleInventory 호출됨!");
         InventoryWindowUI.Instance?.ToggleInventory();
+    }
+
+    // 도구가 아닌 아이템(씨앗/작물 등)을 들고 있으면 Animator의 IsHolding = true
+    void UpdateHoldingState()
+    {
+        bool holding = false;
+
+        var inv = InventoryManager.Instance;
+        if (inv != null)
+        {
+            ItemData selected = inv.SelectedItem;
+            // 선택된 아이템이 있고, 그게 도구가 아니면 들고 있는 것으로 판정
+            if (selected != null && selected.itemType != ItemType.Tool)
+                holding = true;
+        }
+
+        animator.SetBool("IsHolding", holding);
+    }
+
+    // ─────────────────────────────────────────────
+    // 도구 동작(괭이질/물주기 등) 재생.
+    //  - trigger: Animator의 Trigger 이름 (예: "DoHoe", "DoWater")
+    //  - duration: 동작 애니메이션 길이(초). 이 시간 동안 IsBusy=true 로 Idle/Walk 전이를 막음
+    // 사용: PlayerController.Instance.PlayAction("DoHoe", 0.5f);
+    // ─────────────────────────────────────────────
+    public void PlayAction(string trigger, float duration)
+    {
+        if (animator == null) return;
+        animator.SetBool("IsBusy", true);
+        animator.SetTrigger(trigger);
+        StopCoroutine(nameof(EndBusyAfter));
+        StartCoroutine(EndBusyAfter(duration));
+    }
+
+    IEnumerator EndBusyAfter(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (animator != null) animator.SetBool("IsBusy", false);
     }
 
     void OnInteract()

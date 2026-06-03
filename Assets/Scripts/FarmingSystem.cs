@@ -83,6 +83,11 @@ public class FarmingSystem : MonoBehaviour
                     Debug.Log("이미 갈아엎은 땅이에요!");
                     return;
                 }
+                // 괭이질 동작 
+                PlayerController.Instance?.PlayAction("DoHoe", 0.5f);
+
+                TileManager.Instance.SetTilled(cellPos);
+
                 TileManager.Instance.SetTilled(cellPos);
                 Vector3 centerPos = TileManager.Instance.CellCenter(cellPos);
 
