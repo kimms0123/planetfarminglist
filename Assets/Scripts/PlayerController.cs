@@ -69,9 +69,9 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IsMoving", true);
 
             if (moveInput.x < 0)
-                spriteRenderer.flipX = true;
+                spriteRenderer.flipX = false;   // 왼쪽 = 원본 그대로 (새 아트가 왼쪽 향함)
             else if (moveInput.x > 0)
-                spriteRenderer.flipX = false;
+                spriteRenderer.flipX = true;    // 오른쪽 = 뒤집기
         }
         else
         {
