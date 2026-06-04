@@ -130,6 +130,9 @@ public class FarmingSystem : MonoBehaviour
                 }
                 if (farmTile != null && farmTile.Water())
                 {
+                    // 물주기 동작 재생 (0.5초간 IsBusy로 Idle/Walk 막음)
+                    PlayerController.Instance?.PlayAction("DoWater", 0.5f);
+
                     TileManager.Instance.RefreshTile(cellPos, farmTile.state);
                     Debug.Log("물을 줬어요!");
                 }
