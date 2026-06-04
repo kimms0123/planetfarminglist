@@ -3,44 +3,42 @@ using System.Collections.Generic;
 
 /// <summary>
 /// FCM (Fuzzy C-Means) 기반 플레이어 판매 행동 분석기
+/// 
+/// [개정] 교수님 피드백 반영 - 4 클러스터로 확장
 /// - 3차원 행동 벡터: [평균가격, 판매속도, 대량판매비율]
-/// - 3개 클러스터: 현금왕 / 품질장인 / 균형형
+/// - 4개 클러스터: 직판형 / 관계형 / 납품형 / 균형형
 /// </summary>
 public class FCMSalesAnalyzer : MonoBehaviour
 {
     public static FCMSalesAnalyzer Instance;
 
-    // ─────────────────────────────────────────────
-    // 클러스터 정의
-    // ─────────────────────────────────────────────
     public enum ClusterType
     {
-        None,        // 거래 데이터 부족
-        CashKing,    // 현금왕 - 빠르게 많이
-        QualityMaster, // 품질장인 - 비싼 거 위주
-        Balanced     // 균형형
+        None,         // 거래 데이터 부족
+        Direct,       // 직판형 - 비싼 거 소량씩
+        Relational,   // 관계형 - 천천히, 같은 NPC 반복
+        Wholesale,    // 납품형 - 대량 즉시 판매
+        Balanced      // 균형형 - 다각 경영
     }
 
-    [Header("클러스터 중심 (보고서 4.2 참고, 3차원 단순화 버전)")]
-    [SerializeField] private float[] cashKingCenter = { 0.3f, 0.9f, 0.8f };
-    [SerializeField] private float[] qualityMasterCenter = { 0.8f, 0.3f, 0.4f };
+    [Header("클러스터 중심 (3차원 행동벡터)")]
+    [SerializeField] private float[] directCenter = { 0.7f, 0.6f, 0.2f };
+    [SerializeField] private float[] relationalCenter = { 0.5f, 0.3f, 0.5f };
+    [SerializeField] private float[] wholesaleCenter = { 0.4f, 0.9f, 0.9f };
     [SerializeField] private float[] balancedCenter = { 0.5f, 0.5f, 0.5f };
 
     [Header("FCM 파라미터")]
-    [SerializeField] private float fuzziness = 2f;        // 퍼지 계수 m
-    [SerializeField] private int minTradesForAnalysis = 3; // 분석 시작 최소 거래 수
+    [SerializeField] private float fuzziness = 2f;
+    [SerializeField] private int minTradesForAnalysis = 3;
 
     [Header("정규화 기준")]
-    [SerializeField] private float maxItemPrice = 100f;   // 가격 정규화 기준
-    [SerializeField] private float maxHoldTime = 300f;    // 보유 시간 정규화 기준 (초)
+    [SerializeField] private float maxItemPrice = 100f;
+    [SerializeField] private float maxHoldTime = 300f;
 
-    // ─────────────────────────────────────────────
-    // 거래 데이터 누적 (3차원 행동 벡터)
-    // ─────────────────────────────────────────────
     private List<Vector3> tradeHistory = new List<Vector3>();
 
-    // 마지막 분석 결과
-    public float[] LastMembership { get; private set; } = new float[3]; // [현금왕, 품질장인, 균형형]
+    // 4차원 소속도 (개정: 3 → 4)
+    public float[] LastMembership { get; private set; } = new float[4];
     public ClusterType DominantCluster { get; private set; } = ClusterType.None;
     public int TradeCount => tradeHistory.Count;
 
@@ -51,25 +49,10 @@ public class FCMSalesAnalyzer : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // ─────────────────────────────────────────────
-    // 외부 호출 - 판매 데이터 기록
-    // ─────────────────────────────────────────────
-    /// <summary>
-    /// 판매 1건이 완료될 때마다 호출
-    /// </summary>
-    /// <param name="itemPrice">아이템 1개당 판매가</param>
-    /// <param name="quantitySold">판매한 수량</param>
-    /// <param name="totalQuantityInSlot">슬롯에 원래 있던 총 수량</param>
-    /// <param name="holdTimeSeconds">아이템 획득 후 경과 시간 (초), 모르면 0</param>
     public void RecordTrade(int itemPrice, int quantitySold, int totalQuantityInSlot, float holdTimeSeconds = 0f)
     {
-        // 3차원 행동 벡터 계산 (0~1 정규화) >> 평균 가격
         float avgPrice = Mathf.Clamp01((float)itemPrice / maxItemPrice);
-
-        // sell_speed: 보유 시간이 짧을수록 1에 가까움 (즉시 판매 = 1) >> 즉시 판매 비율
         float sellSpeed = Mathf.Clamp01(1f - (holdTimeSeconds / maxHoldTime));
-
-        // bulk_ratio: 슬롯 전체 대비 판매 비율 >> 대량 판매 비율
         float bulkRatio = totalQuantityInSlot > 0
             ? Mathf.Clamp01((float)quantitySold / totalQuantityInSlot)
             : 0f;
@@ -79,19 +62,13 @@ public class FCMSalesAnalyzer : MonoBehaviour
 
         Debug.Log($"[FCM] 거래 기록: 가격={avgPrice:F2}, 속도={sellSpeed:F2}, 대량={bulkRatio:F2} (총 {tradeHistory.Count}건)");
 
-        // 분석 가능한 데이터가 쌓이면 분석 실행
         if (tradeHistory.Count >= minTradesForAnalysis)
-        {
             AnalyzeBehavior();
-        }
     }
 
-    // ─────────────────────────────────────────────
-    // FCM 분석 - 최근 거래 데이터의 평균 벡터로 소속도 계산
-    // ─────────────────────────────────────────────
     private void AnalyzeBehavior()
     {
-        // 최근 5건의 평균 벡터 사용 (이동 평균)
+        // 최근 5건 평균
         int sampleCount = Mathf.Min(5, tradeHistory.Count);
         Vector3 avgVector = Vector3.zero;
         for (int i = tradeHistory.Count - sampleCount; i < tradeHistory.Count; i++)
@@ -100,33 +77,34 @@ public class FCMSalesAnalyzer : MonoBehaviour
 
         float[] vec = { avgVector.x, avgVector.y, avgVector.z };
 
-        // 각 클러스터까지의 유클리드 거리
-        float d1 = EuclideanDistance(vec, cashKingCenter);
-        float d2 = EuclideanDistance(vec, qualityMasterCenter);
-        float d3 = EuclideanDistance(vec, balancedCenter);
+        float d1 = Mathf.Max(EuclideanDistance(vec, directCenter), 0.0001f);
+        float d2 = Mathf.Max(EuclideanDistance(vec, relationalCenter), 0.0001f);
+        float d3 = Mathf.Max(EuclideanDistance(vec, wholesaleCenter), 0.0001f);
+        float d4 = Mathf.Max(EuclideanDistance(vec, balancedCenter), 0.0001f);
 
-        // 거리 0 방지 (수치 안정성)
-        d1 = Mathf.Max(d1, 0.0001f);
-        d2 = Mathf.Max(d2, 0.0001f);
-        d3 = Mathf.Max(d3, 0.0001f);
+        float exponent = 2f / (fuzziness - 1f);
 
-        // FCM 소속도 계산: u_ij = 1 / Σ_k (d_ij / d_ik)^(2/(m-1))
-        float exponent = 2f / (fuzziness - 1f); // m=2 → exponent=2
-
-        float u1 = 1f / (Mathf.Pow(d1 / d1, exponent) + Mathf.Pow(d1 / d2, exponent) + Mathf.Pow(d1 / d3, exponent));
-        float u2 = 1f / (Mathf.Pow(d2 / d1, exponent) + Mathf.Pow(d2 / d2, exponent) + Mathf.Pow(d2 / d3, exponent));
-        float u3 = 1f / (Mathf.Pow(d3 / d1, exponent) + Mathf.Pow(d3 / d2, exponent) + Mathf.Pow(d3 / d3, exponent));
+        float u1 = 1f / (Mathf.Pow(d1 / d1, exponent) + Mathf.Pow(d1 / d2, exponent)
+                       + Mathf.Pow(d1 / d3, exponent) + Mathf.Pow(d1 / d4, exponent));
+        float u2 = 1f / (Mathf.Pow(d2 / d1, exponent) + Mathf.Pow(d2 / d2, exponent)
+                       + Mathf.Pow(d2 / d3, exponent) + Mathf.Pow(d2 / d4, exponent));
+        float u3 = 1f / (Mathf.Pow(d3 / d1, exponent) + Mathf.Pow(d3 / d2, exponent)
+                       + Mathf.Pow(d3 / d3, exponent) + Mathf.Pow(d3 / d4, exponent));
+        float u4 = 1f / (Mathf.Pow(d4 / d1, exponent) + Mathf.Pow(d4 / d2, exponent)
+                       + Mathf.Pow(d4 / d3, exponent) + Mathf.Pow(d4 / d4, exponent));
 
         LastMembership[0] = u1;
         LastMembership[1] = u2;
         LastMembership[2] = u3;
+        LastMembership[3] = u4;
 
-        // 우세 클러스터 결정
-        if (u1 >= u2 && u1 >= u3) DominantCluster = ClusterType.CashKing;
-        else if (u2 >= u1 && u2 >= u3) DominantCluster = ClusterType.QualityMaster;
+        float maxU = Mathf.Max(u1, Mathf.Max(u2, Mathf.Max(u3, u4)));
+        if (maxU == u1) DominantCluster = ClusterType.Direct;
+        else if (maxU == u2) DominantCluster = ClusterType.Relational;
+        else if (maxU == u3) DominantCluster = ClusterType.Wholesale;
         else DominantCluster = ClusterType.Balanced;
 
-        Debug.Log($"[FCM] 분석 결과: 현금왕={u1:P0}, 품질장인={u2:P0}, 균형형={u3:P0} → 우세: {DominantCluster}");
+        Debug.Log($"[FCM] 분석: 직판={u1:P0}, 관계={u2:P0}, 납품={u3:P0}, 균형={u4:P0} → {DominantCluster}");
     }
 
     private float EuclideanDistance(float[] a, float[] b)
@@ -137,66 +115,12 @@ public class FCMSalesAnalyzer : MonoBehaviour
         return Mathf.Sqrt(sum);
     }
 
-    // ─────────────────────────────────────────────
-    // NPC 대사 생성 - 우세 클러스터 기반
-    // ─────────────────────────────────────────────
-    public string GetDialogue()
-    {
-        // 거래 데이터 부족 - 기본 인사
-        if (TradeCount < minTradesForAnalysis)
-        {
-            string[] defaultDialogues = {
-                "어서 와! 뭐 팔 거라도 있어?",
-                "수확물은 여기서 판매할 수 있어.",
-                "좋은 물건이면 값을 더 쳐주겠다고.",
-                "처음 보는 얼굴이군. 자, 거래해보자고!"
-            };
-            return defaultDialogues[Random.Range(0, defaultDialogues.Length)];
-        }
-
-        // 클러스터별 맞춤 대사
-        switch (DominantCluster)
-        {
-            case ClusterType.CashKing:
-                string[] cashKingLines = {
-                    "오, 또 왔나? 자네는 일 처리가 빠른 게 마음에 들어.",
-                    "거래량이 많아서 좋군. 자, 빨리 팔아치우자고.",
-                    "현금이 최고지! 자네 같은 손님이 또 필요해.",
-                    "이번에도 한 방에 다 팔 건가? 좋아, 환영이지."
-                };
-                return cashKingLines[Random.Range(0, cashKingLines.Length)];
-
-            case ClusterType.QualityMaster:
-                string[] qualityLines = {
-                    "역시 자네는 보는 눈이 있어. 좋은 물건만 가져오는군.",
-                    "이런 고급 물건은 흔치 않지. 값을 후하게 쳐주겠어.",
-                    "장인의 손길이 느껴지는군. 거래는 언제든 환영이야.",
-                    "품질이 다르군. 자네와의 거래는 즐겁다고."
-                };
-                return qualityLines[Random.Range(0, qualityLines.Length)];
-
-            case ClusterType.Balanced:
-                string[] balancedLines = {
-                    "안정적인 거래 스타일이군. 좋아, 좋아.",
-                    "이것저것 골고루 가져왔구만. 어디 보자고.",
-                    "꾸준한 손님이지. 오늘은 뭘 가져왔나?",
-                    "균형 잡힌 거래야. 자, 시작해볼까?"
-                };
-                return balancedLines[Random.Range(0, balancedLines.Length)];
-
-            default:
-                return "어서 와!";
-        }
-    }
-
-    // ─────────────────────────────────────────────
-    // 디버그용
-    // ─────────────────────────────────────────────
     public string GetDebugInfo()
     {
         if (TradeCount < minTradesForAnalysis)
-            return $"거래 {TradeCount}건 (분석 시작까지 {minTradesForAnalysis - TradeCount}건 남음)";
+            return $"거래 {TradeCount}건 (분석까지 {minTradesForAnalysis - TradeCount}건 남음)";
 
-        return $"거래 {TradeCount}건 | 현금왕 {LastMembership[0]:P0} | 품질장인 {LastMembership[1]:P0} | 균형형 {LastMembership[2]:P0}";
+        return $"거래 {TradeCount}건 | 직판 {LastMembership[0]:P0} | 관계 {LastMembership[1]:P0} | " +
+               $"납품 {LastMembership[2]:P0} | 균형 {LastMembership[3]:P0}";
     }
 }

@@ -1,40 +1,46 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections;
 
+/// <summary>
+/// ìƒì  íŒë§¤ UI
+/// 
+/// [ê°œì •] FCM 4 í´ëŸ¬ìŠ¤í„° + RBFN 7ì°¨ì› ì…ë ¥ ì „ë‹¬
+/// íŒë§¤ 1ê±´ë§ˆë‹¤: FCM ë¶„ë¥˜ â†’ RBFN ì…ë ¥ êµ¬ì„± â†’ ì¶”ë¡  â†’ ê°€ê²© ë³´ì • â†’ í•™ìŠµ
+/// </summary>
 public class ShopSellUI : MonoBehaviour
 {
     public static ShopSellUI Instance;
 
-    [Header("ÆĞ³Î")]
+    [Header("íŒ¨ë„")]
     public GameObject shopPanel;
 
-    [Header("½½·Ô")]
+    [Header("ìŠ¬ë¡¯")]
     public ShopSlotUI[] slotUIs;
 
-    [Header("¾ÆÀÌÅÛ Á¤º¸")]
+    [Header("ì•„ì´í…œ ì •ë³´")]
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI itemPriceText;
 
-    [Header("µ· Ç¥½Ã")]
+    [Header("ëˆ í‘œì‹œ")]
     public TextMeshProUGUI playerMoneyText;
 
-    [Header("¸Ş½ÃÁö")]
+    [Header("ë©”ì‹œì§€")]
     public TextMeshProUGUI messageText;
 
-    [Header("¹öÆ°")]
+    [Header("ë²„íŠ¼")]
     public Button closeButton;
 
-    [Header("NPC ´ë»ç")]
+    [Header("NPC ëŒ€ì‚¬")]
     public TextMeshProUGUI npcDialogueText;
 
-    [Header("µğ¹ö±× Ç¥½Ã (¼±ÅÃ)")]
-    public TextMeshProUGUI debugText;
+    [Header("NPC ì¹œë°€ë„ (í˜„ì¬ ìƒì )")]
+    [Tooltip("ì´ ìƒì  NPCì™€ì˜ ì¹œë°€ë„ (0~1)")]
+    [SerializeField] private float affinityWithNpc = 0.5f;
 
     public bool IsShopOpen { get; private set; } = false;
-
     private int selectedSlotIndex = -1;
 
     void Awake()
@@ -67,12 +73,9 @@ public class ShopSellUI : MonoBehaviour
         if (!IsShopOpen) return;
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
             CloseShop();
-
-        // »óÁ¡ÀÌ ¿­·ÁÀÖ´Â µ¿¾È °¡°İ Á¤º¸ ½Ç½Ã°£ °»½Å (°ø±Ş·® È¸º¹ º¸ÀÌ°Ô)
-        UpdateItemInfo();
     }
 
-    // ¿­±â / ´İ±â
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public void OpenShop()
     {
         IsShopOpen = true;
@@ -80,20 +83,8 @@ public class ShopSellUI : MonoBehaviour
         shopPanel.SetActive(true);
         PlayerController.IsInputLocked = true;
 
-        UpdateRBFNPrediction();
         UpdateNpcDialogue();
-
         RefreshUI();
-        UpdateMoneyUI();
-        UpdateItemInfo();
-
-        Debug.Log("»óÁ¡ ¿ÀÇÂ!");
-        if (FCMSalesAnalyzer.Instance != null)
-            Debug.Log($"[FCM] {FCMSalesAnalyzer.Instance.GetDebugInfo()}");
-        if (RBFNetwork.Instance != null)
-            Debug.Log($"[RBFN] {RBFNetwork.Instance.GetDebugInfo()}");
-        if (MarketSupplyManager.Instance != null)
-            Debug.Log($"[Market]\n{MarketSupplyManager.Instance.GetDebugInfo()}");
     }
 
     public void CloseShop()
@@ -103,34 +94,20 @@ public class ShopSellUI : MonoBehaviour
         PlayerController.IsInputLocked = false;
     }
 
-    // RBFN ¿¹Ãø °»½Å
-    void UpdateRBFNPrediction()
-    {
-        if (FCMSalesAnalyzer.Instance == null || RBFNetwork.Instance == null) return;
-        RBFNetwork.Instance.Predict(FCMSalesAnalyzer.Instance.LastMembership);
-    }
-
-    // NPC ´ë»ç °»½Å
+    /// <summary>
+    /// NPC ëŒ€ì‚¬ ê°±ì‹  - FCM í´ëŸ¬ìŠ¤í„° + RBFN í†¤
+    /// </summary>
     void UpdateNpcDialogue()
     {
         if (npcDialogueText == null) return;
 
-        if (FCMSalesAnalyzer.Instance == null)
-        {
-            npcDialogueText.text = "¾î¼­ ¿Í! ¹¹ ÆÈ °Å¶óµµ ÀÖ¾î?";
-            return;
-        }
+        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
+        var tone = RBFNetwork.Instance?.GetToneType() ?? RBFNetwork.DialogueToneType.Neutral;
+        int count = FCMSalesAnalyzer.Instance?.TradeCount ?? 0;
 
-        var cluster = FCMSalesAnalyzer.Instance.DominantCluster;
-        var tone = RBFNetwork.Instance != null
-            ? RBFNetwork.Instance.GetDialogueTone()
-            : RBFNetwork.DialogueTone.Neutral;
-        int tradeCount = FCMSalesAnalyzer.Instance.TradeCount;
-
-        npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, tone, tradeCount);
+        npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, tone, count);
     }
 
-    // UI °»½Å
     public void RefreshUI()
     {
         if (!IsShopOpen) return;
@@ -139,19 +116,17 @@ public class ShopSellUI : MonoBehaviour
         for (int i = 0; i < slotUIs.Length; i++)
         {
             var slot = InventoryManager.Instance.GetSlot(i);
-            bool isSelected = (i == selectedSlotIndex);
-            slotUIs[i].Refresh(slot, isSelected);
+            slotUIs[i].Refresh(slot, i == selectedSlotIndex);
         }
 
         UpdateMoneyUI();
         UpdateItemInfo();
-        UpdateDebugInfo();
     }
 
     void UpdateMoneyUI()
     {
         if (playerMoneyText != null && MoneyManager.Instance != null)
-            playerMoneyText.text = $"º¸À¯ ±İ¾×: {MoneyManager.Instance.CurrentMoney:N0} G";
+            playerMoneyText.text = $"ë³´ìœ  ê¸ˆì•¡: {MoneyManager.Instance.CurrentMoney:N0} G";
     }
 
     void UpdateItemInfo()
@@ -164,240 +139,148 @@ public class ShopSellUI : MonoBehaviour
         }
 
         var slot = InventoryManager.Instance?.GetSlot(selectedSlotIndex);
-        if (slot == null || slot.IsEmpty())
-        {
-            if (itemNameText != null) itemNameText.text = "";
-            if (itemPriceText != null) itemPriceText.text = "";
-            return;
-        }
+        if (slot == null || slot.IsEmpty()) return;
 
         bool canSell = InventoryManager.Instance.CanSellSlot(selectedSlotIndex);
 
         if (itemNameText != null)
             itemNameText.text = slot.itemData.itemName;
 
+        // RBFN ê°€ê²© ë³´ì • ë¯¸ë¦¬ë³´ê¸°
+        float multiplier = RBFNetwork.Instance?.PriceMultiplier ?? 1f;
+        int adjustedPrice = Mathf.RoundToInt(slot.itemData.sellPrice * multiplier);
+
         if (itemPriceText != null)
-        {
-            if (canSell)
-            {
-                int basePrice = slot.itemData.sellPrice;
-                int adjustedPrice = GetAdjustedPrice(slot.itemData, basePrice);
-
-                // °ø±Ş Á¤º¸ ÇÔ²² Ç¥½Ã
-                float supplyMult = 1.0f;
-                float supplyAmount = 0f;
-                if (MarketSupplyManager.Instance != null)
-                {
-                    supplyMult = MarketSupplyManager.Instance.GetSupplyMultiplier(slot.itemData);
-                    supplyAmount = MarketSupplyManager.Instance.GetSupplyAmount(slot.itemData);
-                }
-
-                if (supplyMult < 0.95f)
-                {
-                    // °ø±Ş °úÀ× »óÅÂ - °æ°í Ç¥½Ã
-                    itemPriceText.text = $"<color=#FFA500>ÆÇ¸Å°¡: {adjustedPrice} G</color>\n<size=70%>(°ø±Ş °úÀ× x{supplyMult:F2})</size>";
-                }
-                else if (adjustedPrice > basePrice)
-                {
-                    itemPriceText.text = $"<color=#90EE90>ÆÇ¸Å°¡: {adjustedPrice} G</color>";
-                }
-                else
-                {
-                    itemPriceText.text = $"ÆÇ¸Å°¡: {adjustedPrice} G";
-                }
-            }
-            else
-            {
-                itemPriceText.text = "ÆÇ¸Å ºÒ°¡";
-            }
-        }
+            itemPriceText.text = canSell
+                ? $"íŒë§¤ê°€: {adjustedPrice} G  (Ã—{multiplier:F2})"
+                : "íŒë§¤ ë¶ˆê°€";
     }
 
-    void UpdateDebugInfo()
-    {
-        if (debugText == null) return;
-        if (FCMSalesAnalyzer.Instance == null || RBFNetwork.Instance == null) return;
-
-        var fcm = FCMSalesAnalyzer.Instance;
-        var rbfn = RBFNetwork.Instance;
-
-        string supplyInfo = MarketSupplyManager.Instance != null
-            ? MarketSupplyManager.Instance.GetDebugInfo()
-            : "";
-
-        debugText.text =
-            $"°Å·¡: {fcm.TradeCount}°Ç | {fcm.DominantCluster}\n" +
-            $"RBFN: x{rbfn.PriceMultiplier:F2} | Ä£ÇÔ {rbfn.Affinity:F2}\n" +
-            $"<size=80%>{supplyInfo}</size>";
-    }
-
-    // ÃÖÁ¾ °¡°İ °è»ê: ±âº»°¡ ¡¿ RBFN º¸Á¤ ¡¿ °ø±Ş Æä³ÎÆ¼
-    int GetAdjustedPrice(ItemData item, int basePrice)
-    {
-        float rbfnMult = RBFNetwork.Instance != null ? RBFNetwork.Instance.PriceMultiplier : 1f;
-        float supplyMult = MarketSupplyManager.Instance != null
-            ? MarketSupplyManager.Instance.GetSupplyMultiplier(item)
-            : 1f;
-
-        return Mathf.Max(1, Mathf.RoundToInt(basePrice * rbfnMult * supplyMult));
-    }
-
-    // ½½·Ô ¼±ÅÃ
     public void SelectSlot(int index)
     {
         selectedSlotIndex = index;
         RefreshUI();
-
-        var slot = InventoryManager.Instance?.GetSlot(index);
-        if (slot == null || slot.IsEmpty()) return;
-
-        bool canSell = InventoryManager.Instance.CanSellSlot(index);
-        if (!canSell)
-            ShowMessage("ÆÇ¸ÅÇÒ ¼ö ¾ø´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
     }
 
-    // ÆÇ¸Å (1°³)
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // íŒë§¤ - FCM ê¸°ë¡ + RBFN ì¶”ë¡  + RBFN í•™ìŠµ
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public void QuickSell(int index)
     {
-        var slot = InventoryManager.Instance?.GetSlot(index);
-        if (slot == null || slot.IsEmpty())
-        {
-            ShowMessage("ÆÇ¸ÅÇÒ ¼ö ¾ø´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
-            return;
-        }
-
-        ItemData item = slot.itemData;
-        int basePrice = item.sellPrice;
-        int totalQty = slot.quantity;
-        int sellQty = 1;
-
-        // ÀÎº¥Åä¸®¿¡¼­ 1°³ Â÷°¨ (raw °¡°İ ¹«½Ã, ¿ì¸®°¡ Á÷Á¢ °è»ê)
-        bool removed = InventoryManager.Instance.RemoveItem(item, sellQty);
-        if (!removed)
-        {
-            // Æú¹é: SellOneFromSlot »ç¿ë
-            int rawPrice = InventoryManager.Instance.SellOneFromSlot(index);
-            if (rawPrice <= 0)
-            {
-                ShowMessage("ÆÇ¸ÅÇÒ ¼ö ¾ø´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
-                return;
-            }
-        }
-
-        // °ø±Ş·® µî·Ï (Æä³ÎÆ¼ °è»ê Àü¿¡)
-        if (MarketSupplyManager.Instance != null)
-            MarketSupplyManager.Instance.RegisterSale(item, sellQty);
-
-        // ÃÖÁ¾ °¡°İ °è»ê (RBFN º¸Á¤ + °ø±Ş Æä³ÎÆ¼)
-        int finalPrice = GetAdjustedPrice(item, basePrice * sellQty);
-        MoneyManager.Instance.AddMoney(finalPrice);
-
-        // FCM °Å·¡ ±â·Ï
-        if (FCMSalesAnalyzer.Instance != null)
-            FCMSalesAnalyzer.Instance.RecordTrade(basePrice, sellQty, totalQty);
-
-        // RBFN ÇĞ½À
-        TrainRBFN(basePrice, sellQty, totalQty);
-
-        // ¸Ş½ÃÁö
-        ShowSaleMessage(basePrice * sellQty, finalPrice, item);
-
-        RefreshUI();
+        ProcessSale(index, 1);
     }
 
-    // ÆÇ¸Å (ÀüÃ¼)
     public void QuickSellAll(int index)
     {
         var slot = InventoryManager.Instance?.GetSlot(index);
+        if (slot == null || slot.IsEmpty()) return;
+        ProcessSale(index, slot.quantity);
+    }
+
+    /// <summary>
+    /// íŒë§¤ 1íšŒì˜ ì „ì²´ íë¦„
+    /// 1) íŒë§¤ ì „ ë°ì´í„° ìº¡ì²˜
+    /// 2) FCM ê¸°ë¡ (í–‰ë™ ë²¡í„°)
+    /// 3) RBFN ì…ë ¥ êµ¬ì„± (7ì°¨ì›) + ì¶”ë¡ 
+    /// 4) ë³´ì •ëœ ê°€ê²©ìœ¼ë¡œ íŒë§¤
+    /// 5) RBFN í•™ìŠµ (ê±°ë˜ ê²°ê³¼ í”¼ë“œë°±)
+    /// </summary>
+    private void ProcessSale(int index, int quantity)
+    {
+        var slot = InventoryManager.Instance?.GetSlot(index);
         if (slot == null || slot.IsEmpty())
         {
-            ShowMessage("ÆÇ¸ÅÇÒ ¼ö ¾ø´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
+            ShowMessage("íŒë§¤í•  ìˆ˜ ì—†ëŠ” ì•„ì´í…œì…ë‹ˆë‹¤.");
             return;
         }
 
-        ItemData item = slot.itemData;
-        int basePrice = item.sellPrice;
+        int itemPrice = slot.itemData.sellPrice;
         int totalQty = slot.quantity;
+        int sellQty = Mathf.Min(quantity, totalQty);
 
-        // ÀüÃ¼ ÆÇ¸Å - ÇÑ °³¾¿ °¡°İ °è»êÇØ¼­ ÇÕ»ê (°ø±Ş Æä³ÎÆ¼°¡ ´©Áø Àû¿ëµÊ)
-        int totalEarned = 0;
-        for (int i = 0; i < totalQty; i++)
+        // (1) FCMì— ê±°ë˜ ë°ì´í„° ê¸°ë¡ â†’ 4 í´ëŸ¬ìŠ¤í„° ì†Œì†ë„ ê°±ì‹ 
+        FCMSalesAnalyzer.Instance?.RecordTrade(itemPrice, sellQty, totalQty);
+
+        // (2) RBFN ì…ë ¥ 7ì°¨ì› êµ¬ì„±
+        float[] fcmMembership = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[4];
+        float normalizedQty = Mathf.Clamp01((float)sellQty / 20f);  // 20ê°œ ê¸°ì¤€
+        float normalizedPrice = Mathf.Clamp01((float)itemPrice / 100f);
+        float[] rbfnInput = RBFNetwork.BuildInput(fcmMembership, normalizedQty, normalizedPrice, affinityWithNpc);
+
+        // (3) RBFN ì¶”ë¡  â†’ ê°€ê²© ë³´ì • ê³„ìˆ˜ ë“± íšë“
+        RBFNetwork.Instance?.Predict(rbfnInput);
+        float multiplier = RBFNetwork.Instance?.PriceMultiplier ?? 1f;
+
+        // (4) ì‹¤ì œ íŒë§¤ ì²˜ë¦¬ (ë³´ì •ëœ ê°€ê²©)
+        int basePrice = (quantity == 1)
+            ? InventoryManager.Instance.SellOneFromSlot(index)
+            : InventoryManager.Instance.SellAllFromSlot(index);
+
+        if (basePrice <= 0)
         {
-            if (MarketSupplyManager.Instance != null)
-                MarketSupplyManager.Instance.RegisterSale(item, 1);
-
-            int unitPrice = GetAdjustedPrice(item, basePrice);
-            totalEarned += unitPrice;
+            ShowMessage("íŒë§¤í•  ìˆ˜ ì—†ëŠ” ì•„ì´í…œì…ë‹ˆë‹¤.");
+            return;
         }
 
-        // ÀÎº¥Åä¸®¿¡¼­ Â÷°¨
-        InventoryManager.Instance.SellAllFromSlot(index);
-        MoneyManager.Instance.AddMoney(totalEarned);
+        int finalPrice = Mathf.RoundToInt(basePrice * multiplier);
+        MoneyManager.Instance.AddMoney(finalPrice);
 
-        // FCM °Å·¡ ±â·Ï
-        if (FCMSalesAnalyzer.Instance != null)
-            FCMSalesAnalyzer.Instance.RecordTrade(basePrice, totalQty, totalQty);
+        // (5) RBFN í•™ìŠµ - ê±°ë˜ ê²°ê³¼ í”¼ë“œë°±
+        TrainRBFN(rbfnInput, sellQty, totalQty, itemPrice, multiplier);
 
-        // RBFN ÇĞ½À
-        TrainRBFN(basePrice, totalQty, totalQty);
+        // (6) ì¹œë°€ë„ ëˆ„ì 
+        float deltaAffinity = RBFNetwork.Instance?.AffinityDelta ?? 0f;
+        affinityWithNpc = Mathf.Clamp01(affinityWithNpc + deltaAffinity);
 
-        int baseSum = basePrice * totalQty;
-        ShowSaleMessage(baseSum, totalEarned, item, true);
-
-        selectedSlotIndex = -1;
+        ShowMessage($"íŒë§¤ ì™„ë£Œ! +{finalPrice} G (Ã—{multiplier:F2})");
+        UpdateNpcDialogue();
         RefreshUI();
     }
 
-    // ÆÇ¸Å °á°ú ¸Ş½ÃÁö »ı¼º
-    void ShowSaleMessage(int baseSum, int finalSum, ItemData item, bool bulk = false)
+    /// <summary>
+    /// ê±°ë˜ ê²°ê³¼ë¡œ RBFN í•™ìŠµ
+    /// íœ´ë¦¬ìŠ¤í‹± íƒ€ê¹ƒê°’ ì‚°ì¶œ:
+    ///   - ì¢‹ì€ ê±°ë˜(í´ëŸ¬ìŠ¤í„° ì¼ì¹˜ ì˜ ë¨) â†’ ì¹œë°€ë„ +, ê°€ê²© +
+    ///   - ë¶€ì •ì  í–‰ë™(ê³¼ë„í•œ ëŒ€ëŸ‰) â†’ í†¤ â†“
+    /// </summary>
+    private void TrainRBFN(float[] input, int sellQty, int totalQty, int itemPrice, float currentMultiplier)
     {
-        string prefix = bulk ? "ÀüÃ¼ ÆÇ¸Å" : "ÆÇ¸Å ¿Ï·á";
+        // íƒ€ê¹ƒ íœ´ë¦¬ìŠ¤í‹± â€” ìš°ì„¸ í´ëŸ¬ìŠ¤í„°ì— ë§ëŠ” ì‘ëŒ€ë¥¼ í•™ìŠµ ëª©í‘œë¡œ
+        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
+        float[] targets = new float[RBFNetwork.OUTPUT_DIM];
 
-        if (finalSum >= baseSum)
+        // ê¸°ë³¸ê°’
+        targets[0] = 1.0f;   // PriceMultiplier
+        targets[1] = 0.01f;  // AffinityDelta (ì†Œí­ ì¦ê°€)
+        targets[2] = 0.5f;   // DealAcceptRate
+        targets[3] = 0.5f;   // DialogueTone
+        targets[4] = 0.0f;   // RepeatVisitBonus
+
+        // í´ëŸ¬ìŠ¤í„°ë³„ ë³´ìƒ ì¡°ì •
+        switch (cluster)
         {
-            int bonus = finalSum - baseSum;
-            if (bonus > 0)
-                ShowMessage($"{prefix}! +{finalSum} G (º¸³Ê½º +{bonus})");
-            else
-                ShowMessage($"{prefix}! +{finalSum} G");
+            case FCMSalesAnalyzer.ClusterType.Direct:
+                targets[0] = 1.08f;  // ê³ ê¸‰ ê±°ë˜ ìš°ëŒ€
+                targets[3] = 0.7f;
+                break;
+            case FCMSalesAnalyzer.ClusterType.Relational:
+                targets[0] = 1.05f;
+                targets[1] = 0.03f;  // ì¹œë°€ë„ í¬ê²Œ ì¦ê°€
+                targets[3] = 0.75f;
+                targets[4] = 0.05f;  // ë‹¨ê³¨ ë³´ë„ˆìŠ¤
+                break;
+            case FCMSalesAnalyzer.ClusterType.Wholesale:
+                targets[0] = 0.95f;  // ëŒ€ëŸ‰ í• ì¸
+                targets[2] = 0.7f;   // í¥ì • ì˜ ë°›ì•„ì¤Œ
+                break;
+            case FCMSalesAnalyzer.ClusterType.Balanced:
+                targets[0] = 1.0f;
+                break;
         }
-        else
-        {
-            int loss = baseSum - finalSum;
-            float ratio = (float)finalSum / baseSum;
-            if (ratio < 0.5f)
-                ShowMessage($"<color=#FF6B6B>{prefix}... +{finalSum} G (°ø±Ş °úÀ×À¸·Î -{loss})</color>");
-            else
-                ShowMessage($"<color=#FFA500>{prefix}! +{finalSum} G (-{loss})</color>");
-        }
+
+        RBFNetwork.Instance?.Train(input, targets);
     }
 
-    // RBFN ¿Â¶óÀÎ ÇĞ½À
-    void TrainRBFN(int itemPrice, int quantitySold, int totalQty)
-    {
-        if (FCMSalesAnalyzer.Instance == null || RBFNetwork.Instance == null) return;
-
-        // ¸ñÇ¥ °¡°İ ¹èÀ²: ºñ½Ñ ¾ÆÀÌÅÛ + ´ë·® ÆÇ¸Å -> ´Ü°ñ ¿ì´ë ¾÷
-        float priceTarget = 1.0f;
-        float priceNorm = Mathf.Clamp01(itemPrice / 100f);
-        float bulkNorm = totalQty > 0 ? (float)quantitySold / totalQty : 0f;
-        priceTarget += (priceNorm * 0.05f) + (bulkNorm * 0.05f);
-
-        // ¸ñÇ¥ Ä£ÇÔµµ: °Å·¡ È½¼ö°¡ ´Ã¼ö·Ï ÃµÃµÈ÷ »ó½Â
-        int tradeCount = FCMSalesAnalyzer.Instance.TradeCount;
-        float affinityTarget = Mathf.Clamp01(0.4f + tradeCount * 0.03f);
-
-        // LMS 1½ºÅÜ ÇĞ½À
-        RBFNetwork.Instance.Train(
-            FCMSalesAnalyzer.Instance.LastMembership,
-            priceTarget,
-            affinityTarget
-        );
-
-        UpdateRBFNPrediction();
-    }
-
-    // ¸Ş½ÃÁö
     public void ShowMessage(string msg)
     {
         if (messageText == null) return;
@@ -408,7 +291,7 @@ public class ShopSellUI : MonoBehaviour
 
     IEnumerator HideMessage()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2f);
         if (messageText != null) messageText.text = "";
     }
 }
