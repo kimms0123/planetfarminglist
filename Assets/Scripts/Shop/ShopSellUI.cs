@@ -5,10 +5,14 @@ using TMPro;
 using System.Collections;
 
 /// <summary>
-/// 상점 판매 UI
-/// 
-/// [개정] FCM 4 클러스터 + RBFN 7차원 입력 전달
-/// 판매 1건마다: FCM 분류 → RBFN 입력 구성 → 추론 → 가격 보정 → 학습
+/// 상점 판매 UI (보고서 v3)
+///
+/// 판매 1건 흐름:
+///   1) FCM 기록 → 3 클러스터 소속도(거시)
+///   2) RBFN 5차원 입력 구성 [수량,단가,품질,친밀도,계절적합] → 추론(미시, FCM과 독립)
+///   3) ResponseCombiner: RBF 출력을 FCM 멤버십으로 가중 결합 → 최종 가격·친밀도·톤
+///   4) 보정 가격으로 판매, 친밀도 갱신, 대사 출력
+///   5) RBFN LMS 학습 (거래 결과 피드백)
 /// </summary>
 public class ShopSellUI : MonoBehaviour
 {
@@ -39,6 +43,10 @@ public class ShopSellUI : MonoBehaviour
     [Header("NPC 친밀도 (현재 상점)")]
     [Tooltip("이 상점 NPC와의 친밀도 (0~1)")]
     [SerializeField] private float affinityWithNpc = 0.5f;
+
+    [Header("RBFN 입력 정규화 기준")]
+    [SerializeField] private float maxItemPrice = 100f; // 단가/품질 정규화 기준
+    [SerializeField] private float maxQty = 20f;        // 수량 정규화 기준
 
     public bool IsShopOpen { get; private set; } = false;
     private int selectedSlotIndex = -1;
@@ -94,16 +102,17 @@ public class ShopSellUI : MonoBehaviour
         PlayerController.IsInputLocked = false;
     }
 
-    /// <summary>
-    /// NPC 대사 갱신 - FCM 클러스터 + RBFN 톤
-    /// </summary>
+    /// <summary>NPC 대사 갱신 — FCM 우세 클러스터 + (멤버십·친밀도) 기반 톤</summary>
     void UpdateNpcDialogue()
     {
         if (npcDialogueText == null) return;
 
         var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
-        var tone = RBFNetwork.Instance?.GetToneType() ?? RBFNetwork.DialogueToneType.Neutral;
+        float[] u = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[3];
         int count = FCMSalesAnalyzer.Instance?.TradeCount ?? 0;
+
+        float toneScore = ResponseCombiner.ComputeTone(u, affinityWithNpc);
+        var tone = ResponseCombiner.ToTone(toneScore);
 
         npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, tone, count);
     }
@@ -142,12 +151,10 @@ public class ShopSellUI : MonoBehaviour
         if (slot == null || slot.IsEmpty()) return;
 
         bool canSell = InventoryManager.Instance.CanSellSlot(selectedSlotIndex);
+        if (itemNameText != null) itemNameText.text = slot.itemData.itemName;
 
-        if (itemNameText != null)
-            itemNameText.text = slot.itemData.itemName;
-
-        // RBFN 가격 보정 미리보기
-        float multiplier = RBFNetwork.Instance?.PriceMultiplier ?? 1f;
+        // 최종(결합) 가격 보정 미리보기
+        float multiplier = canSell ? PreviewMultiplier(slot, slot.quantity) : 1f;
         int adjustedPrice = Mathf.RoundToInt(slot.itemData.sellPrice * multiplier);
 
         if (itemPriceText != null)
@@ -163,12 +170,7 @@ public class ShopSellUI : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────
-    // 판매 - FCM 기록 + RBFN 추론 + RBFN 학습
-    // ─────────────────────────────────────────────
-    public void QuickSell(int index)
-    {
-        ProcessSale(index, 1);
-    }
+    public void QuickSell(int index) => ProcessSale(index, 1);
 
     public void QuickSellAll(int index)
     {
@@ -177,14 +179,46 @@ public class ShopSellUI : MonoBehaviour
         ProcessSale(index, slot.quantity);
     }
 
+    // ─────────────────────────────────────────────
+    // 공통: RBFN 입력 5차원 구성
+    // ─────────────────────────────────────────────
+    private float[] BuildRbfInput(InventorySlot slot, int sellQty)
+    {
+        float qtyN = sellQty / Mathf.Max(1f, maxQty);
+        float priceN = slot.itemData.sellPrice / Mathf.Max(1f, maxItemPrice);
+        float qualityN = GetQualityNorm(slot.itemData);
+        float seasonFit = SeasonalDemand.Instance != null
+            ? SeasonalDemand.Instance.GetDemandFit(slot.itemData)
+            : 0.6f;
+
+        return RBFNetwork.BuildInput(qtyN, priceN, qualityN, affinityWithNpc, seasonFit);
+    }
+
     /// <summary>
-    /// 판매 1회의 전체 흐름
-    /// 1) 판매 전 데이터 캡처
-    /// 2) FCM 기록 (행동 벡터)
-    /// 3) RBFN 입력 구성 (7차원) + 추론
-    /// 4) 보정된 가격으로 판매
-    /// 5) RBFN 학습 (거래 결과 피드백)
+    /// 품질 정규화값(0~1).
+    /// TODO: ItemData 에 별도 품질/등급 필드가 있다면 이 한 줄만 교체하세요.
+    ///       (현재는 단가를 품질 대용 지표로 사용)
     /// </summary>
+    private float GetQualityNorm(ItemData item)
+        => Mathf.Clamp01(item.sellPrice / Mathf.Max(1f, maxItemPrice));
+
+    // 판매 전 결합 가격 보정 미리보기 (side effect로 RBFN.Predict 호출)
+    private float PreviewMultiplier(InventorySlot slot, int sellQty)
+    {
+        if (RBFNetwork.Instance == null) return 1f;
+
+        float[] input = BuildRbfInput(slot, sellQty);
+        RBFNetwork.Instance.Predict(input);
+
+        float[] u = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[3];
+        var r = ResponseCombiner.Combine(
+            u, RBFNetwork.Instance.PriceMultiplier, RBFNetwork.Instance.AffinityDelta, affinityWithNpc);
+        return r.price;
+    }
+
+    // ─────────────────────────────────────────────
+    // 판매 1회 전체 흐름
+    // ─────────────────────────────────────────────
     private void ProcessSale(int index, int quantity)
     {
         var slot = InventoryManager.Instance?.GetSlot(index);
@@ -198,20 +232,20 @@ public class ShopSellUI : MonoBehaviour
         int totalQty = slot.quantity;
         int sellQty = Mathf.Min(quantity, totalQty);
 
-        // (1) FCM에 거래 데이터 기록 → 4 클러스터 소속도 갱신
+        // (1) FCM 기록 → 3 클러스터 소속도
         FCMSalesAnalyzer.Instance?.RecordTrade(itemPrice, sellQty, totalQty);
+        float[] u = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[3];
 
-        // (2) RBFN 입력 7차원 구성
-        float[] fcmMembership = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[4];
-        float normalizedQty = Mathf.Clamp01((float)sellQty / 20f);  // 20개 기준
-        float normalizedPrice = Mathf.Clamp01((float)itemPrice / 100f);
-        float[] rbfnInput = RBFNetwork.BuildInput(fcmMembership, normalizedQty, normalizedPrice, affinityWithNpc);
+        // (2) RBFN 5차원 입력 + 추론 (FCM과 독립)
+        float[] rbfInput = BuildRbfInput(slot, sellQty);
+        RBFNetwork.Instance?.Predict(rbfInput);
+        float rbfPrice = RBFNetwork.Instance?.PriceMultiplier ?? 1f;
+        float rbfAff = RBFNetwork.Instance?.AffinityDelta ?? 0f;
 
-        // (3) RBFN 추론 → 가격 보정 계수 등 획득
-        RBFNetwork.Instance?.Predict(rbfnInput);
-        float multiplier = RBFNetwork.Instance?.PriceMultiplier ?? 1f;
+        // (3) 결합: RBF 출력 × FCM 멤버십 가중
+        var resp = ResponseCombiner.Combine(u, rbfPrice, rbfAff, affinityWithNpc);
 
-        // (4) 실제 판매 처리 (보정된 가격)
+        // (4) 보정 가격으로 판매
         int basePrice = (quantity == 1)
             ? InventoryManager.Instance.SellOneFromSlot(index)
             : InventoryManager.Instance.SellAllFromSlot(index);
@@ -222,60 +256,38 @@ public class ShopSellUI : MonoBehaviour
             return;
         }
 
-        int finalPrice = Mathf.RoundToInt(basePrice * multiplier);
+        int finalPrice = Mathf.RoundToInt(basePrice * resp.price);
         MoneyManager.Instance.AddMoney(finalPrice);
 
-        // (5) RBFN 학습 - 거래 결과 피드백
-        TrainRBFN(rbfnInput, sellQty, totalQty, itemPrice, multiplier);
+        // (5) 친밀도 갱신 + 대사
+        affinityWithNpc = Mathf.Clamp01(affinityWithNpc + resp.affinity);
+        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
+        int count = FCMSalesAnalyzer.Instance?.TradeCount ?? 0;
+        if (npcDialogueText != null)
+            npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, ResponseCombiner.ToTone(resp.tone), count);
 
-        // (6) 친밀도 누적
-        float deltaAffinity = RBFNetwork.Instance?.AffinityDelta ?? 0f;
-        affinityWithNpc = Mathf.Clamp01(affinityWithNpc + deltaAffinity);
+        // (6) RBFN LMS 학습 (거래 결과 휴리스틱 타깃)
+        TrainRBFN(rbfInput, cluster);
 
-        ShowMessage($"판매 완료! +{finalPrice} G (×{multiplier:F2})");
-        UpdateNpcDialogue();
+        ShowMessage($"판매 완료! +{finalPrice} G (×{resp.price:F2})");
         RefreshUI();
     }
 
-    /// <summary>
-    /// 거래 결과로 RBFN 학습
-    /// 휴리스틱 타깃값 산출:
-    ///   - 좋은 거래(클러스터 일치 잘 됨) → 친밀도 +, 가격 +
-    ///   - 부정적 행동(과도한 대량) → 톤 ↓
-    /// </summary>
-    private void TrainRBFN(float[] input, int sellQty, int totalQty, int itemPrice, float currentMultiplier)
+    /// <summary>거래 결과로 RBFN 학습 — 우세 클러스터별 휴리스틱 타깃 [PriceMultiplier, AffinityDelta]</summary>
+    private void TrainRBFN(float[] input, FCMSalesAnalyzer.ClusterType cluster)
     {
-        // 타깃 휴리스틱 — 우세 클러스터에 맞는 응대를 학습 목표로
-        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
         float[] targets = new float[RBFNetwork.OUTPUT_DIM];
+        targets[0] = 1.0f;   // 기본 가격
+        targets[1] = 0.01f;  // 기본 친밀도 소폭
 
-        // 기본값
-        targets[0] = 1.0f;   // PriceMultiplier
-        targets[1] = 0.01f;  // AffinityDelta (소폭 증가)
-        targets[2] = 0.5f;   // DealAcceptRate
-        targets[3] = 0.5f;   // DialogueTone
-        targets[4] = 0.0f;   // RepeatVisitBonus
-
-        // 클러스터별 보상 조정
         switch (cluster)
         {
             case FCMSalesAnalyzer.ClusterType.Direct:
-                targets[0] = 1.08f;  // 고급 거래 우대
-                targets[3] = 0.7f;
-                break;
+                targets[0] = 1.08f; targets[1] = 0.02f; break;
             case FCMSalesAnalyzer.ClusterType.Relational:
-                targets[0] = 1.05f;
-                targets[1] = 0.03f;  // 친밀도 크게 증가
-                targets[3] = 0.75f;
-                targets[4] = 0.05f;  // 단골 보너스
-                break;
+                targets[0] = 1.05f; targets[1] = 0.04f; break;   // 친밀도 적립 큼
             case FCMSalesAnalyzer.ClusterType.Wholesale:
-                targets[0] = 0.95f;  // 대량 할인
-                targets[2] = 0.7f;   // 흥정 잘 받아줌
-                break;
-            case FCMSalesAnalyzer.ClusterType.Balanced:
-                targets[0] = 1.0f;
-                break;
+                targets[0] = 0.96f; targets[1] = 0.01f; break;   // 대량 할인
         }
 
         RBFNetwork.Instance?.Train(input, targets);

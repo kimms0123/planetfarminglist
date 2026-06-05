@@ -1,107 +1,74 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// NPC ´ë»ç »ı¼º±â
-/// 
-/// [°³Á¤] 4 Å¬·¯½ºÅÍ ¡¿ 4 Åæ = 16Á¾ ´ë»ç ¸ÅÆ®¸¯½º
-/// FCM °á°ú + RBFNÀÇ DialogueToneÀ» °áÇÕÇØ ´ë»ç ¼±ÅÃ
+/// NPC ëŒ€ì‚¬ ìƒì„± â€” 3 í´ëŸ¬ìŠ¤í„°(ì§íŒ/ê´€ê³„/ë‚©í’ˆ) Ã— 4 í†¤(Cold/Neutral/Friendly/VeryFriendly) = 12ì¢… + ì½œë“œìŠ¤íƒ€íŠ¸
+///
+/// í´ëŸ¬ìŠ¤í„°(FCM ìš°ì„¸ ìœ í˜•)ëŠ” 'ë¬´ìŠ¨ ë§íˆ¬ ê³„ì—´ì¸ì§€'ë¥¼, í†¤(ê²°í•© ê²°ê³¼)ì€ 'ì–¼ë§ˆë‚˜ ì¹œê·¼í•œì§€'ë¥¼ ì •í•œë‹¤.
 /// </summary>
 public static class NPCDialogueGenerator
 {
-    /// <summary>
-    /// Å¬·¯½ºÅÍ + Åæ ±â¹İ ´ë»ç »ı¼º
-    /// </summary>
     public static string Generate(
         FCMSalesAnalyzer.ClusterType cluster,
-        RBFNetwork.DialogueToneType tone,
+        ResponseCombiner.Tone tone,
         int tradeCount)
     {
-        // Äİµå½ºÅ¸Æ® - °Å·¡ µ¥ÀÌÅÍ ºÎÁ· ½Ã
         if (cluster == FCMSalesAnalyzer.ClusterType.None || tradeCount < 3)
             return GetColdStartLine();
 
-        // 16Á¾ ¸ÅÆ®¸¯½º
-        return cluster switch
+        switch (cluster)
         {
-            FCMSalesAnalyzer.ClusterType.Direct => GetDirectLine(tone),
-            FCMSalesAnalyzer.ClusterType.Relational => GetRelationalLine(tone),
-            FCMSalesAnalyzer.ClusterType.Wholesale => GetWholesaleLine(tone),
-            FCMSalesAnalyzer.ClusterType.Balanced => GetBalancedLine(tone),
-            _ => "¾î¼­ ¿Í!"
-        };
+            case FCMSalesAnalyzer.ClusterType.Direct: return GetDirectLine(tone);
+            case FCMSalesAnalyzer.ClusterType.Relational: return GetRelationalLine(tone);
+            case FCMSalesAnalyzer.ClusterType.Wholesale: return GetWholesaleLine(tone);
+            default: return "ì–´ì„œ ì™€!";
+        }
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // Äİµå½ºÅ¸Æ® (°Å·¡ 0~2°Ç)
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    private static string GetDirectLine(ResponseCombiner.Tone tone)
+    {
+        switch (tone)
+        {
+            case ResponseCombiner.Tone.Cold: return "ê³ ê¸‰ ë¬¼ê±´ì´êµ°. ê°’ì€ ì •ì§í•˜ê²Œ ì³ì£¼ì§€.";
+            case ResponseCombiner.Tone.Neutral: return "í’ˆì§ˆì„ ë³´ëŠ” ëˆˆì´ ìˆêµ°. ê±°ë˜í•´ë³´ìê³ .";
+            case ResponseCombiner.Tone.Friendly: return "ì˜¤, ë˜ ì¢‹ì€ ë¬¼ê±´ì„ ê°€ì ¸ì™”ë„¤. ë‹¨ê³¨ ëŒ€ì ‘í•´ ì¤„ê²Œ.";
+            case ResponseCombiner.Tone.VeryFriendly: return "ì—­ì‹œ ìë„¤ëŠ” ëª…í’ˆë§Œ ê°€ì ¸ì™€! ìµœê³ ê°€ë¡œ ì³ì£¼ì§€!";
+            default: return "ê±°ë˜í•´ë³´ìê³ .";
+        }
+    }
+
+    private static string GetRelationalLine(ResponseCombiner.Tone tone)
+    {
+        switch (tone)
+        {
+            case ResponseCombiner.Tone.Cold: return "ë˜ ì™”êµ°. ë­, ê±°ë˜ëŠ” ê±°ë˜ì§€.";
+            case ResponseCombiner.Tone.Neutral: return "ê¾¸ì¤€íˆ ì˜¤ëŠ”êµ°. ì¢‹ì•„, ê±°ë˜í•´ë³´ì.";
+            case ResponseCombiner.Tone.Friendly: return "ì–´, ë‹¨ê³¨ì´ë„¤! ì˜¤ëŠ˜ì€ ë­ ê°€ì ¸ì™”ë‚˜?";
+            case ResponseCombiner.Tone.VeryFriendly: return "ì´ì•¼, ìš°ë¦¬ ë‹¨ê³¨! ìë„¤ ë•ì— ê°€ê²Œê°€ ì˜ ëŒì•„ê°€.";
+            default: return "ê±°ë˜í•´ë³´ì.";
+        }
+    }
+
+    private static string GetWholesaleLine(ResponseCombiner.Tone tone)
+    {
+        switch (tone)
+        {
+            case ResponseCombiner.Tone.Cold: return "ë¬¼ëŸ‰ ë§êµ°. ë‹¨ê°€ëŠ” ì¢€ ê¹ì´ì§€ë§Œ ë°›ì•„ì£¼ì§€.";
+            case ResponseCombiner.Tone.Neutral: return "ì´ë§Œí¼ì´ë©´ ë„ë§¤ê°€ë¡œ ì²˜ë¦¬í•˜ìê³ .";
+            case ResponseCombiner.Tone.Friendly: return "ëŒ€ëŸ‰ ê±°ë˜ëŠ” ìë„¤ê°€ ìµœê³ ì•¼. ì‹œì›ì‹œì›í•˜ê²Œ ê°€ìê³ !";
+            case ResponseCombiner.Tone.VeryFriendly: return "ë‚©í’ˆì˜ ë‹¬ì¸! ìë„¤ ê°™ì€ ê±°ë˜ì²˜ëŠ” ì •ë§ ê·€í•˜ë„¤.";
+            default: return "í•œ ë²ˆì— ë‹¤ ë°›ì•„ì£¼ì§€.";
+        }
+    }
+
     private static string GetColdStartLine()
     {
-        string[] lines = {
-            "¾î¼­ ¿Í! ¹¹ ÆÈ °Å¶óµµ ÀÖ¾î?",
-            "¼öÈ®¹°Àº ¿©±â¼­ ÆÇ¸ÅÇÒ ¼ö ÀÖ¾î.",
-            "ÁÁÀº ¹°°ÇÀÌ¸é °ªÀ» ´õ ÃÄÁÖ°Ú´Ù°í.",
-            "Ã³À½ º¸´Â ¾ó±¼ÀÌ±º. ÀÚ, °Å·¡ÇØº¸ÀÚ°í!"
+        string[] lines =
+        {
+            "ì–´ì„œ ì™€! ë­ íŒ” ê±°ë¼ë„ ìˆì–´?",
+            "ìˆ˜í™•ë¬¼ì€ ì—¬ê¸°ì„œ íŒë§¤í•  ìˆ˜ ìˆì–´.",
+            "ì¢‹ì€ ë¬¼ê±´ì´ë©´ ê°’ì„ ë” ì³ì£¼ê² ë‹¤ê³ .",
+            "ì²˜ìŒ ë³´ëŠ” ì–¼êµ´ì´êµ°. ì, ê±°ë˜í•´ë³´ìê³ !"
         };
         return lines[Random.Range(0, lines.Length)];
-    }
-
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // Á÷ÆÇÇü (Direct) - ºñ½Ñ °Å ¼Ò·®¾¿ °Å·¡
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private static string GetDirectLine(RBFNetwork.DialogueToneType tone)
-    {
-        return tone switch
-        {
-            RBFNetwork.DialogueToneType.Cold => "°í±Ş ¹°°ÇÀÌ±º. °ªÀº Á¤Á÷ÇÏ°Ô ÃÄÁÖÁö.",
-            RBFNetwork.DialogueToneType.Neutral => "Ç°ÁúÀ» º¸´Â ´«ÀÌ ÀÖ±º. °Å·¡ÇØº¸ÀÚ°í.",
-            RBFNetwork.DialogueToneType.Friendly => "¿À, ¶Ç ÁÁÀº ¹°°ÇÀ» °¡Á®¿Ô³×. ´Ü°ñ ´ëÁ¢ÇØ ÁÙ°Ô.",
-            RBFNetwork.DialogueToneType.VeryFriendly => "¿ª½Ã ÀÚ³×´Â ¸íÇ°¸¸ °¡Á®¿Í! ÃÖ°í°¡·Î ÃÄÁÖÁö!",
-            _ => "°Å·¡ÇØº¸ÀÚ°í."
-        };
-    }
-
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // °ü°èÇü (Relational) - ÃµÃµÈ÷ °°Àº NPC ¹İº¹
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private static string GetRelationalLine(RBFNetwork.DialogueToneType tone)
-    {
-        return tone switch
-        {
-            RBFNetwork.DialogueToneType.Cold => "¶Ç ¿Ô±º. ¹¹, °Å·¡´Â °Å·¡Áö.",
-            RBFNetwork.DialogueToneType.Neutral => "²ÙÁØÈ÷ ¿À´Â±º. ÁÁ¾Æ, °Å·¡ÇØº¸ÀÚ.",
-            RBFNetwork.DialogueToneType.Friendly => "¾î, ´Ü°ñÀÌ³×! ¿À´ÃÀº ¹¹ °¡Á®¿Ô³ª?",
-            RBFNetwork.DialogueToneType.VeryFriendly => "ÀÌ¾ß, ¿ì¸® ´Ü°ñ! ÀÚ³× ´ö¿¡ °¡°Ô°¡ Àß µ¹¾Æ°¡.",
-            _ => "°Å·¡ÇØº¸ÀÚ."
-        };
-    }
-
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ³³Ç°Çü (Wholesale) - ´ë·® Áï½Ã ÆÇ¸Å
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private static string GetWholesaleLine(RBFNetwork.DialogueToneType tone)
-    {
-        return tone switch
-        {
-            RBFNetwork.DialogueToneType.Cold => "¹°·® ¸¹±º. ´Ü°¡´Â Á» ±ğÀÌÁö¸¸ ¹Ş¾ÆÁÖÁö.",
-            RBFNetwork.DialogueToneType.Neutral => "ÀÌ¸¸Å­ÀÌ¸é µµ¸Å°¡·Î Ã³¸®ÇÏÀÚ°í.",
-            RBFNetwork.DialogueToneType.Friendly => "´ë·® °Å·¡´Â ÀÚ³×°¡ ÃÖ°í¾ß. ½Ã¿ø½Ã¿øÇÏ°Ô °¡ÀÚ°í!",
-            RBFNetwork.DialogueToneType.VeryFriendly => "³³Ç°ÀÇ ´ŞÀÎ! ÀÚ³× °°Àº °Å·¡Ã³´Â Á¤¸» ±ÍÇÏ³×.",
-            _ => "ÇÑ ¹ø¿¡ ´Ù ¹Ş¾ÆÁÖÁö."
-        };
-    }
-
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ±ÕÇüÇü (Balanced) - ´Ù°¢ °æ¿µ
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private static string GetBalancedLine(RBFNetwork.DialogueToneType tone)
-    {
-        return tone switch
-        {
-            RBFNetwork.DialogueToneType.Cold => "ÀÌ°ÍÀú°Í °¡Á®¿Ô±º. º¸ÀÚ.",
-            RBFNetwork.DialogueToneType.Neutral => "´Ù¾çÇÏ°Ô °¡Á®¿À´Â±º. ÁÁ¾Æ.",
-            RBFNetwork.DialogueToneType.Friendly => "±ÕÇü ÀâÈù °Å·¡¾ß. º¸±â ÁÁ±º!",
-            RBFNetwork.DialogueToneType.VeryFriendly => "ÀÚ³× °°Àº ´ÙÀç´Ù´ÉÇÑ ³óºÎ´Â Ã³À½ÀÏ¼¼!",
-            _ => "°Å·¡ÇØº¸ÀÚ."
-        };
     }
 }

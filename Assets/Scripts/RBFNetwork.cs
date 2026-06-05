@@ -1,62 +1,51 @@
-using UnityEngine;
-using System.Collections.Generic;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// RBFN (Radial Basis Function Network) - NPC ÀÀ´ë °áÁ¤ ½Å°æ¸Á
-/// 
-/// [°³Á¤] ±³¼ö´Ô ÇÇµå¹é ¹İ¿µ - FCM°ú ¿ÏÀü µ¶¸³
-/// 
-/// ±¸Á¶:
-///   ÀÔ·ÂÃş (7): [FCM ¼Ò¼Óµµ 4°³ + °Å·¡ ¼ö·® + °Å·¡ °¡°İ + NPC Ä£¹Ğµµ]
-///   Àº´ĞÃş (7): °¡¿ì½Ã¾È RBF (ÀÚÃ¼ ¹«ÀÛÀ§ ÃÊ±âÈ­ ÈÄ ÇĞ½À)
-///   Ãâ·ÂÃş (5): [PriceMultiplier, AffinityDelta, DealAcceptRate, DialogueTone, RepeatVisitBonus]
-/// 
-/// ÇÙ½É º¯°æ:
-///   - ±âÁ¸: Àº´ĞÃş Áß½É = FCM Å¬·¯½ºÅÍ Áß½É (Àß¸øµÈ °áÇÕ)
-///   - ½Å±Ô: Àº´ĞÃş Áß½ÉÀ» ¹«ÀÛÀ§ ÃÊ±âÈ­ ¡æ µ¥ÀÌÅÍ ºĞÆ÷¿¡ ¸Â°Ô ÀÚÃ¼ ÇĞ½À
+/// RBFN (Radial Basis Function Network) â€” ê±°ë˜ë³„ ë¯¸ì‹œ(Micro) ì‘ëŒ€ íšŒê·€
+///
+/// [ë³´ê³ ì„œ v3 ë°˜ì˜]
+///   ì…ë ¥ì¸µ (5): [ìˆ˜ëŸ‰, ë‹¨ê°€, í’ˆì§ˆ, NPCì¹œë°€ë„, ê³„ì ˆì í•©ë„]   â† FCM ì†Œì†ë„ëŠ” ë„£ì§€ ì•ŠìŒ(ë…ë¦½)
+///   ì€ë‹‰ì¸µ (5): ê°€ìš°ì‹œì•ˆ RBF, ì¤‘ì‹¬ì€ ì…ë ¥ê³µê°„ì—ì„œ ë¬´ì‘ìœ„ ì´ˆê¸°í™” (FCMê³¼ ë¬´ê´€)
+///   ì¶œë ¥ì¸µ (2): [PriceMultiplier(ê°€ê²© ë³´ì •), AffinityDelta(ì¹œë°€ë„ ë³€í™”)]
+///   ì¶œë ¥ ê°€ì¤‘ì¹˜ W: [OUTPUT_DIM, HIDDEN_DIM] = 2 Ã— 5
+///   í•™ìŠµ: LMS (ê±°ë˜ 1ê±´ = 1ìŠ¤í…)
+///
+/// ëŒ€ì‚¬ í†¤(Tone), ê±°ì‹œ ê°€ê²© ì„±í–¥ ë“± 'í”Œë ˆì´ì–´ ìœ í˜•'ì€ RBFNì´ ì•„ë‹ˆë¼
+/// ResponseCombinerì—ì„œ FCM ë©¤ë²„ì‹­ê³¼ ê°€ì¤‘ ê²°í•©í•´ ì‚°ì¶œí•œë‹¤.
 /// </summary>
 public class RBFNetwork : MonoBehaviour
 {
     public static RBFNetwork Instance;
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ³×Æ®¿öÅ© ±¸Á¶ »ó¼ö
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    public const int INPUT_DIM = 7;  // FCM 4 + qty + price + affinity
-    public const int HIDDEN_DIM = 7;  // ÀÔ·Â Â÷¿ø°ú µ¿ÀÏ (RBFN ÈŞ¸®½ºÆ½)
-    public const int OUTPUT_DIM = 5;  // Price, Affinity, Deal, Tone, Repeat
+    public const int INPUT_DIM = 5;  // ìˆ˜ëŸ‰, ë‹¨ê°€, í’ˆì§ˆ, ì¹œë°€ë„, ê³„ì ˆì í•©
+    public const int HIDDEN_DIM = 5;  // ì€ë‹‰ ë…¸ë“œ ìˆ˜ (ì„¤ê³„ ììœ  â†’ 5ë¡œ í™•ì •)
+    public const int OUTPUT_DIM = 2;  // PriceMultiplier, AffinityDelta
 
-    [Header("RBFN ÇÏÀÌÆÛÆÄ¶ó¹ÌÅÍ")]
+    [Header("RBFN í•˜ì´í¼íŒŒë¼ë¯¸í„°")]
     [SerializeField] private float sigma = 0.5f;
     [SerializeField] private float learningRate = 0.05f;
     [SerializeField] private int randomSeed = 42;
 
-    [Header("Ãâ·Â Å¬·¥ÇÁ ¹üÀ§")]
+    [Header("ì¶œë ¥ í´ë¨í”„ ë²”ìœ„")]
     [SerializeField] private float priceMin = 0.85f;
     [SerializeField] private float priceMax = 1.15f;
     [SerializeField] private float affinityDeltaMin = -0.1f;
     [SerializeField] private float affinityDeltaMax = 0.1f;
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // Àº´ĞÃş RBF ´º·± Áß½É (ÀÚÃ¼ µ¶¸³!)
-    // ÃÊ±â: ¹«ÀÛÀ§ ºĞÆ÷ ¡æ ÇĞ½ÀÀ¸·Î Á¶Á¤ (Phase 2)
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private float[][] hiddenCenters;  // [HIDDEN_DIM][INPUT_DIM]
+    [Header("ë””ë²„ê·¸")]
+    [SerializeField] private bool logDebug = true;
 
-    // Ãâ·ÂÃş °¡ÁßÄ¡ W[output][hidden]
-    private float[,] weights;  // [OUTPUT_DIM, HIDDEN_DIM]
-    private float[] bias;       // [OUTPUT_DIM]
+    // ì€ë‹‰ ì¤‘ì‹¬ [HIDDEN_DIM][INPUT_DIM] â€” FCMê³¼ ë…ë¦½, ë¬´ì‘ìœ„ ì´ˆê¸°í™”
+    private float[][] hiddenCenters;
+    // ì¶œë ¥ ê°€ì¤‘ì¹˜ [OUTPUT_DIM, HIDDEN_DIM] = 2Ã—5
+    private float[,] weights;
+    private float[] bias; // [OUTPUT_DIM]
 
-    // ¸¶Áö¸· Ãß·Ğ °á°ú
     public float[] LastActivations { get; private set; } = new float[HIDDEN_DIM];
     public float[] LastOutput { get; private set; } = new float[OUTPUT_DIM];
 
-    // ¿ÜºÎ Á¢±Ù¿ë Ãâ·Â
     public float PriceMultiplier => Mathf.Clamp(LastOutput[0], priceMin, priceMax);
     public float AffinityDelta => Mathf.Clamp(LastOutput[1], affinityDeltaMin, affinityDeltaMax);
-    public float DealAcceptRate => Mathf.Clamp01(LastOutput[2]);
-    public float DialogueTone => Mathf.Clamp01(LastOutput[3]);
-    public float RepeatVisitBonus => Mathf.Clamp(LastOutput[4], 0f, 0.1f);
 
     void Awake()
     {
@@ -67,72 +56,50 @@ public class RBFNetwork : MonoBehaviour
         InitializeNetwork();
     }
 
-    /// <summary>
-    /// Àº´ĞÃş Áß½É ¹«ÀÛÀ§ ÃÊ±âÈ­ (FCM°ú µ¶¸³)
-    /// Ãâ·ÂÃş °¡ÁßÄ¡µµ ÀÛÀº ¹«ÀÛÀ§°ªÀ¸·Î ÃÊ±âÈ­
-    /// </summary>
+    /// <summary>ì€ë‹‰ ì¤‘ì‹¬Â·ì¶œë ¥ ê°€ì¤‘ì¹˜ ë¬´ì‘ìœ„ ì´ˆê¸°í™” (FCMê³¼ ë…ë¦½).</summary>
     private void InitializeNetwork()
     {
         Random.InitState(randomSeed);
 
-        // Àº´ĞÃş Áß½É ¹«ÀÛÀ§ (ÀÔ·Â °ø°£ [0,1]^7¿¡ ºĞÆ÷)
         hiddenCenters = new float[HIDDEN_DIM][];
         for (int j = 0; j < HIDDEN_DIM; j++)
         {
             hiddenCenters[j] = new float[INPUT_DIM];
             for (int i = 0; i < INPUT_DIM; i++)
-                hiddenCenters[j][i] = Random.Range(0.2f, 0.8f);  // ÀÔ·Â °ø°£ ³»ºÎ
+                hiddenCenters[j][i] = Random.Range(0.2f, 0.8f); // ì…ë ¥ ê³µê°„ ë‚´ë¶€
         }
 
-        // Ãâ·ÂÃş °¡ÁßÄ¡ ÀÛÀº ¹«ÀÛÀ§°ª
         weights = new float[OUTPUT_DIM, HIDDEN_DIM];
         bias = new float[OUTPUT_DIM];
+        bias[0] = 1.0f;  // PriceMultiplier ê¸°ë³¸ 1.0 (ë³´ì • ì—†ìŒ)
+        bias[1] = 0.0f;  // AffinityDelta ê¸°ë³¸ 0
 
         for (int k = 0; k < OUTPUT_DIM; k++)
-        {
-            bias[k] = GetInitialBias(k);
             for (int j = 0; j < HIDDEN_DIM; j++)
                 weights[k, j] = Random.Range(-0.1f, 0.1f);
-        }
 
-        Debug.Log("[RBFN] ³×Æ®¿öÅ© ÃÊ±âÈ­ ¿Ï·á (ÀÔ·Â 7, Àº´Ğ 7, Ãâ·Â 5)");
-        Debug.Log($"[RBFN] Àº´Ğ Áß½ÉÀº FCM°ú µ¶¸³, ¹«ÀÛÀ§ ºĞÆ÷");
+        if (logDebug)
+            Debug.Log("[RBFN] ì´ˆê¸°í™” ì™„ë£Œ (ì…ë ¥ 5, ì€ë‹‰ 5, ì¶œë ¥ 2) â€” ì€ë‹‰ ì¤‘ì‹¬ì€ FCMê³¼ ë…ë¦½");
     }
 
-    private float GetInitialBias(int outputIdx)
-    {
-        // Ãâ·Âº° ÃÊ±â ÆíÇâ (ÇĞ½À ½ÃÀÛÁ¡)
-        return outputIdx switch
-        {
-            0 => 1.0f,   // PriceMultiplier: 1.0 (º¸Á¤ ¾øÀ½)
-            1 => 0.0f,   // AffinityDelta: 0
-            2 => 0.5f,   // DealAcceptRate: 0.5
-            3 => 0.5f,   // DialogueTone: Neutral
-            4 => 0.0f,   // RepeatVisitBonus: 0
-            _ => 0f
-        };
-    }
-
-    /// <summary>
-    /// ¼øÀüÆÄ: 7Â÷¿ø ÀÔ·Â ¡æ 5Â÷¿ø Ãâ·Â
-    /// </summary>
-    /// <param name="input">7Â÷¿ø: [u_Direct, u_Relational, u_Wholesale, u_Balanced, qty, price, affinity_npc]</param>
+    /// <summary>ìˆœì „íŒŒ: 5ì°¨ì› ì…ë ¥ â†’ 2ì°¨ì› ì¶œë ¥</summary>
+    /// <param name="input">[ìˆ˜ëŸ‰, ë‹¨ê°€, í’ˆì§ˆ, ì¹œë°€ë„, ê³„ì ˆì í•©]</param>
     public void Predict(float[] input)
     {
         if (input.Length != INPUT_DIM)
         {
-            Debug.LogError($"[RBFN] ÀÔ·Â Â÷¿ø ¿À·ù: {input.Length} != {INPUT_DIM}");
+            Debug.LogError($"[RBFN] ì…ë ¥ ì°¨ì› ì˜¤ë¥˜: {input.Length} != {INPUT_DIM}");
             return;
         }
 
-        // 1. Àº´ĞÃş °¡¿ì½Ã¾È È°¼ºÈ­
+        // 1) ì€ë‹‰ì¸µ ê°€ìš°ì‹œì•ˆ í™œì„±í™”
         for (int j = 0; j < HIDDEN_DIM; j++)
         {
             float distSq = SquaredDistance(input, hiddenCenters[j]);
             LastActivations[j] = Mathf.Exp(-distSq / (2f * sigma * sigma));
         }
 
-        // 2. Ãâ·ÂÃş (¼±Çü °áÇÕ)
+        // 2) ì¶œë ¥ì¸µ ì„ í˜• ê²°í•©
         for (int k = 0; k < OUTPUT_DIM; k++)
         {
             float sum = bias[k];
@@ -141,27 +108,22 @@ public class RBFNetwork : MonoBehaviour
             LastOutput[k] = sum;
         }
 
-        Debug.Log($"[RBFN] ¿¹Ãø: °¡°İ¡¿{PriceMultiplier:F3} | Ä£¹Ğ¡¾{AffinityDelta:+0.00;-0.00} | " +
-                  $"ÈïÁ¤ {DealAcceptRate:P0} | Åæ {DialogueTone:F2} | ´Ü°ñ+{RepeatVisitBonus:F3}");
+        if (logDebug)
+            Debug.Log($"[RBFN] ì˜ˆì¸¡: ê°€ê²©Ã—{PriceMultiplier:F3} | ì¹œë°€Â±{AffinityDelta:+0.00;-0.00}");
     }
 
-    /// <summary>
-    /// LMS ÇĞ½À - °Å·¡ °á°ú ÇÇµå¹éÀ¸·Î °¡ÁßÄ¡ ¾÷µ¥ÀÌÆ®
-    /// </summary>
-    /// <param name="input">7Â÷¿ø ÀÔ·Â (À§¿Í µ¿ÀÏ)</param>
-    /// <param name="targets">5Â÷¿ø ¸ñÇ¥°ª</param>
+    /// <summary>LMS í•™ìŠµ: W_jk â† W_jk + Î·Â·(t_j âˆ’ y_j)Â·Ï†_k</summary>
+    /// <param name="targets">[ëª©í‘œ PriceMultiplier, ëª©í‘œ AffinityDelta]</param>
     public void Train(float[] input, float[] targets)
     {
         if (targets.Length != OUTPUT_DIM)
         {
-            Debug.LogError($"[RBFN] Å¸±ê Â÷¿ø ¿À·ù: {targets.Length} != {OUTPUT_DIM}");
+            Debug.LogError($"[RBFN] íƒ€ê¹ƒ ì°¨ì› ì˜¤ë¥˜: {targets.Length} != {OUTPUT_DIM}");
             return;
         }
 
-        // 1. ¼øÀüÆÄ·Î ÇöÀç ¿¹Ãø °è»ê
         Predict(input);
 
-        // 2. Ãâ·Âº° LMS ¾÷µ¥ÀÌÆ®: w_kj ¡ç w_kj + ¥ç ¡¤ (t_k - y_k) ¡¤ ¥õ_j
         for (int k = 0; k < OUTPUT_DIM; k++)
         {
             float error = targets[k] - LastOutput[k];
@@ -170,24 +132,21 @@ public class RBFNetwork : MonoBehaviour
             bias[k] += learningRate * error;
         }
 
-        Debug.Log($"[RBFN ÇĞ½À] Å¸±ê=[{targets[0]:F2}/{targets[1]:F2}/{targets[2]:F2}/{targets[3]:F2}/{targets[4]:F2}]");
+        if (logDebug)
+            Debug.Log($"[RBFN í•™ìŠµ] íƒ€ê¹ƒ=[ê°€ê²© {targets[0]:F2}, ì¹œë°€ {targets[1]:F3}]");
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ÀÔ·Â º¤ÅÍ »ı¼º ÇïÆÛ - FCM °á°ú + °Å·¡ Æ¯¼º °áÇÕ
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    /// <summary>
-    /// RBFN ÀÔ·Â º¤ÅÍ »ı¼º
-    /// </summary>
-    public static float[] BuildInput(float[] fcmMembership, float qty, float price, float affinityNpc)
+    /// <summary>ì…ë ¥ 5ì°¨ì› êµ¬ì„± (FCM ì†Œì†ë„ëŠ” ë„£ì§€ ì•ŠìŒ â€” ë…ë¦½).</summary>
+    public static float[] BuildInput(float qty, float price, float quality, float affinityNpc, float seasonFit)
     {
-        // fcmMembershipÀº 4Â÷¿ø [Direct, Relational, Wholesale, Balanced]
-        float[] input = new float[INPUT_DIM];
-        for (int i = 0; i < 4; i++) input[i] = fcmMembership[i];
-        input[4] = Mathf.Clamp01(qty);
-        input[5] = Mathf.Clamp01(price);
-        input[6] = Mathf.Clamp01(affinityNpc);
-        return input;
+        return new float[]
+        {
+            Mathf.Clamp01(qty),
+            Mathf.Clamp01(price),
+            Mathf.Clamp01(quality),
+            Mathf.Clamp01(affinityNpc),
+            Mathf.Clamp01(seasonFit)
+        };
     }
 
     private float SquaredDistance(float[] a, float[] b)
@@ -198,30 +157,6 @@ public class RBFNetwork : MonoBehaviour
         return sum;
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ´ë»ç Åæ ¸ÅÇÎ (DialogueTone 0~1 ¡æ enum 4´Ü°è)
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    public enum DialogueToneType
-    {
-        Cold,         // 0.0 ~ 0.3
-        Neutral,      // 0.3 ~ 0.6
-        Friendly,     // 0.6 ~ 0.85
-        VeryFriendly  // 0.85 ~ 1.0
-    }
-
-    public DialogueToneType GetToneType()
-    {
-        float t = DialogueTone;
-        if (t < 0.3f) return DialogueToneType.Cold;
-        if (t < 0.6f) return DialogueToneType.Neutral;
-        if (t < 0.85f) return DialogueToneType.Friendly;
-        return DialogueToneType.VeryFriendly;
-    }
-
     public string GetDebugInfo()
-    {
-        return $"P¡¿{PriceMultiplier:F3} | A{AffinityDelta:+0.00;-0.00} | " +
-               $"Deal {DealAcceptRate:P0} | Tone {GetToneType()} | " +
-               $"Repeat+{RepeatVisitBonus:F3}";
-    }
+        => $"PÃ—{PriceMultiplier:F3} | A{AffinityDelta:+0.00;-0.00}";
 }

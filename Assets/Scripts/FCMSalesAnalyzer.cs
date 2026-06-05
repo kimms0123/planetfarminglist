@@ -1,12 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// FCM (Fuzzy C-Means) ±â¹İ ÇÃ·¹ÀÌ¾î ÆÇ¸Å Çàµ¿ ºĞ¼®±â
-/// 
-/// [°³Á¤] ±³¼ö´Ô ÇÇµå¹é ¹İ¿µ - 4 Å¬·¯½ºÅÍ·Î È®Àå
-/// - 3Â÷¿ø Çàµ¿ º¤ÅÍ: [Æò±Õ°¡°İ, ÆÇ¸Å¼Óµµ, ´ë·®ÆÇ¸ÅºñÀ²]
-/// - 4°³ Å¬·¯½ºÅÍ: Á÷ÆÇÇü / °ü°èÇü / ³³Ç°Çü / ±ÕÇüÇü
+/// FCM (Fuzzy C-Means) ê¸°ë°˜ í”Œë ˆì´ì–´ ê±°ë˜ íŒ¨í„´ ë¶„ì„ê¸° â€” ê±°ì‹œ(Macro) ë¶„ë¥˜
+///
+/// [ë³´ê³ ì„œ v3 ë°˜ì˜]
+/// - 3ì°¨ì› í–‰ë™ ë²¡í„°: [í‰ê· ê°€ê²©, íŒë§¤ì†ë„, ëŒ€ëŸ‰íŒë§¤ë¹„ìœ¨]  (ëª¨ë‘ 0~1 ì •ê·œí™”)
+/// - 3ê°œ í´ëŸ¬ìŠ¤í„°: ì§íŒ(Direct) / ê´€ê³„(Relational) / ë‚©í’ˆ(Wholesale)
+/// - ê±°ë¦¬ ì²™ë„: ìœ í´ë¦¬ë“œ (ë³´ê³ ì„œ 4ì¥ ê²°ì •)
+/// - ìµœê·¼ 5ê±´ í‰ê· ìœ¼ë¡œ í‰í™œí™”
+/// - RBFNê³¼ ì™„ì „ ë…ë¦½: ì†Œì†ë„(LastMembership)ëŠ” RBFN ì…ë ¥ìœ¼ë¡œ ë„˜ê¸°ì§€ ì•Šê³ ,
+///   ê²°í•©(ResponseCombiner) ë‹¨ê³„ì—ì„œ 'ê°€ì¤‘ì¹˜'ë¡œë§Œ ì‚¬ìš©ëœë‹¤.
 /// </summary>
 public class FCMSalesAnalyzer : MonoBehaviour
 {
@@ -14,31 +18,35 @@ public class FCMSalesAnalyzer : MonoBehaviour
 
     public enum ClusterType
     {
-        None,         // °Å·¡ µ¥ÀÌÅÍ ºÎÁ·
-        Direct,       // Á÷ÆÇÇü - ºñ½Ñ °Å ¼Ò·®¾¿
-        Relational,   // °ü°èÇü - ÃµÃµÈ÷, °°Àº NPC ¹İº¹
-        Wholesale,    // ³³Ç°Çü - ´ë·® Áï½Ã ÆÇ¸Å
-        Balanced      // ±ÕÇüÇü - ´Ù°¢ °æ¿µ
+        None,         // ê±°ë˜ ë°ì´í„° ë¶€ì¡±
+        Direct,       // ì§íŒí˜• â€” ê³ ê¸‰ ë¬¼ê±´ì„ ì†ŒëŸ‰ì”© ë¹ ë¥´ê²Œ
+        Relational,   // ê´€ê³„í˜• â€” ì¤‘ê°„ê°€Â·ëŠê¸‹Â·ë‹¨ê³¨ ì§€í–¥
+        Wholesale     // ë‚©í’ˆí˜• â€” ì €ë‹¨ê°€ë¼ë„ ëŒ€ëŸ‰ ì¦‰ì‹œ ì²˜ë¶„
     }
 
-    [Header("Å¬·¯½ºÅÍ Áß½É (3Â÷¿ø Çàµ¿º¤ÅÍ)")]
-    [SerializeField] private float[] directCenter = { 0.7f, 0.6f, 0.2f };
-    [SerializeField] private float[] relationalCenter = { 0.5f, 0.3f, 0.5f };
-    [SerializeField] private float[] wholesaleCenter = { 0.4f, 0.9f, 0.9f };
-    [SerializeField] private float[] balancedCenter = { 0.5f, 0.5f, 0.5f };
+    public const int CLUSTER_COUNT = 3;
 
-    [Header("FCM ÆÄ¶ó¹ÌÅÍ")]
-    [SerializeField] private float fuzziness = 2f;
+    [Header("í´ëŸ¬ìŠ¤í„° ì¤‘ì‹¬ (3ì°¨ì› í–‰ë™ë²¡í„° [í‰ê· ê°€, íŒë§¤ì†ë„, ëŒ€ëŸ‰ë¹„ìœ¨])")]
+    [SerializeField] private float[] directCenter = { 0.75f, 0.65f, 0.20f };
+    [SerializeField] private float[] relationalCenter = { 0.50f, 0.30f, 0.50f };
+    [SerializeField] private float[] wholesaleCenter = { 0.40f, 0.90f, 0.90f };
+
+    [Header("FCM íŒŒë¼ë¯¸í„°")]
+    [SerializeField] private float fuzziness = 2f;          // í¼ì§€ ê³„ìˆ˜ m
     [SerializeField] private int minTradesForAnalysis = 3;
+    [SerializeField] private int smoothingWindow = 5;     // ìµœê·¼ Nê±´ í‰ê· 
 
-    [Header("Á¤±ÔÈ­ ±âÁØ")]
+    [Header("ì •ê·œí™” ê¸°ì¤€")]
     [SerializeField] private float maxItemPrice = 100f;
     [SerializeField] private float maxHoldTime = 300f;
 
-    private List<Vector3> tradeHistory = new List<Vector3>();
+    [Header("ë””ë²„ê·¸")]
+    [SerializeField] private bool logDebug = true;
 
-    // 4Â÷¿ø ¼Ò¼Óµµ (°³Á¤: 3 ¡æ 4)
-    public float[] LastMembership { get; private set; } = new float[4];
+    private readonly List<Vector3> tradeHistory = new List<Vector3>();
+
+    // 3ì°¨ì› ì†Œì†ë„ (í•© = 1)
+    public float[] LastMembership { get; private set; } = new float[CLUSTER_COUNT];
     public ClusterType DominantCluster { get; private set; } = ClusterType.None;
     public int TradeCount => tradeHistory.Count;
 
@@ -49,18 +57,19 @@ public class FCMSalesAnalyzer : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    /// <summary>ê±°ë˜ 1ê±´ì„ í–‰ë™ ë²¡í„°ë¡œ ë³€í™˜í•´ ê¸°ë¡í•˜ê³  ë¶„ì„ì„ ê°±ì‹ í•œë‹¤.</summary>
     public void RecordTrade(int itemPrice, int quantitySold, int totalQuantityInSlot, float holdTimeSeconds = 0f)
     {
-        float avgPrice = Mathf.Clamp01((float)itemPrice / maxItemPrice);
+        float avgPrice = Mathf.Clamp01(itemPrice / maxItemPrice);
         float sellSpeed = Mathf.Clamp01(1f - (holdTimeSeconds / maxHoldTime));
         float bulkRatio = totalQuantityInSlot > 0
             ? Mathf.Clamp01((float)quantitySold / totalQuantityInSlot)
             : 0f;
 
-        Vector3 behaviorVector = new Vector3(avgPrice, sellSpeed, bulkRatio);
-        tradeHistory.Add(behaviorVector);
+        tradeHistory.Add(new Vector3(avgPrice, sellSpeed, bulkRatio));
 
-        Debug.Log($"[FCM] °Å·¡ ±â·Ï: °¡°İ={avgPrice:F2}, ¼Óµµ={sellSpeed:F2}, ´ë·®={bulkRatio:F2} (ÃÑ {tradeHistory.Count}°Ç)");
+        if (logDebug)
+            Debug.Log($"[FCM] ê¸°ë¡: ê°€ê²©={avgPrice:F2}, ì†ë„={sellSpeed:F2}, ëŒ€ëŸ‰={bulkRatio:F2} (ì´ {tradeHistory.Count}ê±´)");
 
         if (tradeHistory.Count >= minTradesForAnalysis)
             AnalyzeBehavior();
@@ -68,45 +77,40 @@ public class FCMSalesAnalyzer : MonoBehaviour
 
     private void AnalyzeBehavior()
     {
-        // ÃÖ±Ù 5°Ç Æò±Õ
-        int sampleCount = Mathf.Min(5, tradeHistory.Count);
-        Vector3 avgVector = Vector3.zero;
-        for (int i = tradeHistory.Count - sampleCount; i < tradeHistory.Count; i++)
-            avgVector += tradeHistory[i];
-        avgVector /= sampleCount;
+        // í‰í™œí™”: ìµœê·¼ smoothingWindowê±´ í‰ê· 
+        int n = Mathf.Min(smoothingWindow, tradeHistory.Count);
+        Vector3 avg = Vector3.zero;
+        for (int i = tradeHistory.Count - n; i < tradeHistory.Count; i++)
+            avg += tradeHistory[i];
+        avg /= n;
 
-        float[] vec = { avgVector.x, avgVector.y, avgVector.z };
+        float[] x = { avg.x, avg.y, avg.z };
 
-        float d1 = Mathf.Max(EuclideanDistance(vec, directCenter), 0.0001f);
-        float d2 = Mathf.Max(EuclideanDistance(vec, relationalCenter), 0.0001f);
-        float d3 = Mathf.Max(EuclideanDistance(vec, wholesaleCenter), 0.0001f);
-        float d4 = Mathf.Max(EuclideanDistance(vec, balancedCenter), 0.0001f);
+        float d1 = Mathf.Max(EuclideanDistance(x, directCenter), 1e-4f);
+        float d2 = Mathf.Max(EuclideanDistance(x, relationalCenter), 1e-4f);
+        float d3 = Mathf.Max(EuclideanDistance(x, wholesaleCenter), 1e-4f);
 
-        float exponent = 2f / (fuzziness - 1f);
+        float e = 2f / (fuzziness - 1f);   // m=2 â†’ 2
 
-        float u1 = 1f / (Mathf.Pow(d1 / d1, exponent) + Mathf.Pow(d1 / d2, exponent)
-                       + Mathf.Pow(d1 / d3, exponent) + Mathf.Pow(d1 / d4, exponent));
-        float u2 = 1f / (Mathf.Pow(d2 / d1, exponent) + Mathf.Pow(d2 / d2, exponent)
-                       + Mathf.Pow(d2 / d3, exponent) + Mathf.Pow(d2 / d4, exponent));
-        float u3 = 1f / (Mathf.Pow(d3 / d1, exponent) + Mathf.Pow(d3 / d2, exponent)
-                       + Mathf.Pow(d3 / d3, exponent) + Mathf.Pow(d3 / d4, exponent));
-        float u4 = 1f / (Mathf.Pow(d4 / d1, exponent) + Mathf.Pow(d4 / d2, exponent)
-                       + Mathf.Pow(d4 / d3, exponent) + Mathf.Pow(d4 / d4, exponent));
+        // u_ij = 1 / Î£_k (d_ij / d_ik)^(2/(m-1))
+        float u1 = 1f / (1f + Mathf.Pow(d1 / d2, e) + Mathf.Pow(d1 / d3, e));
+        float u2 = 1f / (Mathf.Pow(d2 / d1, e) + 1f + Mathf.Pow(d2 / d3, e));
+        float u3 = 1f / (Mathf.Pow(d3 / d1, e) + Mathf.Pow(d3 / d2, e) + 1f);
 
         LastMembership[0] = u1;
         LastMembership[1] = u2;
         LastMembership[2] = u3;
-        LastMembership[3] = u4;
 
-        float maxU = Mathf.Max(u1, Mathf.Max(u2, Mathf.Max(u3, u4)));
-        if (maxU == u1) DominantCluster = ClusterType.Direct;
-        else if (maxU == u2) DominantCluster = ClusterType.Relational;
-        else if (maxU == u3) DominantCluster = ClusterType.Wholesale;
-        else DominantCluster = ClusterType.Balanced;
+        float maxU = Mathf.Max(u1, Mathf.Max(u2, u3));
+        DominantCluster = maxU == u1 ? ClusterType.Direct
+                        : maxU == u2 ? ClusterType.Relational
+                        : ClusterType.Wholesale;
 
-        Debug.Log($"[FCM] ºĞ¼®: Á÷ÆÇ={u1:P0}, °ü°è={u2:P0}, ³³Ç°={u3:P0}, ±ÕÇü={u4:P0} ¡æ {DominantCluster}");
+        if (logDebug)
+            Debug.Log($"[FCM] ì§íŒ={u1:P0}, ê´€ê³„={u2:P0}, ë‚©í’ˆ={u3:P0} â†’ {DominantCluster}");
     }
 
+    // ë³´ê³ ì„œ 4ì¥: ìœ í´ë¦¬ë“œ ê±°ë¦¬ ì±„íƒ
     private float EuclideanDistance(float[] a, float[] b)
     {
         float sum = 0f;
@@ -118,9 +122,7 @@ public class FCMSalesAnalyzer : MonoBehaviour
     public string GetDebugInfo()
     {
         if (TradeCount < minTradesForAnalysis)
-            return $"°Å·¡ {TradeCount}°Ç (ºĞ¼®±îÁö {minTradesForAnalysis - TradeCount}°Ç ³²À½)";
-
-        return $"°Å·¡ {TradeCount}°Ç | Á÷ÆÇ {LastMembership[0]:P0} | °ü°è {LastMembership[1]:P0} | " +
-               $"³³Ç° {LastMembership[2]:P0} | ±ÕÇü {LastMembership[3]:P0}";
+            return $"ê±°ë˜ {TradeCount}ê±´ (ë¶„ì„ê¹Œì§€ {minTradesForAnalysis - TradeCount}ê±´ ë‚¨ìŒ)";
+        return $"ê±°ë˜ {TradeCount}ê±´ | ì§íŒ {LastMembership[0]:P0} | ê´€ê³„ {LastMembership[1]:P0} | ë‚©í’ˆ {LastMembership[2]:P0}";
     }
 }
