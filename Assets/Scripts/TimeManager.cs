@@ -8,7 +8,12 @@ public class TimeManager : MonoBehaviour
     [Header("시간 설정")]
     public int startHour = 6;
     public int endHour = 26;            // 26 = 새벽 2시. 이 시각 되면 자동으로 Sleep()
-    public float secondsPerMinute = 0.1f;
+
+    [Tooltip("게임 시간 1틱(10분)이 지나는 데 걸리는 실제 시간(초)")]
+    public float secondsPerTick = 1f;   // 예: 1이면 현실 1초마다 게임 10분 경과
+
+    [Tooltip("한 번에 흐르는 분 단위 (10이면 10분씩 점프)")]
+    public int minutesPerTick = 10;
 
     [Header("계절 설정")]
     public int daysPerSeason = 35;      // 한 계절 = 35일
@@ -24,18 +29,18 @@ public class TimeManager : MonoBehaviour
     [Header("이벤트")]
     public UnityEvent OnDayPass;
     public UnityEvent OnHourPass;
-    public UnityEvent OnSeasonChange;   // 계절이 바뀌는 순간 호출 (작물 시들기 / 맵 전환이 여기 연결됨)
+    public UnityEvent OnSeasonChange;   // 계절이 바뀌는 순간 호출
 
     private float timer = 0f;
     private bool isSleeping = false;
 
-    // 분 사이 진행도(0~1). UI 화살표 보간용.
+    // 한 틱 사이 진행도(0~1). UI 화살표 보간용.
     public float MinuteProgress
     {
         get
         {
-            if (secondsPerMinute <= 0f) return 0f;
-            return Mathf.Clamp01(timer / secondsPerMinute);
+            if (secondsPerTick <= 0f) return 0f;
+            return Mathf.Clamp01(timer / secondsPerTick);
         }
     }
 
@@ -62,31 +67,36 @@ public class TimeManager : MonoBehaviour
         if (isSleeping) return;
 
         timer += Time.deltaTime;
-        if (timer >= secondsPerMinute)
+        if (timer >= secondsPerTick)
         {
             timer = 0f;
-            AdvanceMinute();
+            AdvanceTick();
         }
     }
 
-    void AdvanceMinute()
+    // 10분(minutesPerTick)씩 시간을 진행
+    void AdvanceTick()
     {
-        minute++;
-        if (minute >= 60)
+        minute += minutesPerTick;
+
+        // 60분 이상 쌓이면 시간으로 올림 (10분 단위라 60에서 딱 떨어짐)
+        while (minute >= 60)
         {
-            minute = 0;
+            minute -= 60;
             hour++;
             OnHourPass?.Invoke();
 
             if (hour >= endHour)   // 새벽 2시 넘으면 자동 취침
+            {
                 Sleep();
+                return;
+            }
         }
     }
 
     public void Sleep()
     {
         isSleeping = true;
-
         day++;
 
         // 계절 마지막 날을 넘기면 다음 계절 1일로
@@ -102,7 +112,6 @@ public class TimeManager : MonoBehaviour
 
         OnDayPass?.Invoke();
         isSleeping = false;
-
         Debug.Log($"{GetSeasonString()} {day}일차 아침!");
     }
 
@@ -136,8 +145,16 @@ public class TimeManager : MonoBehaviour
         return $"{ampm} {displayHour}:{minute:00}";
     }
 
+    // 요일 (봄 1일 = 월요일 기준). 한 계절 35일은 7의 배수라 계절이 바뀌어도 요일이 자연스럽게 이어짐.
+    public string GetDayOfWeekString()
+    {
+        string[] days = { "월", "화", "수", "목", "금", "토", "일" };
+        int idx = (day - 1) % 7;
+        return days[idx];
+    }
+
     public string GetDateString()
     {
-        return $"{GetSeasonString()} {day}일차";
+        return $"{GetSeasonString()} {day}일 {GetDayOfWeekString()}";
     }
 }

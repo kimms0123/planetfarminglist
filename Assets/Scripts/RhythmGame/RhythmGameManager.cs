@@ -271,6 +271,9 @@ public class RhythmGameManager : MonoBehaviour
     {
         if (sprite == null) return;
 
+        // 결과 단계로 넘어갔으면 노트 입력 모션 Image는 더 이상 건드리지 않음
+        if (gameFinished) return;
+
         if (harvestDisplayImage != null)
         {
             harvestDisplayImage.enabled = true;
@@ -340,6 +343,13 @@ public class RhythmGameManager : MonoBehaviour
     IEnumerator ShowResultAndClose(HarvestRhythmResult result, CropData crop)
     {
         if (resultPanel != null) resultPanel.SetActive(true);
+
+        // 노트 입력 중 모션 코루틴이 아직 돌고 있으면 멈춤 (안 그러면 ShowMotion이 다시 켬)
+        if (currentHarvestAnimation != null)
+        {
+            StopCoroutine(currentHarvestAnimation);
+            currentHarvestAnimation = null;
+        }
 
         // 노트 입력 중 모션 Image는 숨기고, 결과창 모션 Image로 전환
         if (harvestDisplayImage != null) harvestDisplayImage.enabled = false;

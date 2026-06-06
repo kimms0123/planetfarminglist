@@ -1,0 +1,1468 @@
+fileFormatVersion: 2
+guid: 3db3de0601d8ff14488dab6c3e75e1fd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 414260043961715888
+    second: UI_remake_0
+  - first:
+      213: -7231148650857621955
+    second: UI_remake_1
+  - first:
+      213: 193733331652776098
+    second: UI_remake_2
+  - first:
+      213: -5738286117393340983
+    second: UI_remake_3
+  - first:
+      213: -2592055558586813492
+    second: UI_remake_4
+  - first:
+      213: 3760569784829304901
+    second: UI_remake_5
+  - first:
+      213: -4655684394368877226
+    second: UI_remake_6
+  - first:
+      213: -6059364121445491871
+    second: UI_remake_7
+  - first:
+      213: -5890212015865016834
+    second: UI_remake_8
+  - first:
+      213: -270756153829080947
+    second: UI_remake_9
+  - first:
+      213: -9210922594779519633
+    second: UI_remake_10
+  - first:
+      213: 7965848776229691859
+    second: UI_remake_11
+  - first:
+      213: 130046930223257340
+    second: UI_remake_12
+  - first:
+      213: 9042581465088155618
+    second: UI_remake_13
+  - first:
+      213: -6089404940355876298
+    second: UI_remake_14
+  - first:
+      213: -1903276241472280348
+    second: UI_remake_15
+  - first:
+      213: -981779660073622768
+    second: UI_remake_16
+  - first:
+      213: -4707718617446428236
+    second: UI_remake_17
+  - first:
+      213: 5231068740338555106
+    second: UI_remake_18
+  - first:
+      213: -4843854454743018814
+    second: UI_remake_19
+  - first:
+      213: 8103202678821670351
+    second: UI_remake_20
+  - first:
+      213: -7945653278304601383
+    second: UI_remake_21
+  - first:
+      213: -924354906773699997
+    second: UI_remake_22
+  - first:
+      213: 5719958460512051421
+    second: UI_remake_23
+  - first:
+      213: 3696640974273165573
+    second: UI_remake_24
+  - first:
+      213: 2659450823970696814
+    second: UI_remake_25
+  - first:
+      213: 6183045670346304764
+    second: UI_remake_26
+  - first:
+      213: 7832411338761919034
+    second: UI_remake_27
+  - first:
+      213: 2764411070887689535
+    second: UI_remake_28
+  - first:
+      213: 1089271425352196275
+    second: UI_remake_29
+  - first:
+      213: 5820304268508252185
+    second: UI_remake_30
+  - first:
+      213: 8523180206163042025
+    second: UI_remake_31
+  - first:
+      213: -1276046572310471951
+    second: UI_remake_32
+  - first:
+      213: 3833967041693777273
+    second: UI_remake_33
+  - first:
+      213: 3212075904054956860
+    second: UI_remake_34
+  - first:
+      213: -5843265019943310487
+    second: UI_remake_35
+  - first:
+      213: -3440249998122841223
+    second: UI_remake_36
+  - first:
+      213: -45063999295233746
+    second: UI_remake_37
+  - first:
+      213: -5557957732339494944
+    second: UI_remake_38
+  - first:
+      213: -4242025726415376814
+    second: UI_remake_39
+  - first:
+      213: 1834458973889689188
+    second: UI_remake_40
+  - first:
+      213: 5366404702730645912
+    second: UI_remake_41
+  - first:
+      213: -8672674640829003288
+    second: UI_remake_42
+  - first:
+      213: -8239179860842658516
+    second: UI_remake_43
+  - first:
+      213: 6350902411323827524
+    second: UI_remake_44
+  - first:
+      213: 2552343571303799756
+    second: UI_remake_45
+  - first:
+      213: -3973006927997392180
+    second: UI_remake_46
+  - first:
+      213: -435873375848985336
+    second: UI_remake_47
+  - first:
+      213: 1748374135181763986
+    second: UI_remake_48
+  - first:
+      213: 8138227074936220546
+    second: UI_remake_49
+  - first:
+      213: 641534013223928002
+    second: UI_remake_50
+  - first:
+      213: -4362956944503225421
+    second: UI_remake_51
+  - first:
+      213: -7776662208392190113
+    second: UI_remake_52
+  - first:
+      213: 182752417289252015
+    second: UI_remake_53
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UI_remake_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 241
+        width: 28
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bcc9fca05fbfb500800000000000000
+      internalID: 414260043961715888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_1
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 238
+        width: 45
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3616934d9cc5ab90800000000000000
+      internalID: -7231148650857621955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_2
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 255
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a0115e407740b200800000000000000
+      internalID: 193733331652776098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_3
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 257
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c5e631dd238d50b0800000000000000
+      internalID: -5738286117393340983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_4
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 256
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc33b58e33b270cd0800000000000000
+      internalID: -2592055558586813492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_5
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 256
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54061d18b4a303430800000000000000
+      internalID: 3760569784829304901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_6
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 256
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d305fc5bfa36fb0800000000000000
+      internalID: -4655684394368877226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_7
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 235
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16b9e787f60d8eba0800000000000000
+      internalID: -6059364121445491871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_8
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 237
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efdc0a61163c14ea0800000000000000
+      internalID: -5890212015865016834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_9
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 242
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d80444e66b41e3cf0800000000000000
+      internalID: -270756153829080947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_10
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 242
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f652c8c93ba3c2080800000000000000
+      internalID: -9210922594779519633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_11
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 242
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d1a6a1d1416c8e60800000000000000
+      internalID: 7965848776229691859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_12
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 205
+        width: 28
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf656187ef40ec100800000000000000
+      internalID: 130046930223257340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_13
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 206
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ef5c1fcee3bd7d70800000000000000
+      internalID: 9042581465088155618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_14
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 216
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63a449448761e7ba0800000000000000
+      internalID: -6089404940355876298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_15
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 218
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e8aa95a7543695e0800000000000000
+      internalID: -1903276241472280348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_16
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 224
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 013ab91d9940062f0800000000000000
+      internalID: -981779660073622768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_17
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 224
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b1dc982cd2daaeb0800000000000000
+      internalID: -4707718617446428236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_18
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 224
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e8978fcd4d789840800000000000000
+      internalID: 5231068740338555106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_19
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 196
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c25959890c27ccb0800000000000000
+      internalID: -4843854454743018814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_20
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 198
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcdc82e57eb547070800000000000000
+      internalID: 8103202678821670351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_21
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 209
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9da7c36f07e5bb190800000000000000
+      internalID: -7945653278304601383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_22
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 209
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3624d571c180c23f0800000000000000
+      internalID: -924354906773699997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_23
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 209
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd0afc80aef516f40800000000000000
+      internalID: 5719958460512051421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_24
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 196
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 509b4b5616b1d4330800000000000000
+      internalID: 3696640974273165573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_25
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 191
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6ea46c1f6448e420800000000000000
+      internalID: 2659450823970696814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_26
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 196
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfc220b27479ec550800000000000000
+      internalID: 6183045670346304764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_27
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 163
+        width: 33
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3a55ad5d9052bc60800000000000000
+      internalID: 7832411338761919034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_28
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 179
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3dfa65f8392d5620800000000000000
+      internalID: 2764411070887689535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_29
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 180
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b0e914179edd1f00800000000000000
+      internalID: 1089271425352196275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_30
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 177
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 918cf1915efd5c050800000000000000
+      internalID: 5820304268508252185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_31
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 159
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ee1df06d3b684670800000000000000
+      internalID: 8523180206163042025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_32
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 160
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fa549c37629a4ee0800000000000000
+      internalID: -1276046572310471951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_33
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 160
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97d76b016bcf43530800000000000000
+      internalID: 3833967041693777273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_35
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 159
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96b20dd5c6d88eea0800000000000000
+      internalID: -5843265019943310487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_38
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 142
+        width: 74
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0efc447c3ea2ed2b0800000000000000
+      internalID: -5557957732339494944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_39
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 140
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25e61f8b31c4125c0800000000000000
+      internalID: -4242025726415376814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_40
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 141
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 466f8b5a7be457910800000000000000
+      internalID: 1834458973889689188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_41
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 142
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 891fe3b05ac497a40800000000000000
+      internalID: 5366404702730645912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_42
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 136
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e949dc2d5874a780800000000000000
+      internalID: -8672674640829003288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_43
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 120
+        width: 74
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c25cbe1d19d88ad80800000000000000
+      internalID: -8239179860842658516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_44
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 120
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 445e0263810f22850800000000000000
+      internalID: 6350902411323827524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_45
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 121
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccb905884febb6320800000000000000
+      internalID: 2552343571303799756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_46
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 104
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccaac86bf3b0dd8c0800000000000000
+      internalID: -3973006927997392180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_47
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 55
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80d8879597773f9f0800000000000000
+      internalID: -435873375848985336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_48
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 53
+        width: 37
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2956dfd3309734810800000000000000
+      internalID: 1748374135181763986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_49
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 53
+        width: 37
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28b2a0f086ac0f070800000000000000
+      internalID: 8138227074936220546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_50
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 53
+        width: 37
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c00b8939cf27e800800000000000000
+      internalID: 641534013223928002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_51
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 1
+        width: 84
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b3cf8066c9a373c0800000000000000
+      internalID: -4362956944503225421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_52
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 29
+        width: 73
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f57249a8ceeb31490800000000000000
+      internalID: -7776662208392190113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_remake_53
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 9
+        width: 73
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: facae52fa54498200800000000000000
+      internalID: 182752417289252015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 48fa0e98d2c593142b5c7519bab623aa
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      UI_remake_0: 414260043961715888
+      UI_remake_1: -7231148650857621955
+      UI_remake_10: -9210922594779519633
+      UI_remake_11: 7965848776229691859
+      UI_remake_12: 130046930223257340
+      UI_remake_13: 9042581465088155618
+      UI_remake_14: -6089404940355876298
+      UI_remake_15: -1903276241472280348
+      UI_remake_16: -981779660073622768
+      UI_remake_17: -4707718617446428236
+      UI_remake_18: 5231068740338555106
+      UI_remake_19: -4843854454743018814
+      UI_remake_2: 193733331652776098
+      UI_remake_20: 8103202678821670351
+      UI_remake_21: -7945653278304601383
+      UI_remake_22: -924354906773699997
+      UI_remake_23: 5719958460512051421
+      UI_remake_24: 3696640974273165573
+      UI_remake_25: 2659450823970696814
+      UI_remake_26: 6183045670346304764
+      UI_remake_27: 7832411338761919034
+      UI_remake_28: 2764411070887689535
+      UI_remake_29: 1089271425352196275
+      UI_remake_3: -5738286117393340983
+      UI_remake_30: 5820304268508252185
+      UI_remake_31: 8523180206163042025
+      UI_remake_32: -1276046572310471951
+      UI_remake_33: 3833967041693777273
+      UI_remake_34: 3212075904054956860
+      UI_remake_35: -5843265019943310487
+      UI_remake_36: -3440249998122841223
+      UI_remake_37: -45063999295233746
+      UI_remake_38: -5557957732339494944
+      UI_remake_39: -4242025726415376814
+      UI_remake_4: -2592055558586813492
+      UI_remake_40: 1834458973889689188
+      UI_remake_41: 5366404702730645912
+      UI_remake_42: -8672674640829003288
+      UI_remake_43: -8239179860842658516
+      UI_remake_44: 6350902411323827524
+      UI_remake_45: 2552343571303799756
+      UI_remake_46: -3973006927997392180
+      UI_remake_47: -435873375848985336
+      UI_remake_48: 1748374135181763986
+      UI_remake_49: 8138227074936220546
+      UI_remake_5: 3760569784829304901
+      UI_remake_50: 641534013223928002
+      UI_remake_51: -4362956944503225421
+      UI_remake_52: -7776662208392190113
+      UI_remake_53: 182752417289252015
+      UI_remake_6: -4655684394368877226
+      UI_remake_7: -6059364121445491871
+      UI_remake_8: -5890212015865016834
+      UI_remake_9: -270756153829080947
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
