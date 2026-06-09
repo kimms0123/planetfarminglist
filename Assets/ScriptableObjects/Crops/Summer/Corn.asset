@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1619404a21eee8e40a1f5582b2543528, type: 3}
+  m_Name: Corn
+  m_EditorClassIdentifier: Assembly-CSharp::CropData
+  cropName: "\uC625\uC218\uC218"
+  season: 1
+  growthDays: 4
+  growthSprites:
+  - {fileID: 231564227057428092, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: 3467789577043551643, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: 4314518245006527444, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: 7638335284927502, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  harvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  baseHarvestAmount: 8
+  cropCoefficient: 1
+  baseSellPrice: 50
+  harvestStageSprites:
+  - {fileID: 7380319661123533187, guid: 0af1b1ce5e2c4124e8d8526e90a26f04, type: 3}
+  - {fileID: 5357723359711220398, guid: 8f249394c55ec2a44803553feff85d4d, type: 3}
+  - {fileID: -6582127450775962322, guid: 3142ee8334f963148801e2d6ce70da0f, type: 3}
+  - {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
+  harvestFailSprite: {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
+  harvestResultSprites:
+  - {fileID: 21300000, guid: facd4a95bfbfb524488af2fe5871528f, type: 3}
+  - {fileID: 21300000, guid: 7a941729d4055d84e9c40d0ced094129, type: 3}
+  - {fileID: 21300000, guid: 6e44c54952edcfd48b932a1fabd3bb55, type: 3}
+  - {fileID: 21300000, guid: 94ce720ead36f9f4280f76a7812779c4, type: 3}
+  normalResultEndIndex: 3
+  bestResultEndIndex: 3
+  bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  normalHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  trashHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
+  baseYield: 1

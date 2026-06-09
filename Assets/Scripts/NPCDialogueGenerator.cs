@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// NPC 대사 생성 — 3 클러스터(직판/관계/납품) × 4 톤(Cold/Neutral/Friendly/VeryFriendly) = 12종 + 콜드스타트
-///
-/// 클러스터(FCM 우세 유형)는 '무슨 말투 계열인지'를, 톤(결합 결과)은 '얼마나 친근한지'를 정한다.
-/// </summary>
+
 public static class NPCDialogueGenerator
 {
     public static string Generate(

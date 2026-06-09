@@ -340,12 +340,12 @@ TextureImporter:
       name: crops_spring_fall_5
       rect:
         serializedVersion: 2
-        x: 79
+        x: 80
         y: 128
-        width: 34
-        height: 21
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1084,6 +1084,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: crops_spring_fall_39
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 128
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f45f9dd2841e40044a61805f28a297bc
+      internalID: 1122561389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -1131,6 +1153,7 @@ TextureImporter:
       crops_spring_fall_36: 1977003754353800142
       crops_spring_fall_37: 2184368795775471349
       crops_spring_fall_38: 5588483929973810809
+      crops_spring_fall_39: 1122561389
       crops_spring_fall_4: 2374042611470052438
       crops_spring_fall_5: -5053121351992980003
       crops_spring_fall_6: 2447095082677085392

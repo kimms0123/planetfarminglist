@@ -2,12 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-/// <summary>
-/// 살충제 스프레이 애니메이션 컨트롤러
-/// - 평소: 1번 sprite 표시 (정지)
-/// - 뿌리기: 1→2→3→4 sprite 재생 (한 번만)
-/// - 실패: 1번 그대로 유지
-/// </summary>
+
 public class SprayAnimator : MonoBehaviour
 {
     [Header("Sprite 배열 (1번~4번)")]

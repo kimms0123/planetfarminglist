@@ -1,18 +1,6 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// RBFN (Radial Basis Function Network) — 거래별 미시(Micro) 응대 회귀
-///
-/// [보고서 v3 반영]
-///   입력층 (5): [수량, 단가, 품질, NPC친밀도, 계절적합도]   ← FCM 소속도는 넣지 않음(독립)
-///   은닉층 (5): 가우시안 RBF, 중심은 입력공간에서 무작위 초기화 (FCM과 무관)
-///   출력층 (2): [PriceMultiplier(가격 보정), AffinityDelta(친밀도 변화)]
-///   출력 가중치 W: [OUTPUT_DIM, HIDDEN_DIM] = 2 × 5
-///   학습: LMS (거래 1건 = 1스텝)
-///
-/// 대사 톤(Tone), 거시 가격 성향 등 '플레이어 유형'은 RBFN이 아니라
-/// ResponseCombiner에서 FCM 멤버십과 가중 결합해 산출한다.
-/// </summary>
+
 public class RBFNetwork : MonoBehaviour
 {
     public static RBFNetwork Instance;
@@ -56,7 +44,6 @@ public class RBFNetwork : MonoBehaviour
         InitializeNetwork();
     }
 
-    /// <summary>은닉 중심·출력 가중치 무작위 초기화 (FCM과 독립).</summary>
     private void InitializeNetwork()
     {
         Random.InitState(randomSeed);
@@ -82,8 +69,7 @@ public class RBFNetwork : MonoBehaviour
             Debug.Log("[RBFN] 초기화 완료 (입력 5, 은닉 5, 출력 2) — 은닉 중심은 FCM과 독립");
     }
 
-    /// <summary>순전파: 5차원 입력 → 2차원 출력</summary>
-    /// <param name="input">[수량, 단가, 품질, 친밀도, 계절적합]</param>
+
     public void Predict(float[] input)
     {
         if (input.Length != INPUT_DIM)
@@ -112,8 +98,7 @@ public class RBFNetwork : MonoBehaviour
             Debug.Log($"[RBFN] 예측: 가격×{PriceMultiplier:F3} | 친밀±{AffinityDelta:+0.00;-0.00}");
     }
 
-    /// <summary>LMS 학습: W_jk ← W_jk + η·(t_j − y_j)·φ_k</summary>
-    /// <param name="targets">[목표 PriceMultiplier, 목표 AffinityDelta]</param>
+
     public void Train(float[] input, float[] targets)
     {
         if (targets.Length != OUTPUT_DIM)
@@ -136,7 +121,6 @@ public class RBFNetwork : MonoBehaviour
             Debug.Log($"[RBFN 학습] 타깃=[가격 {targets[0]:F2}, 친밀 {targets[1]:F3}]");
     }
 
-    /// <summary>입력 5차원 구성 (FCM 소속도는 넣지 않음 — 독립).</summary>
     public static float[] BuildInput(float qty, float price, float quality, float affinityNpc, float seasonFit)
     {
         return new float[]

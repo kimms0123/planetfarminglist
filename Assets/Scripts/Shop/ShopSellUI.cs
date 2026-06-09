@@ -4,16 +4,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections;
 
-/// <summary>
-/// 상점 판매 UI (보고서 v3)
-///
-/// 판매 1건 흐름:
-///   1) FCM 기록 → 3 클러스터 소속도(거시)
-///   2) RBFN 5차원 입력 구성 [수량,단가,품질,친밀도,계절적합] → 추론(미시, FCM과 독립)
-///   3) ResponseCombiner: RBF 출력을 FCM 멤버십으로 가중 결합 → 최종 가격·친밀도·톤
-///   4) 보정 가격으로 판매, 친밀도 갱신, 대사 출력
-///   5) RBFN LMS 학습 (거래 결과 피드백)
-/// </summary>
+
 public class ShopSellUI : MonoBehaviour
 {
     public static ShopSellUI Instance;
@@ -194,11 +185,11 @@ public class ShopSellUI : MonoBehaviour
         return RBFNetwork.BuildInput(qtyN, priceN, qualityN, affinityWithNpc, seasonFit);
     }
 
-    /// <summary>
-    /// 품질 정규화값(0~1).
-    /// TODO: ItemData 에 별도 품질/등급 필드가 있다면 이 한 줄만 교체하세요.
-    ///       (현재는 단가를 품질 대용 지표로 사용)
-    /// </summary>
+
+    // 품질 정규화값(0~1).
+    // TODO: ItemData 에 별도 품질/등급 필드가 있다면 이 한 줄만 교체하세요.
+    //       (현재는 단가를 품질 대용 지표로 사용)
+
     private float GetQualityNorm(ItemData item)
         => Mathf.Clamp01(item.sellPrice / Mathf.Max(1f, maxItemPrice));
 

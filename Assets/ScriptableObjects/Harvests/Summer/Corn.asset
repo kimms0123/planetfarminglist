@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: Corn
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uC625\uC218\uC218"
+  itemSprite: {fileID: -6906825654880465367, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  itemType: 2
+  canStack: 1
+  maxStack: 99
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 0}
+  quality: 0
+  staminaCost: 10
+  canSell: 1
+  sellPrice: 600

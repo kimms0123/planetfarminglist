@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: HeavyRoot
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uD5E4\uBE44\uB8E8\uD2B8\uC528\uC557"
+  itemSprite: {fileID: -1053299139579149431, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  itemType: 1
+  canStack: 1
+  maxStack: 99
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 11400000, guid: 03b4c35703f9db84db048664fc3079f1, type: 2}
+  quality: 0
+  staminaCost: 10
+  canSell: 0
+  sellPrice: 0

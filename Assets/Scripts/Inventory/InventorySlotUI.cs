@@ -14,7 +14,7 @@ public class InventorySlotUI : MonoBehaviour,
     public Image itemIcon;
     public TextMeshProUGUI quantityText;
 
-    [Header("★ 선택 프레임")]
+    [Header("선택 프레임")]
     [Tooltip("선택됐을 때 표시할 프레임 (ㄱㄴ 모서리 같은 거)")]
     public GameObject selectionFrame;
 
@@ -61,7 +61,7 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void Refresh(InventorySlot slot, bool isSelected, bool isPending)
     {
-        // ★ 선택 프레임 우선 사용
+        // 선택 프레임 우선 사용
         if (selectionFrame != null)
         {
             selectionFrame.SetActive(isSelected);

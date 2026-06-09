@@ -36,10 +36,10 @@ public class FarmTileManager : MonoBehaviour
         Debug.Log($"하루 지남! 활성 타일: {activeTiles.Count}개");
     }
 
-    // ─────────────────────────────────────────────
-    // ★ 계절이 바뀔 때 호출 (TimeManager.OnSeasonChange에 연결)
+
+    // 계절이 바뀔 때 호출 (TimeManager.OnSeasonChange에 연결)
     //   심어진 작물을 전부 시들게 함
-    // ─────────────────────────────────────────────
+
     public void OnSeasonChange()
     {
         int withered = 0;

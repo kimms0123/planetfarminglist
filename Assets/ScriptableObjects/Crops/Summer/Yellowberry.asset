@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1619404a21eee8e40a1f5582b2543528, type: 3}
+  m_Name: Yellowberry
+  m_EditorClassIdentifier: Assembly-CSharp::CropData
+  cropName: "\uC610\uB85C\uBCA0\uB9AC"
+  season: 1
+  growthDays: 5
+  growthSprites:
+  - {fileID: 4889832027867384352, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: -231594689099858246, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: 1319700312112818978, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  - {fileID: -2503032393323439500, guid: efc414381e4fad14bbbb170bf7be5c2c, type: 3}
+  harvestItem: {fileID: 11400000, guid: 74bd87cc0d5fd7141be9eaf9e424dbb7, type: 2}
+  baseHarvestAmount: 6
+  cropCoefficient: 1.2
+  baseSellPrice: 40
+  harvestStageSprites: []
+  harvestFailSprite: {fileID: 0}
+  harvestResultSprites: []
+  normalResultEndIndex: 1
+  bestResultEndIndex: 2
+  bestHarvestItem: {fileID: 0}
+  normalHarvestItem: {fileID: 0}
+  trashHarvestItem: {fileID: 0}
+  baseYield: 1

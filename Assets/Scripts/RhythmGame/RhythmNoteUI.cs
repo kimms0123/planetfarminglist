@@ -23,8 +23,7 @@ public class RhythmNoteUI : MonoBehaviour
     public Color currentColor = new Color(1f, 1f, 0f, 1f);
     public Color perfectColor = new Color(0f, 1f, 0.5f, 1f);
     public Color goodColor = new Color(0f, 0.8f, 1f, 1f);
-    public Color missColor = new Color(0.3f, 0.3f, 0.3f, 1f);
-
+    public Color missColor = new Color(1f, 0.2f, 0.2f, 1f);
     public void Setup(NoteDirection dir)
     {
         // 화살표 Sprite 방식 (우선)

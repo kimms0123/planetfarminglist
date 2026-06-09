@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-/// <summary>
-/// 미니게임 패널 안의 개별 해충 1마리의 애니메이션 컨트롤러
-/// - 평소: move 1~2번 sprite 반복
-/// - 죽음: die 1~5번 sprite 재생
-/// </summary>
+
+// 미니게임 패널 안의 개별 해충 1마리의 애니메이션 컨트롤러
+// - 평소: move 1~2번 sprite 반복
+// - 죽음: die 1~5번 sprite 재생
+
 public class BugAnimator : MonoBehaviour
 {
     public enum BugType

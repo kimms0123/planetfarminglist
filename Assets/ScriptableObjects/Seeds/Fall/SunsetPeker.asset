@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
+  m_Name: SunsetPeker
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: "\uB178\uC744\uBAA9\uC774"
+  itemSprite: {fileID: -8677269870391621969, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  itemType: 1
+  canStack: 1
+  maxStack: 99
+  toolType: 0
+  harvestGridSize: 1
+  cropData: {fileID: 11400000, guid: 4c5931656a84dc1439e62ddb544d451d, type: 2}
+  quality: 0
+  staminaCost: 10
+  canSell: 0
+  sellPrice: 0

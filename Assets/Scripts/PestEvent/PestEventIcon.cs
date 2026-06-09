@@ -21,7 +21,7 @@ public class PestEventIcon : MonoBehaviour
             tmp.fontSize = 5;
             tmp.alignment = TextAlignmentOptions.Center;
 
-            // ★ 작물/타일에 가려지지 않게 렌더 순서 올리기
+            // 작물/타일에 가려지지 않게 렌더 순서 올리기
             tmp.sortingOrder = sortingOrder;
 
             var mr = GetComponent<MeshRenderer>();

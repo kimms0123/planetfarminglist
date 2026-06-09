@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1619404a21eee8e40a1f5582b2543528, type: 3}
+  m_Name: CherryMushroom
+  m_EditorClassIdentifier: Assembly-CSharp::CropData
+  cropName: "\uBC84\uB4DC\uB098\uBB34"
+  season: 2
+  growthDays: 10
+  growthSprites:
+  - {fileID: -5283332135954811481, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  - {fileID: 2797544726421741731, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  - {fileID: -6603505462005080836, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  harvestItem: {fileID: 11400000, guid: 3aea7b01eae3dc545b142a570cf26982, type: 2}
+  baseHarvestAmount: 1
+  cropCoefficient: 1.5
+  baseSellPrice: 150
+  harvestStageSprites: []
+  harvestFailSprite: {fileID: 0}
+  harvestResultSprites: []
+  normalResultEndIndex: 1
+  bestResultEndIndex: 2
+  bestHarvestItem: {fileID: 0}
+  normalHarvestItem: {fileID: 0}
+  trashHarvestItem: {fileID: 0}
+  baseYield: 1
