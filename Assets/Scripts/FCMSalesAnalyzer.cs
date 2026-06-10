@@ -72,7 +72,6 @@ public class FCMSalesAnalyzer : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    /// <summary>거래 1건을 행동 벡터로 변환해 기록하고 분석을 갱신한다.</summary>
     public void RecordTrade(int itemPrice, int quantitySold, int totalQuantityInSlot, float holdTimeSeconds = 0f)
     {
         float avgPrice = Mathf.Clamp01(itemPrice / maxItemPrice);
@@ -133,11 +132,6 @@ public class FCMSalesAnalyzer : MonoBehaviour
                       $"| 원시={ClusterLabel(DominantCluster)} → 표시={ClusterLabel(StableCluster)}");
     }
 
-    /// <summary>
-    /// 한두 건 튀는 거래로 대사가 바뀌지 않도록, 새 유형이
-    /// (연속 우세 횟수) + (충분한 소속도) + (기존보다 일정 차이 우세)
-    /// 세 조건을 모두 만족할 때만 StableCluster를 전환한다.
-    /// </summary>
     private void UpdateStableCluster()
     {
         // 첫 분석: 바로 채택

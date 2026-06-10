@@ -1,20 +1,6 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// NPC 판매 대사 생성기.
-///
-/// [동작]
-/// 1) FCM 분류 전(거래 데이터 부족) → '낯선 손님' 응대
-/// 2) FCM 분류 후 → 유형(직판/관계/납품) + 단골 여부에 맞는 응대
-///
-/// [깜빡임 방지 — 핵심]
-/// 톤(tone)은 거래마다 출렁이므로 더 이상 대사 선택에 쓰지 않는다.
-/// 대신 (분류 여부 · StableCluster · 단골 여부)로 '대사 키'를 만들고,
-/// 키가 같으면 직전 대사를 그대로 돌려준다 → 1개 팔 때마다 대사가 바뀌는 문제 해결.
-/// 상황이 실제로 바뀌었을 때(분류 시작, 유형 전환, 단골 등급 변화)만 새 대사를 고른다.
-///
-/// ※ 정적(static) 상태라 NPC 1명 기준. 상인이 여러 명이면 NPC 전환 시 Reset() 호출.
-/// </summary>
+
 public static class NPCDialogueGenerator
 {
     [Tooltip("이 친밀도 이상이면 '단골' 대접")]
@@ -24,11 +10,7 @@ public static class NPCDialogueGenerator
     private static string lastKey = "";
     private static string currentLine = "";
 
-    /// <summary>
-    /// 현재 상황에 맞는 대사를 돌려준다. 같은 상황이면 직전 대사를 유지한다.
-    /// </summary>
-    /// <param name="fcm">FCM 분석기 (StableCluster / IsClassified 사용)</param>
-    /// <param name="affinity">해당 NPC와의 친밀도 0~1 (단골 판정용)</param>
+
     public static string Generate(FCMSalesAnalyzer fcm, float affinity)
     {
         bool classified = fcm != null && fcm.IsClassified;
@@ -45,7 +27,6 @@ public static class NPCDialogueGenerator
         return currentLine;
     }
 
-    /// <summary>NPC를 바꿀 때 호출 — 다음 거래에서 대사를 새로 뽑게 한다.</summary>
     public static void Reset()
     {
         lastKey = "";

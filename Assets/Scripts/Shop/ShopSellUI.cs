@@ -96,10 +96,6 @@ public class ShopSellUI : MonoBehaviour
         PlayerController.IsInputLocked = false;
     }
 
-    /// <summary>
-    /// NPC 대사 갱신 — FCM 분류 상태(StableCluster/IsClassified) + 친밀도(단골 여부) 기반.
-    /// 같은 상황이면 NPCDialogueGenerator가 직전 대사를 그대로 유지한다(깜빡임 방지).
-    /// </summary>
     void UpdateNpcDialogue()
     {
         if (npcDialogueText == null) return;
@@ -262,7 +258,6 @@ public class ShopSellUI : MonoBehaviour
         RefreshUI();
     }
 
-    /// <summary>거래 결과로 RBFN 학습 — 우세 클러스터별 휴리스틱 타깃 [PriceMultiplier, AffinityDelta]</summary>
     private void TrainRBFN(float[] input, FCMSalesAnalyzer.ClusterType cluster)
     {
         float[] targets = new float[RBFNetwork.OUTPUT_DIM];

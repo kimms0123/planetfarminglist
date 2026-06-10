@@ -1,21 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// 계절별 작물 수요 적합도 제공자 (보고서 5.2: 계절 포함 · 날씨 제외)
-///
-/// RBFN 입력 5번째 차원 'seasonFit'(0~1)을 산출한다.
-///
-/// [프로젝트 연동]
-///   - 계절 enum 은 프로젝트 전역 Season(CropData.cs)을 그대로 사용한다.
-///   - 현재 계절은 TimeManager.Instance.currentSeason 을 실시간으로 읽는다.
-///     → 별도 이벤트 연결(OnSeasonChange) 불필요.
-///   - 수요 적합도는 CropData.season(작물의 제철)에서 자동 도출한다.
-///     → 작물 이름을 손으로 입력하는 표가 필요 없음. CropData 수정도 불필요.
-///
-/// 규칙: 판매 아이템이 '현재 계절이 제철인 작물'의 수확물이면 수요↑,
-///       사철(All)이면 중간, 철 지난 작물이면 수요↓, 매핑 불가 시 기본값.
-/// </summary>
+
 public class SeasonalDemand : MonoBehaviour
 {
     public static SeasonalDemand Instance;
@@ -68,7 +54,6 @@ public class SeasonalDemand : MonoBehaviour
             itemSeason[item] = season;
     }
 
-    /// <summary>현재 계절 기준, 해당 아이템의 수요 적합도(0~1).</summary>
     public float GetDemandFit(ItemData item)
     {
         if (item == null) return defaultFit;
@@ -82,6 +67,5 @@ public class SeasonalDemand : MonoBehaviour
         return cropSeason == TimeManager.Instance.currentSeason ? inSeasonFit : offSeasonFit;
     }
 
-    /// <summary>런타임에 작물 목록을 바꿨을 때 매핑을 다시 만든다(선택).</summary>
     public void Rebuild() => BuildMap();
 }

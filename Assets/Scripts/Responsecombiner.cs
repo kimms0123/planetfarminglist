@@ -1,17 +1,6 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// FCM 멤버십 가중 응대 결합 (보고서 6장)
-///
-/// RBFN은 '이번 거래'(미시)를, FCM은 '플레이어 유형'(거시)을 본다.
-/// 최종 NPC 응대 = RBFN 출력을 FCM 멤버십으로 가중 결합한 결과.
-///
-///   price_final    = Σ_c u_c·(1 + priceBias_c)  +  (RBF_PriceMult − 1.0)   → clamp[0.85,1.15]
-///   affinity_final = RBF_AffinityDelta · (1 + u_관계)
-///   tone           = Σ_c u_c·toneBase_c  +  0.2·affinityLevel
-///
-/// 멤버십 인덱스: 0 = 직판, 1 = 관계, 2 = 납품  (FCMSalesAnalyzer와 동일 순서)
-/// </summary>
+
 public static class ResponseCombiner
 {
     // 클러스터 거시 성향 (직판, 관계, 납품)
@@ -30,7 +19,6 @@ public static class ResponseCombiner
 
     public enum Tone { Cold, Neutral, Friendly, VeryFriendly }
 
-    /// <summary>RBFN 출력 + FCM 멤버십 → 최종 응대값.</summary>
     public static Response Combine(float[] u, float rbfPrice, float rbfAffinity, float affinityLevel)
     {
         float[] m = Normalize(u);
@@ -47,7 +35,6 @@ public static class ResponseCombiner
         return new Response { price = price, affinity = affinity, tone = tone };
     }
 
-    /// <summary>RBFN 없이 톤만 필요할 때(상점 첫 진입 등).</summary>
     public static float ComputeTone(float[] u, float affinityLevel)
     {
         float[] m = Normalize(u);

@@ -1,13 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// 시장 공급량 매니저
-/// - 아이템별 공급량 추적 (판매할 때마다 증가)
-/// - 시간이 지나면 공급량 자동 감소 (수요 회복)
-/// - 공급량에 따라 가격 페널티 적용
-/// 보고서 9.2 (공급-수요 시뮬레이션) 참고
-/// </summary>
 public class MarketSupplyManager : MonoBehaviour
 {
     public static MarketSupplyManager Instance;
