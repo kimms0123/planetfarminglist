@@ -47,8 +47,9 @@ public class TileManager : MonoBehaviour
     }
 
     // ───────── 타일 상태 변경 ─────────
-    static readonly Color COLOR_TILLED = new Color(0.7f, 0.5f, 0.3f);
-    static readonly Color COLOR_WATERED = new Color(0.4f, 0.5f, 0.7f);
+    // 알파를 1로 명시 → 빌드/에디터 GetColor 차이에 휘둘리지 않음
+    static readonly Color COLOR_TILLED = new Color(0.7f, 0.5f, 0.3f, 1f);
+    static readonly Color COLOR_WATERED = new Color(0.4f, 0.5f, 0.7f, 1f);
 
     public void SetTilled(Vector3Int cellPos)
     {
@@ -56,8 +57,9 @@ public class TileManager : MonoBehaviour
         farmlandTilemap.SetTile(cellPos, baseTile);
         farmlandTilemap.SetTileFlags(cellPos, TileFlags.None);
 
-        Color originalColor = farmableTilemap.GetColor(cellPos);
-        farmlandTilemap.SetColor(cellPos, originalColor * COLOR_TILLED);
+        // farmableTilemap.GetColor()에 의존하지 않고 고정 색을 직접 적용.
+        // (마커용 타일맵의 색은 빌드에서 검정/투명으로 읽힐 수 있어 흙이 안 보였음)
+        farmlandTilemap.SetColor(cellPos, COLOR_TILLED);
     }
 
     public void SetWatered(Vector3Int cellPos)
@@ -66,8 +68,7 @@ public class TileManager : MonoBehaviour
         farmlandTilemap.SetTile(cellPos, baseTile);
         farmlandTilemap.SetTileFlags(cellPos, TileFlags.None);
 
-        Color originalColor = farmableTilemap.GetColor(cellPos);
-        farmlandTilemap.SetColor(cellPos, originalColor * COLOR_WATERED);
+        farmlandTilemap.SetColor(cellPos, COLOR_WATERED);
     }
 
     public void SetNormal(Vector3Int cellPos)
@@ -80,9 +81,6 @@ public class TileManager : MonoBehaviour
         return farmableTilemap.GetTile(cellPos);
     }
 
-    /// <summary>
-    /// FarmTile 상태에 따라 farmlandTilemap 타일 갱신
-    /// </summary>
     public void RefreshTile(Vector3Int cellPos, FarmTile.TileState state)
     {
         switch (state)
@@ -98,7 +96,7 @@ public class TileManager : MonoBehaviour
             case FarmTile.TileState.SeedWatered:
                 SetWatered(cellPos);
                 break;
-            case FarmTile.TileState.Withered:   // ★ 시든 작물 아래 흙은 갈아둔 상태 유지
+            case FarmTile.TileState.Withered:   // 시든 작물 아래 흙은 갈아둔 상태 유지
                 SetTilled(cellPos);
                 break;
         }
