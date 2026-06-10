@@ -19,7 +19,7 @@ MonoBehaviour:
   maxStack: 99
   toolType: 0
   harvestGridSize: 1
-  cropData: {fileID: 11400000, guid: 03b4c35703f9db84db048664fc3079f1, type: 2}
+  cropData: {fileID: 11400000, guid: eb33681970c6369419bbb53d91f11541, type: 2}
   quality: 0
   staminaCost: 10
   canSell: 0

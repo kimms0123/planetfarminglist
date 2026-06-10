@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class FarmTile : MonoBehaviour
@@ -11,35 +11,81 @@ public class FarmTile : MonoBehaviour
         Seeded,
         SeedWatered,
         Grown,
-        Withered    // ¡Ú Ãß°¡: °èÀıÀÌ ¹Ù²î¾î ½Ãµç ÀÛ¹° (Ä¡¿ï ¶§±îÁö ³²À½)
+        Withered    // â˜… ì¶”ê°€: ê³„ì ˆì´ ë°”ë€Œì–´ ì‹œë“  ì‘ë¬¼ (ì¹˜ìš¸ ë•Œê¹Œì§€ ë‚¨ìŒ)
     }
 
     public TileState state = TileState.Normal;
     public CropData cropData;
     public int currentGrowthDay = 0;
 
-    [Header("°á°ú Ç¥½Ã ½Ã°£ (ÃÊ)")]
+    [Header("ê²°ê³¼ í‘œì‹œ ì‹œê°„ (ì´ˆ)")]
     public float resultDisplayDuration = 1.5f;
 
-    [Header("¸®µë°ÔÀÓ Áß Sorting Order")]
-    [Tooltip("¼öÈ® ¾Ö´Ï¸ŞÀÌ¼Ç Áß¿¡ ÀÛ¹°ÀÌ ÇÃ·¹ÀÌ¾î À§¿¡ º¸ÀÌµµ·Ï")]
+    [Header("ë¦¬ë“¬ê²Œì„ ì¤‘ Sorting Order")]
+    [Tooltip("ìˆ˜í™• ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì— ì‘ë¬¼ì´ í”Œë ˆì´ì–´ ìœ„ì— ë³´ì´ë„ë¡")]
     public int harvestSortingOrder = 100;
 
-    [Header("½Ãµê Ç¥½Ã")]
-    [Tooltip("½Ãµé¾úÀ» ¶§ º¸¿©ÁÙ ½ºÇÁ¶óÀÌÆ®. ºñ¿ì¸é ÇöÀç ½ºÇÁ¶óÀÌÆ®¸¦ È¸»öÀ¸·Î ¾îµÓ°Ô Ã³¸®")]
+    [Header("ì‹œë“¦ í‘œì‹œ")]
+    [Tooltip("ì‹œë“¤ì—ˆì„ ë•Œ ë³´ì—¬ì¤„ ìŠ¤í”„ë¼ì´íŠ¸. ë¹„ìš°ë©´ í˜„ì¬ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ íšŒìƒ‰ìœ¼ë¡œ ì–´ë‘¡ê²Œ ì²˜ë¦¬")]
     public Sprite witheredSprite;
 
-    private SpriteRenderer spriteRenderer;
+    [Header("ì‘ë¬¼ ê·¸ë¦¼")]
+    [Tooltip("ì‘ë¬¼ ê·¸ë¦¼ì˜ Sorting Order")]
+    public int cropSortingOrder = 5;
+    [Tooltip("ë°‘ë™ì„ í™ ì •ì¤‘ì•™ë³´ë‹¤ ì‚´ì§ ë‚´ë¦¬ë ¤ë©´ ìŒìˆ˜ (0ì´ë©´ ì •ì¤‘ì•™)")]
+    public float baseYNudge = -0.25f;
+
+    [Tooltip("í”Œë ˆì´ì–´ì™€ ë™ì¼í•œ ì •ë ¬ ë ˆì´ì–´ (Yì •ë ¬ë¡œ ì•ë’¤ ê°€ë¦¼)")]
+    public string entitySortingLayer = "Entities";
+
+    private SpriteRenderer cropRenderer;   // ì‘ë¬¼ ê·¸ë¦¼ ì „ìš© (ìì‹ ì˜¤ë¸Œì íŠ¸)
     private int originalSortingOrder = 0;
 
     void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-            originalSortingOrder = spriteRenderer.sortingOrder;
+        // ì‘ë¬¼ ê·¸ë¦¼ì„ ë³¸ì²´ê°€ ì•„ë‹Œ ìì‹ ì˜¤ë¸Œì íŠ¸ì—ì„œ ê·¸ë¦°ë‹¤.
+        // (ë³¸ì²´/ì½œë¼ì´ë”ëŠ” íƒ€ì¼ ì¤‘ì•™ì— ê³ ì • â†’ í´ë¦­ íŒì • ì•ˆì •, ê·¸ë¦¼ë§Œ ììœ ë¡­ê²Œ ì •ë ¬)
+        GameObject vis = new GameObject("CropVisual");
+        vis.transform.SetParent(transform, false);
+        vis.transform.localPosition = Vector3.zero;
+
+        cropRenderer = vis.AddComponent<SpriteRenderer>();
+        cropRenderer.sortingLayerName = entitySortingLayer;
+        cropRenderer.sortingOrder = cropSortingOrder;
+        originalSortingOrder = cropSortingOrder;
 
         if (FarmTileManager.Instance != null)
             FarmTileManager.Instance.RegisterTile(this);
+    }
+
+    // ì‘ë¬¼ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ ìì‹ì— ì„¸íŒ…í•˜ë©´ì„œ, Pivot/í”„ë ˆì„ í¬ê¸°ì™€ ë¬´ê´€í•˜ê²Œ
+    // "ë°‘ë™(ë§¨ ì•„ë«ì¤„)"ì´ í•­ìƒ í™ ì¤‘ì•™ì— ì˜¤ë„ë¡ ìœ„ì¹˜ë¥¼ ìë™ ë³´ì •í•œë‹¤.
+    void SetCropSprite(Sprite sp)
+    {
+        if (cropRenderer == null) return;
+        cropRenderer.sprite = sp;
+        if (sp == null) return;
+
+        float ppu = sp.pixelsPerUnit;
+        float x = (sp.pivot.x - sp.rect.width / 2f) / ppu;   // ê°€ë¡œ ì¤‘ì•™ ì •ë ¬
+        float y = sp.pivot.y / ppu + baseYNudge;             // ë°‘ë™ì„ í™ ì¤‘ì•™ì—
+        cropRenderer.transform.localPosition = new Vector3(x, y, 0f);
+
+        ApplyYSorting();
+    }
+
+    // ì‘ë¬¼ ë°‘ë™ì˜ ì›”ë“œ Yì— ë”°ë¼ Sorting Order ê²°ì • (ìŠ¤ë“€ì‹ ì•ë’¤ ê°€ë¦¼).
+    // Yê°€ ë‚®ì„ìˆ˜ë¡(í™”ë©´ ì•„ë˜ìª½) Orderê°€ ì»¤ì ¸ì„œ ì•ì— ê·¸ë ¤ì§„ë‹¤.
+    // í”Œë ˆì´ì–´(Order 11) ê¸°ì¤€ìœ¼ë¡œ: í”Œë ˆì´ì–´ê°€ ì‘ë¬¼ë³´ë‹¤ ìœ„ì— ìˆìœ¼ë©´ ì‘ë¬¼ì´ ì•(ê°€ë¦¼),
+    // ì•„ë˜ë¡œ ë‚´ë ¤ì˜¤ë©´ ì‘ë¬¼ì´ ë’¤(í”Œë ˆì´ì–´ê°€ ê°€ë¦¼).
+    void ApplyYSorting()
+    {
+        if (cropRenderer == null) return;
+        cropRenderer.sortingLayerName = entitySortingLayer;  // í”Œë ˆì´ì–´ì™€ ê°™ì€ ë ˆì´ì–´
+        if (cropRenderer.sortingOrder == harvestSortingOrder) return; // ìˆ˜í™• ëª¨ì…˜ ì¤‘ì—” ê±´ë“œë¦¬ì§€ ì•ŠìŒ
+
+        float baseWorldY = transform.position.y + baseYNudge; // ì‘ë¬¼ ë°‘ë™ ë†’ì´
+        cropRenderer.sortingOrder = Mathf.RoundToInt(-baseWorldY * 100f);
     }
 
     public bool Till()
@@ -53,17 +99,17 @@ public class FarmTile : MonoBehaviour
     {
         if (state == TileState.Normal) return false;
 
-        // ¾¾/¹°ÁØ¾¾/½ÃµçÀÛ¹°À» Ä¡¿ì¸é ÀÛ¹° Á¤º¸ Á¦°Å
+        // ì”¨/ë¬¼ì¤€ì”¨/ì‹œë“ ì‘ë¬¼ì„ ì¹˜ìš°ë©´ ì‘ë¬¼ ì •ë³´ ì œê±°
         if (state == TileState.Seeded || state == TileState.SeedWatered || state == TileState.Withered)
         {
             cropData = null;
             currentGrowthDay = 0;
 
-            // ½Ãµç ½ºÇÁ¶óÀÌÆ®/»ö ¿ø»óº¹±¸
-            if (spriteRenderer != null)
+            // ì‹œë“  ìŠ¤í”„ë¼ì´íŠ¸/ìƒ‰ ì›ìƒë³µêµ¬
+            if (cropRenderer != null)
             {
-                spriteRenderer.sprite = null;
-                spriteRenderer.color = Color.white;
+                cropRenderer.sprite = null;
+                cropRenderer.color = Color.white;
             }
         }
         state = TileState.Normal;
@@ -76,7 +122,7 @@ public class FarmTile : MonoBehaviour
 
         if (crop.season != Season.All && crop.season != TimeManager.Instance.currentSeason)
         {
-            Debug.Log($"ÀÌ °èÀı¿¡´Â {crop.cropName}À» ½ÉÀ» ¼ö ¾ø¾î¿ä!");
+            Debug.Log($"ì´ ê³„ì ˆì—ëŠ” {crop.cropName}ì„ ì‹¬ì„ ìˆ˜ ì—†ì–´ìš”!");
             return false;
         }
 
@@ -125,13 +171,13 @@ public class FarmTile : MonoBehaviour
         }
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ¡Ú °èÀıÀÌ ¹Ù²ğ ¶§ È£Ãâ: ½É¾îÁø ÀÛ¹°ÀÌ ÀÖÀ¸¸é ½Ãµé°Ô ÇÔ
-    //   (½Ãµç ÀÛ¹°Àº ÀÚ¸®¿¡ ±×´ë·Î ³²°í, Reset()À¸·Î Ä¡¿ö¾ß »ç¶óÁü)
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â˜… ê³„ì ˆì´ ë°”ë€” ë•Œ í˜¸ì¶œ: ì‹¬ì–´ì§„ ì‘ë¬¼ì´ ìˆìœ¼ë©´ ì‹œë“¤ê²Œ í•¨
+    //   (ì‹œë“  ì‘ë¬¼ì€ ìë¦¬ì— ê·¸ëŒ€ë¡œ ë‚¨ê³ , Reset()ìœ¼ë¡œ ì¹˜ì›Œì•¼ ì‚¬ë¼ì§)
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public void WitherIfPlanted()
     {
-        // ÀÛ¹°ÀÌ ½É±ä »óÅÂ(¾¾/¹°ÁØ¾¾/´ÙÀÚ¶÷)¸¸ ½Ãµê. ºó Èë/¹° ÁØ ÈëÀº ±×´ë·Î.
+        // ì‘ë¬¼ì´ ì‹¬ê¸´ ìƒíƒœ(ì”¨/ë¬¼ì¤€ì”¨/ë‹¤ìëŒ)ë§Œ ì‹œë“¦. ë¹ˆ í™/ë¬¼ ì¤€ í™ì€ ê·¸ëŒ€ë¡œ.
         if (state == TileState.Seeded || state == TileState.SeedWatered || state == TileState.Grown)
         {
             state = TileState.Withered;
@@ -141,17 +187,17 @@ public class FarmTile : MonoBehaviour
 
     void ShowWithered()
     {
-        if (spriteRenderer == null) return;
+        if (cropRenderer == null) return;
 
         if (witheredSprite != null)
         {
-            spriteRenderer.sprite = witheredSprite;
-            spriteRenderer.color = Color.white;
+            SetCropSprite(witheredSprite);
+            cropRenderer.color = Color.white;
         }
         else
         {
-            // ½Ãµç ½ºÇÁ¶óÀÌÆ®°¡ ¾øÀ¸¸é ÇöÀç ½ºÇÁ¶óÀÌÆ®¸¦ °¥»ö/È¸»öÀ¸·Î ¾îµÓ°Ô
-            spriteRenderer.color = new Color(0.45f, 0.38f, 0.30f);
+            // ì‹œë“  ìŠ¤í”„ë¼ì´íŠ¸ê°€ ì—†ìœ¼ë©´ í˜„ì¬ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ ê°ˆìƒ‰/íšŒìƒ‰ìœ¼ë¡œ ì–´ë‘¡ê²Œ
+            cropRenderer.color = new Color(0.45f, 0.38f, 0.30f);
         }
     }
 
@@ -163,7 +209,7 @@ public class FarmTile : MonoBehaviour
         {
             int amount = cropData.baseHarvestAmount;
             InventoryManager.Instance.AddItem(cropData.harvestItem, amount);
-            Debug.Log($"{cropData.cropName} ¼öÈ®! x{amount}");
+            Debug.Log($"{cropData.cropName} ìˆ˜í™•! x{amount}");
         }
 
         cropData = null;
@@ -175,10 +221,10 @@ public class FarmTile : MonoBehaviour
 
     public void SetHarvestSprite(Sprite sprite)
     {
-        if (spriteRenderer != null && sprite != null)
+        if (cropRenderer != null && sprite != null)
         {
-            spriteRenderer.sprite = sprite;
-            spriteRenderer.sortingOrder = harvestSortingOrder;  // ÇÃ·¹ÀÌ¾î À§·Î
+            SetCropSprite(sprite);
+            cropRenderer.sortingOrder = harvestSortingOrder;  // í”Œë ˆì´ì–´ ìœ„ë¡œ
         }
     }
 
@@ -207,7 +253,7 @@ public class FarmTile : MonoBehaviour
                 finalYield = Mathf.Max(1, finalYield - penalty);
 
                 if (penalty > 0)
-                    Debug.Log($"¼öÈ®·® ÆĞ³ÎÆ¼ Àû¿ë! -{penalty}");
+                    Debug.Log($"ìˆ˜í™•ëŸ‰ íŒ¨ë„í‹° ì ìš©! -{penalty}");
             }
 
             ItemData rewardItem = cropData.GetHarvestItemByResult(finalResult);
@@ -221,7 +267,7 @@ public class FarmTile : MonoBehaviour
                     ItemDropManager.Instance?.DropItemFromHarvest(
                         rewardItem, leftover, transform.position);
 
-                Debug.Log($"{cropData.cropName} ¼öÈ®! µî±Ş:{finalResult} x{finalYield}");
+                Debug.Log($"{cropData.cropName} ìˆ˜í™•! ë“±ê¸‰:{finalResult} x{finalYield}");
             }
 
             PestGrowthEventManager.Instance?.ClearEventData(cellPos);
@@ -240,20 +286,21 @@ public class FarmTile : MonoBehaviour
         currentGrowthDay = 0;
         state = TileState.Tilled;
 
-        if (spriteRenderer != null)
+        if (cropRenderer != null)
         {
-            spriteRenderer.sprite = null;
-            spriteRenderer.sortingOrder = originalSortingOrder;  // ¡Ú ¿ø·¡´ë·Î
+            cropRenderer.sprite = null;
+            cropRenderer.color = Color.white;
+            cropRenderer.sortingOrder = originalSortingOrder;  // â˜… ì›ë˜ëŒ€ë¡œ
         }
         UpdateSprite();
     }
 
     void UpdateSprite()
     {
-        if (spriteRenderer == null) return;
+        if (cropRenderer == null) return;
         if (cropData == null || cropData.growthSprites == null) return;
         int stage = Mathf.Clamp(currentGrowthDay, 0, cropData.growthSprites.Length - 1);
-        spriteRenderer.sprite = cropData.growthSprites[stage];
+        SetCropSprite(cropData.growthSprites[stage]);
     }
 
     void OnDestroy()

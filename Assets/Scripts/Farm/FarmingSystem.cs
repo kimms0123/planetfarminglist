@@ -1,23 +1,23 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class FarmingSystem : MonoBehaviour
 {
-    [Header("ÇÁ¸®ÆÕ")]
+    [Header("í”„ë¦¬íŒ¹")]
     public GameObject cropPrefab;
 
     private Camera mainCamera;
 
     void Awake()
     {
-        // Ä«¸Ş¶ó´Â ¾À ÀüÈ¯À¸·Î ÆÄ±«/±³Ã¼µÉ ¼ö ÀÖÀ¸¹Ç·Î ¿©±â¼­ Ä³½ÌÇÏÁö ¾Ê°í
-        // »ç¿ë Á÷Àü¿¡ GetCamera()·Î Ç×»ó À¯È¿ÇÑ Ä«¸Ş¶ó¸¦ °¡Á®¿Â´Ù.
+        // ì¹´ë©”ë¼ëŠ” ì”¬ ì „í™˜ìœ¼ë¡œ íŒŒê´´/êµì²´ë  ìˆ˜ ìˆìœ¼ë¯€ë¡œ ì—¬ê¸°ì„œ ìºì‹±í•˜ì§€ ì•Šê³ 
+        // ì‚¬ìš© ì§ì „ì— GetCamera()ë¡œ í•­ìƒ ìœ íš¨í•œ ì¹´ë©”ë¼ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
     }
 
-    // Ç×»ó À¯È¿ÇÑ Ä«¸Ş¶ó¸¦ ¹İÈ¯ (ÆÄ±«µÆ°Å³ª ¾øÀ¸¸é ´Ù½Ã Ã£À½)
+    // í•­ìƒ ìœ íš¨í•œ ì¹´ë©”ë¼ë¥¼ ë°˜í™˜ (íŒŒê´´ëê±°ë‚˜ ì—†ìœ¼ë©´ ë‹¤ì‹œ ì°¾ìŒ)
     Camera GetCamera()
     {
-        // mainCamera°¡ ÆÄ±«µÆ´ÂÁö±îÁö È®ÀÎ (Unity´Â ÆÄ±«µÈ °´Ã¼¿¡ == null ÀÌ true)
+        // mainCameraê°€ íŒŒê´´ëëŠ”ì§€ê¹Œì§€ í™•ì¸ (UnityëŠ” íŒŒê´´ëœ ê°ì²´ì— == null ì´ true)
         if (mainCamera == null)
             mainCamera = Camera.main;
         return mainCamera;
@@ -25,17 +25,17 @@ public class FarmingSystem : MonoBehaviour
 
     void Update()
     {
-        // ÀÎº¥Åä¸® ¿­·ÁÀÖÀ¸¸é ³ó»ç ÀÔ·Â Â÷´Ü
+        // ì¸ë²¤í† ë¦¬ ì—´ë ¤ìˆìœ¼ë©´ ë†ì‚¬ ì…ë ¥ ì°¨ë‹¨
         if (InventoryWindowUI.Instance != null && InventoryWindowUI.Instance.IsOpen) return;
 
-        if (PlayerController.IsInputLocked) return; // ¸®µë°ÔÀÓ/ÀÎº¥Åä¸® Áß ÀÔ·Â Â÷´Ü
+        if (PlayerController.IsInputLocked) return; // ë¦¬ë“¬ê²Œì„/ì¸ë²¤í† ë¦¬ ì¤‘ ì…ë ¥ ì°¨ë‹¨
 
-        // ¡Ú ¾ÈÀüÀåÄ¡: ³ó»ç ½Ã½ºÅÛ¿¡ ÇÊ¿äÇÑ °Ô ¾øÀ¸¸é(¿¹: Áı ¾À) ¾Æ¹«°Íµµ ¾È ÇÔ
+        // â˜… ì•ˆì „ì¥ì¹˜: ë†ì‚¬ ì‹œìŠ¤í…œì— í•„ìš”í•œ ê²Œ ì—†ìœ¼ë©´(ì˜ˆ: ì§‘ ì”¬) ì•„ë¬´ê²ƒë„ ì•ˆ í•¨
         if (TileManager.Instance == null) return;
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            // Å¬¸¯ ½ÃÁ¡¿¡ À¯È¿ÇÑ Ä«¸Ş¶ó¸¦ °¡Á®¿È (¾À ÀüÈ¯À¸·Î ÆÄ±«µÆÀ» ¼ö ÀÖÀ½)
+            // í´ë¦­ ì‹œì ì— ìœ íš¨í•œ ì¹´ë©”ë¼ë¥¼ ê°€ì ¸ì˜´ (ì”¬ ì „í™˜ìœ¼ë¡œ íŒŒê´´ëì„ ìˆ˜ ìˆìŒ)
             Camera cam = GetCamera();
             if (cam == null) return;
 
@@ -91,16 +91,16 @@ public class FarmingSystem : MonoBehaviour
             case ToolType.Hoe:
                 if (!TileManager.Instance.IsFarmable(cellPos))
                 {
-                    Debug.Log("³ó»ç °¡´ÉÇÑ Èë ¶¥¿¡¼­¸¸ ±ªÀÌÁúÇÒ ¼ö ÀÖ¾î¿ä!");
+                    Debug.Log("ë†ì‚¬ ê°€ëŠ¥í•œ í™ ë•…ì—ì„œë§Œ ê´­ì´ì§ˆí•  ìˆ˜ ìˆì–´ìš”!");
                     return;
                 }
                 if (TileManager.Instance.IsTilled(cellPos))
                 {
-                    Debug.Log("ÀÌ¹Ì °¥¾Æ¾şÀº ¶¥ÀÌ¿¡¿ä!");
+                    Debug.Log("ì´ë¯¸ ê°ˆì•„ì—ì€ ë•…ì´ì—ìš”!");
                     return;
                 }
 
-                // ±ªÀÌÁú µ¿ÀÛ Àç»ı (0.5ÃÊ°£ IsBusy·Î Idle/Walk ¸·À½)
+                // ê´­ì´ì§ˆ ë™ì‘ ì¬ìƒ (0.5ì´ˆê°„ IsBusyë¡œ Idle/Walk ë§‰ìŒ)
                 PlayerController.Instance?.PlayAction("DoHoe", 0.5f);
 
                 TileManager.Instance.SetTilled(cellPos);
@@ -109,8 +109,8 @@ public class FarmingSystem : MonoBehaviour
                 GameObject tileObj = new GameObject("FarmTile");
                 tileObj.transform.position = centerPos;
 
-                SpriteRenderer sr = tileObj.AddComponent<SpriteRenderer>();
-                sr.sortingOrder = 5;
+                // ì‘ë¬¼ ê·¸ë¦¼ì€ FarmTileì´ ìì‹(CropVisual)ì—ì„œ ì§ì ‘ ê·¸ë¦¼.
+                // (ë³¸ì²´ì—” SpriteRendererë¥¼ ë¶™ì´ì§€ ì•ŠìŒ â†’ ìœ„ì¹˜/ì •ë ¬ì€ FarmTileì´ ê´€ë¦¬)
 
                 BoxCollider2D col = tileObj.AddComponent<BoxCollider2D>();
                 col.size = new Vector2(1f, 1f);
@@ -119,34 +119,34 @@ public class FarmingSystem : MonoBehaviour
                 FarmTile newTile = tileObj.AddComponent<FarmTile>();
                 newTile.Till();
 
-                Debug.Log("¶¥À» ÆÍ¾î¿ä!");
+                Debug.Log("ë•…ì„ íŒ ì–´ìš”!");
                 break;
 
             case ToolType.WateringCan:
                 if (!TileManager.Instance.IsTilled(cellPos))
                 {
-                    Debug.Log("°¥¾Æ¾şÀº ¶¥¿¡¸¸ ¹°À» ÁÙ ¼ö ÀÖ¾î¿ä!");
+                    Debug.Log("ê°ˆì•„ì—ì€ ë•…ì—ë§Œ ë¬¼ì„ ì¤„ ìˆ˜ ìˆì–´ìš”!");
                     return;
                 }
                 if (farmTile != null && farmTile.Water())
                 {
-                    // ¹°ÁÖ±â µ¿ÀÛ Àç»ı (0.5ÃÊ°£ IsBusy·Î Idle/Walk ¸·À½)
+                    // ë¬¼ì£¼ê¸° ë™ì‘ ì¬ìƒ (0.5ì´ˆê°„ IsBusyë¡œ Idle/Walk ë§‰ìŒ)
                     PlayerController.Instance?.PlayAction("DoWater", 0.5f);
 
                     TileManager.Instance.RefreshTile(cellPos, farmTile.state);
-                    Debug.Log("¹°À» Áá¾î¿ä!");
+                    Debug.Log("ë¬¼ì„ ì¤¬ì–´ìš”!");
                 }
                 break;
 
             case ToolType.Harvester:
                 if (farmTile == null)
                 {
-                    Debug.Log("¼öÈ®ÇÒ ÀÛ¹°ÀÌ ¾ø¾î¿ä!");
+                    Debug.Log("ìˆ˜í™•í•  ì‘ë¬¼ì´ ì—†ì–´ìš”!");
                     return;
                 }
                 if (farmTile.state != FarmTile.TileState.Grown)
                 {
-                    Debug.Log("¾ÆÁ÷ ´Ù ÀÚ¶óÁö ¾Ê¾Ò¾î¿ä!");
+                    Debug.Log("ì•„ì§ ë‹¤ ìë¼ì§€ ì•Šì•˜ì–´ìš”!");
                     return;
                 }
                 RhythmGameManager.Instance.StartRhythmGame(farmTile, cellPos);
@@ -155,7 +155,7 @@ public class FarmingSystem : MonoBehaviour
             case ToolType.Pickaxe:
                 if (!TileManager.Instance.IsTilled(cellPos))
                 {
-                    Debug.Log("°æÀÛÁö°¡ ¾Æ´Ï¿¡¿ä!");
+                    Debug.Log("ê²½ì‘ì§€ê°€ ì•„ë‹ˆì—ìš”!");
                     return;
                 }
                 if (farmTile != null)
@@ -164,7 +164,7 @@ public class FarmingSystem : MonoBehaviour
                     Destroy(farmTile.gameObject);
                 }
                 TileManager.Instance.SetNormal(cellPos);
-                Debug.Log("¶¥À» ¿ø·¡´ë·Î µ¹·È¾î¿ä!");
+                Debug.Log("ë•…ì„ ì›ë˜ëŒ€ë¡œ ëŒë ¸ì–´ìš”!");
                 break;
         }
     }
@@ -173,29 +173,29 @@ public class FarmingSystem : MonoBehaviour
     {
         if (!TileManager.Instance.IsTilled(cellPos))
         {
-            Debug.Log("¶¥À» ¸ÕÀú °¥¾Æ¾ş¾î¾ß ÇØ¿ä!");
+            Debug.Log("ë•…ì„ ë¨¼ì € ê°ˆì•„ì—ì–´ì•¼ í•´ìš”!");
             return;
         }
         if (farmTile == null)
         {
-            Debug.Log("FarmTileÀÌ ¾ø¾î¿ä!");
+            Debug.Log("FarmTileì´ ì—†ì–´ìš”!");
             return;
         }
         if (farmTile.cropData != null)
         {
-            Debug.Log("ÀÌ¹Ì ÀÛ¹°ÀÌ ÀÖ¾î¿ä!");
+            Debug.Log("ì´ë¯¸ ì‘ë¬¼ì´ ìˆì–´ìš”!");
             return;
         }
         if (InventoryManager.Instance.GetItemCount(seedItem) <= 0)
         {
-            Debug.Log($"{seedItem.itemName}ÀÌ ºÎÁ·ÇØ¿ä!");
+            Debug.Log($"{seedItem.itemName}ì´ ë¶€ì¡±í•´ìš”!");
             return;
         }
         if (farmTile.Plant(seedItem.cropData))
         {
             InventoryManager.Instance.RemoveItem(seedItem, 1);
             TileManager.Instance.RefreshTile(cellPos, farmTile.state);
-            Debug.Log($"{seedItem.cropData.cropName} ¾¾¾ÑÀ» ½É¾ú¾î¿ä!");
+            Debug.Log($"{seedItem.cropData.cropName} ì”¨ì•—ì„ ì‹¬ì—ˆì–´ìš”!");
         }
     }
 }
