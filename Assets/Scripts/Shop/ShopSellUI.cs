@@ -84,6 +84,9 @@ public class ShopSellUI : MonoBehaviour
 
         UpdateNpcDialogue();
         RefreshUI();
+
+        // 구매 영역도 같이 표시 (스듀식: 한 패널에서 판매+구매)
+        ShopBuyUI.Instance?.BuildOnce();
     }
 
     public void CloseShop()
