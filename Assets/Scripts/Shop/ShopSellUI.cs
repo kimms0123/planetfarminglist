@@ -96,19 +96,14 @@ public class ShopSellUI : MonoBehaviour
         PlayerController.IsInputLocked = false;
     }
 
-    /// <summary>NPC 대사 갱신 — FCM 우세 클러스터 + (멤버십·친밀도) 기반 톤</summary>
+    /// <summary>
+    /// NPC 대사 갱신 — FCM 분류 상태(StableCluster/IsClassified) + 친밀도(단골 여부) 기반.
+    /// 같은 상황이면 NPCDialogueGenerator가 직전 대사를 그대로 유지한다(깜빡임 방지).
+    /// </summary>
     void UpdateNpcDialogue()
     {
         if (npcDialogueText == null) return;
-
-        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
-        float[] u = FCMSalesAnalyzer.Instance?.LastMembership ?? new float[3];
-        int count = FCMSalesAnalyzer.Instance?.TradeCount ?? 0;
-
-        float toneScore = ResponseCombiner.ComputeTone(u, affinityWithNpc);
-        var tone = ResponseCombiner.ToTone(toneScore);
-
-        npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, tone, count);
+        npcDialogueText.text = NPCDialogueGenerator.Generate(FCMSalesAnalyzer.Instance, affinityWithNpc);
     }
 
     public void RefreshUI()
@@ -254,13 +249,13 @@ public class ShopSellUI : MonoBehaviour
         MoneyManager.Instance.AddMoney(finalPrice);
 
         // (5) 친밀도 갱신 + 대사
+        //     친밀도를 먼저 갱신해, 이번 거래로 단골 문턱을 넘으면 즉시 단골 대사가 나오게 한다.
         affinityWithNpc = Mathf.Clamp01(affinityWithNpc + resp.affinity);
-        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
-        int count = FCMSalesAnalyzer.Instance?.TradeCount ?? 0;
         if (npcDialogueText != null)
-            npcDialogueText.text = NPCDialogueGenerator.Generate(cluster, ResponseCombiner.ToTone(resp.tone), count);
+            npcDialogueText.text = NPCDialogueGenerator.Generate(FCMSalesAnalyzer.Instance, affinityWithNpc);
 
-        // (6) RBFN LMS 학습 (거래 결과 휴리스틱 타깃)
+        // (6) RBFN LMS 학습 (거래 결과 휴리스틱 타깃 — 원시 분류 DominantCluster 사용)
+        var cluster = FCMSalesAnalyzer.Instance?.DominantCluster ?? FCMSalesAnalyzer.ClusterType.None;
         TrainRBFN(rbfInput, cluster);
 
         ShowMessage($"판매 완료! +{finalPrice} G (×{resp.price:F2})");

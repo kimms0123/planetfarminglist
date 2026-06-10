@@ -23,11 +23,23 @@ MonoBehaviour:
   baseHarvestAmount: 2
   cropCoefficient: 1.8
   baseSellPrice: 150
-  harvestStageSprites: []
+  harvestStageSprites:
+  - {fileID: 21300000, guid: 0e9220cb63a948b4c955eee4a8fe34a7, type: 3}
+  - {fileID: 21300000, guid: a4b57fa8971e3134c8bbda81f73ea22e, type: 3}
+  - {fileID: 21300000, guid: f7b917c61b7d4a440a211b105d4409e1, type: 3}
   harvestFailSprite: {fileID: 0}
-  harvestResultSprites: []
-  normalResultEndIndex: 1
-  bestResultEndIndex: 2
+  harvestResultSprites:
+  - {fileID: 21300000, guid: e9334fd7823ba8b42b09b2f101f4862b, type: 3}
+  - {fileID: 21300000, guid: 7ece64c9e2083c0428d7e5447dc5e0bc, type: 3}
+  - {fileID: 21300000, guid: f7f8f800b7a1ff4428e035b3d6543991, type: 3}
+  - {fileID: 21300000, guid: dd0b21cb2b4f20d48b92a533d3a045c2, type: 3}
+  - {fileID: 21300000, guid: cbc28d2632174fd4aa1ac7024dafa413, type: 3}
+  - {fileID: 21300000, guid: 40e19a1c6d158924bbc419adccf33cf7, type: 3}
+  - {fileID: 21300000, guid: 541c70e5ac62ee34a85d9e7889c40136, type: 3}
+  - {fileID: 21300000, guid: 20c384798f9382e4e88d8497aa85ee0b, type: 3}
+  - {fileID: 21300000, guid: c478fec40fba53f489ca0f69f610afbf, type: 3}
+  normalResultEndIndex: 8
+  bestResultEndIndex: 8
   bestHarvestItem: {fileID: 0}
   normalHarvestItem: {fileID: 0}
   trashHarvestItem: {fileID: 0}

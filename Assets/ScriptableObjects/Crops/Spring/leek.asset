@@ -18,25 +18,28 @@ MonoBehaviour:
   growthSprites:
   - {fileID: -3198560803462892532, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   - {fileID: 8927833971122443165, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
-  - {fileID: -8181782792498817370, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
-  - {fileID: 4691186982339758866, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
+  - {fileID: 4691186982339758866, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   harvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   baseHarvestAmount: 8
   cropCoefficient: 1
   baseSellPrice: 50
   harvestStageSprites:
-  - {fileID: 7380319661123533187, guid: 0af1b1ce5e2c4124e8d8526e90a26f04, type: 3}
-  - {fileID: 5357723359711220398, guid: 8f249394c55ec2a44803553feff85d4d, type: 3}
-  - {fileID: -6582127450775962322, guid: 3142ee8334f963148801e2d6ce70da0f, type: 3}
-  - {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
+  - {fileID: 21300000, guid: e0c87cbf2c133cb418933d7aff48ce39, type: 3}
+  - {fileID: 21300000, guid: 354b90a29df6ed74a82e024ee5f14ef2, type: 3}
+  - {fileID: 21300000, guid: 1b1f88f588ef7f04183511947740659d, type: 3}
   harvestFailSprite: {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
   harvestResultSprites:
-  - {fileID: 21300000, guid: facd4a95bfbfb524488af2fe5871528f, type: 3}
-  - {fileID: 21300000, guid: 7a941729d4055d84e9c40d0ced094129, type: 3}
-  - {fileID: 21300000, guid: 6e44c54952edcfd48b932a1fabd3bb55, type: 3}
-  - {fileID: 21300000, guid: 94ce720ead36f9f4280f76a7812779c4, type: 3}
-  normalResultEndIndex: 3
-  bestResultEndIndex: 3
+  - {fileID: 21300000, guid: 43ad02348e1239449bece6eb57173971, type: 3}
+  - {fileID: 21300000, guid: 4c22d380d585cc1459685c269a86e8db, type: 3}
+  - {fileID: 21300000, guid: df3023d9d0d65b647a838ba9f80dfc13, type: 3}
+  - {fileID: 21300000, guid: bfb28f5baaeffdf4c8f5ea744efe2b4c, type: 3}
+  - {fileID: 21300000, guid: 9c2f256b0fc7c7c49a90d0c050fac2b1, type: 3}
+  - {fileID: 21300000, guid: a09bbc7738d471a419084801f84fcd7a, type: 3}
+  - {fileID: 21300000, guid: b2b14616fd70167479ae5c40020ba8a2, type: 3}
+  - {fileID: 21300000, guid: f96a0786d30a6874480b5c4bf1bae479, type: 3}
+  - {fileID: 21300000, guid: 4040136cf5d1d4146aed5e2357dd2c58, type: 3}
+  normalResultEndIndex: 8
+  bestResultEndIndex: 8
   bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   normalHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   trashHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
