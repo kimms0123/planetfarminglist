@@ -19,7 +19,6 @@ MonoBehaviour:
   - {fileID: 664320984050398190, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   - {fileID: -354019825455085393, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   - {fileID: -6163226739467089999, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
-  - {fileID: -8887568029724308479, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   harvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   baseHarvestAmount: 8
   cropCoefficient: 1

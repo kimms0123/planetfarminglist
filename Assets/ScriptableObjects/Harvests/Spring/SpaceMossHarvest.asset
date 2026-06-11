@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SpaceMossHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC6B0\uC8FC\uC774\uB07C"
-  itemSprite: {fileID: -3256094131420416867, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  itemSprite: {fileID: -2263241556000192361, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   itemType: 2
   canStack: 1
   maxStack: 99

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
   m_Name: SpaceCrystalHarvest
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uC5EC\uB984\uC791\uBB3C"
+  itemName: "\uC6B0\uC8FC\uD06C\uB9AC\uC2A4\uD0C8"
   itemSprite: {fileID: -3256094131420416867, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   itemType: 2
   canStack: 1

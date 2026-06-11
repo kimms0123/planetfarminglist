@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0827507d0c0df754f93350fc6b9ccd77, type: 3}
   m_Name: SweetPotato
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: "\uBC84\uB4DC\uB098\uBB34"
-  itemSprite: {fileID: 2447095082677085392, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
+  itemName: "\uACE0\uAD6C\uB9C8"
+  itemSprite: {fileID: 2447095082677085392, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   itemType: 2
   canStack: 1
   maxStack: 99

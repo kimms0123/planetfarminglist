@@ -17,7 +17,7 @@ MonoBehaviour:
   growthDays: 4
   growthSprites:
   - {fileID: -3198560803462892532, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
-  - {fileID: 8927833971122443165, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
+  - {fileID: 8927833971122443165, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   - {fileID: 4691186982339758866, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   harvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
   baseHarvestAmount: 8

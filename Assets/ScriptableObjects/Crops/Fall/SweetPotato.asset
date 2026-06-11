@@ -16,9 +16,9 @@ MonoBehaviour:
   season: 2
   growthDays: 7
   growthSprites:
-  - {fileID: 2374042611470052438, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
-  - {fileID: -5053121351992980003, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
-  - {fileID: 1122561389, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
+  - {fileID: 2374042611470052438, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  - {fileID: -5053121351992980003, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
+  - {fileID: -402759939, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   harvestItem: {fileID: 11400000, guid: 74bd87cc0d5fd7141be9eaf9e424dbb7, type: 2}
   baseHarvestAmount: 2
   cropCoefficient: 1.8

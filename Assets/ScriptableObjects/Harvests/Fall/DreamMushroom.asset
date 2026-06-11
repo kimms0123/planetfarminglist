@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DreamMushroom
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uBABD\uD658\uBC84\uC12F"
-  itemSprite: {fileID: -8887568029724308479, guid: 5a1523deef64a0949958dc53ffd88400, type: 3}
+  itemSprite: {fileID: -8887568029724308479, guid: 0b562161defa5224a8c231c765a8d701, type: 3}
   itemType: 2
   canStack: 1
   maxStack: 99
