@@ -33,7 +33,7 @@ public class FarmTile : MonoBehaviour
     [Tooltip("작물 그림의 기본 Sorting Order (Y정렬 적용 전 초기값)")]
     public int cropSortingOrder = 5;
     [Tooltip("밑동을 흙 정중앙보다 살짝 내리려면 음수 (0이면 정중앙)")]
-    public float baseYNudge = 0f;
+    public float baseYNudge = -0.25f;
     [Tooltip("플레이어와 동일한 정렬 레이어 (Y정렬로 앞뒤 가림)")]
     public string entitySortingLayer = "Entities";
 
