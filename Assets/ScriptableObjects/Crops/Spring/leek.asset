@@ -29,15 +29,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1b1f88f588ef7f04183511947740659d, type: 3}
   harvestFailSprite: {fileID: 1341091039694537625, guid: d743f35a9b8978541b77c763a36e69a0, type: 3}
   harvestResultSprites:
-  - {fileID: 21300000, guid: 43ad02348e1239449bece6eb57173971, type: 3}
-  - {fileID: 21300000, guid: 4c22d380d585cc1459685c269a86e8db, type: 3}
-  - {fileID: 21300000, guid: df3023d9d0d65b647a838ba9f80dfc13, type: 3}
-  - {fileID: 21300000, guid: bfb28f5baaeffdf4c8f5ea744efe2b4c, type: 3}
-  - {fileID: 21300000, guid: 9c2f256b0fc7c7c49a90d0c050fac2b1, type: 3}
-  - {fileID: 21300000, guid: a09bbc7738d471a419084801f84fcd7a, type: 3}
-  - {fileID: 21300000, guid: b2b14616fd70167479ae5c40020ba8a2, type: 3}
-  - {fileID: 21300000, guid: f96a0786d30a6874480b5c4bf1bae479, type: 3}
-  - {fileID: 21300000, guid: 4040136cf5d1d4146aed5e2357dd2c58, type: 3}
+  - {fileID: 21300000, guid: dc93b78f9eec893498e9d557952bc213, type: 3}
+  - {fileID: 21300000, guid: a3ca56a590cef7b449eb3b31bb8aa2ca, type: 3}
+  - {fileID: 21300000, guid: cde60990497143742af309b3ce39fffa, type: 3}
+  - {fileID: 21300000, guid: e111adecf85312249b76191ff6447a92, type: 3}
+  - {fileID: 21300000, guid: a4ccb520aa3825241ac075d4416f341c, type: 3}
+  - {fileID: 21300000, guid: 7a65f0932dfefb948b07d146d83bb898, type: 3}
+  - {fileID: 21300000, guid: 8387bc5806461e24ca4df2d4722b232d, type: 3}
+  - {fileID: 21300000, guid: a3989558bbea6a44d828b534f7379628, type: 3}
+  - {fileID: 21300000, guid: 8c8ec89f15dbcca419195bd7cf05057a, type: 3}
+  - {fileID: 21300000, guid: a0e9094333bea524fa4aa7ed0c9cf289, type: 3}
   normalResultEndIndex: 8
   bestResultEndIndex: 8
   bestHarvestItem: {fileID: 11400000, guid: 51d4ecd208fde984da67c085481d244e, type: 2}
